@@ -13,6 +13,12 @@ except KeyError:
     print "Error! You need to set the DJANGO_SECRET_KEY environment variable"
     sys.exit(1)
 
+try:
+    POSTGRES_PWD = os.environ["DJANGO_POSTGRES_PASSWORD"]
+except KeyError:
+    print "Error! You need to set the DJANGO_SECRET_KEY environment variable"
+    sys.exit(1)
+
 DEBUG = False
 TEMPLATE_DEBUG = False
 
@@ -76,6 +82,15 @@ TEMPLATE_DIRS = (
 )
 
 # Database
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'USER': 'django',
+        'PASSWORD': POSTGRES_PWD,
+        'HOST': '', # connect through unix socket
+    }
+}
+
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'

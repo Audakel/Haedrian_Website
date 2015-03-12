@@ -1,3 +1,4 @@
 from django.contrib import admin
+from haedrian.models import BetaApplicant
 
-# Register your models here.
+admin.site.register(BetaApplicant)

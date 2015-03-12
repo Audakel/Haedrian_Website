@@ -10,6 +10,7 @@ except KeyError:
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'django',
         'USER': 'django',
         'PASSWORD': POSTGRES_PWD,
         'HOST': '', # connect through unix socket

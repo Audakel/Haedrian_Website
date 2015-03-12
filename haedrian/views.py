@@ -14,6 +14,5 @@ def index(request):
     else:
         form = BetaApplicantForm()
     context["form"] = form
-    import pdb; pdb.set_trace()
     context["count"] = BetaApplicant.objects.count()
     return render(request, 'index.html', context)

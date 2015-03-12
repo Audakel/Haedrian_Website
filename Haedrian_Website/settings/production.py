@@ -19,11 +19,14 @@ TEMPLATE_DEBUG = False
 SITE_ID = 1
 
 ALLOWED_HOSTS = (
-    'host',
+    '104.236.160.220',
+    'localhost',
 )
 
 ADMINS = (
-    ('author', 'email'),
+    ('Haedrian Admins', 'haedrian.beta@gmail.com'),
+    # remove later after proper email is set up
+    ('James Rowe', 'jroweboy@gmail.com'),
 )
 MANAGERS = ADMINS
 

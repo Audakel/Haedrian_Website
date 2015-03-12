@@ -1,124 +1,8 @@
-<!DOCTYPE html>
-<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
-<!--[if !IE]><!-->
-<html lang="en">
-<!--<![endif]-->
-	<head>
-		<meta charset="utf-8">
-		<title>Haedrian | Empower the next 3 billion</title>
-		<meta name="description" content="BYU Startup">
-		<meta name="author" content="htmlcoder.me">
+{% extends "base.html" %}
 
-		<!-- Mobile Meta -->
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% load static %}
 
-		<!-- Favicon -->
-		<link rel="shortcut icon" href="images/favicon.ico">
-
-		<!-- Web Fonts -->
-		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700,300&amp;subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-		<link href='http://fonts.googleapis.com/css?family=Raleway:700,400,300' rel='stylesheet' type='text/css'>
-
-		<!-- Bootstrap core CSS -->
-		<link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-
-		<!-- Font Awesome CSS -->
-		<link href="fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
-
-		<!-- Plugins -->
-		<link href="css/animations.css" rel="stylesheet">
-
-		<!-- Worthy core CSS file -->
-		<link href="css/style.css" rel="stylesheet">
-
-		<!-- Custom css -->
-		<link href="css/custom.css" rel="stylesheet">
-	</head>
-
-	<body class="no-trans">
-		<!-- scrollToTop -->
-		<!-- ================ -->
-		<div class="scrollToTop"><i class="icon-up-open-big"></i></div>
-
-		<!-- header start -->
-		<!-- ================ -->
-		<header class="header fixed clearfix navbar navbar-fixed-top">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-4">
-
-						<!-- header-left start -->
-						<!-- ================ -->
-						<div class="header-left clearfix">
-
-							<!-- logo -->
-							<div class="logo smooth-scroll">
-								<a href="#banner"><img id="logo" src="images/client-6.png" alt="Haedrian"></a>
-							</div>
-
-							<!-- name-and-slogan -->
-							<div class="site-name-and-slogan smooth-scroll">
-								<div class="site-name"><a href="#banner">Haedrian Labs</a></div>
-								<div class="site-slogan">Empower the next 3 billion</div>
-							</div>
-
-						</div>
-						<!-- header-left end -->
-
-					</div>
-					<div class="col-md-8">
-
-						<!-- header-right start -->
-						<!-- ================ -->
-						<div class="header-right clearfix">
-
-							<!-- main-navigation start -->
-							<!-- ================ -->
-							<div class="main-navigation animated">
-
-								<!-- navbar start -->
-								<!-- ================ -->
-								<nav class="navbar navbar-default" role="navigation">
-									<div class="container-fluid">
-
-										<!-- Toggle get grouped for better mobile display -->
-										<div class="navbar-header">
-											<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-1">
-												<span class="sr-only">Toggle navigation</span>
-												<span class="icon-bar"></span>
-												<span class="icon-bar"></span>
-												<span class="icon-bar"></span>
-											</button>
-										</div>
-
-										<!-- Collect the nav links, forms, and other content for toggling -->
-										<div class="collapse navbar-collapse scrollspy smooth-scroll" id="navbar-collapse-1">
-											<ul class="nav navbar-nav navbar-right">
-												<li class="active"><a href="#banner">Home</a></li>
-												<li><a href="#about">About</a></li>
-												<li><a href="#services">Services</a></li>
-												<li><a href="#portfolio">Portfolio</a></li>
-												<li><a href="#clients">Clients</a></li>
-												<li><a href="#contact">Beta Users</a></li>
-											</ul>
-										</div>
-
-									</div>
-								</nav>
-								<!-- navbar end -->
-
-							</div>
-							<!-- main-navigation end -->
-
-						</div>
-						<!-- header-right end -->
-
-					</div>
-				</div>
-			</div>
-		</header>
-		<!-- header end -->
-
+{% block content %}
 		<!-- banner start -->
 		<!-- ================ -->
 		<div id="banner" class="banner">
@@ -154,7 +38,7 @@
 						<div class="space"></div>
 						<div class="row">
 							<div class="col-md-6">
-								<img src="images/section-image-1.png" alt="">
+								<img src="{% static "images/section-image-1.png" %}" alt="">
 								<div class="space"></div>
 							</div>
 							<div class="col-md-6">
@@ -366,7 +250,7 @@
 							<div class="col-sm-6 col-md-3 isotope-item web-design">
 								<div class="image-box">
 									<div class="overlay-container">
-										<img src="images/portfolio-1.jpg" alt="">
+										<img src="{% static "images/portfolio-1.jpg" %}" alt="">
 										<a class="overlay" data-toggle="modal" data-target="#project-1">
 											<i class="fa fa-search-plus"></i>
 											<span>Web Design</span>
@@ -391,7 +275,7 @@
 														<p>Molestiae sed enim laboriosam atque delectus voluptates rerum nostrum sapiente obcaecati molestias quasi optio exercitationem, voluptate quis consequatur libero incidunt, in, quod. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos nobis officiis, autem earum tenetur quidem. Quae non dicta earum. Ipsum autem eaque cum dolor placeat corporis quisquam dolorum at nesciunt.</p>
 													</div>
 													<div class="col-md-6">
-														<img src="images/portfolio-1.jpg" alt="">
+														<img src="{% static "images/portfolio-1.jpg" %}" alt="">
 													</div>
 												</div>
 											</div>
@@ -407,7 +291,7 @@
 							<div class="col-sm-6 col-md-3 isotope-item app-development">
 								<div class="image-box">
 									<div class="overlay-container">
-										<img src="images/portfolio-2.jpg" alt="">
+										<img src="{% static "images/portfolio-2.jpg" %}" alt="">
 										<a class="overlay" data-toggle="modal" data-target="#project-2">
 											<i class="fa fa-search-plus"></i>
 											<span>App Development</span>
@@ -431,7 +315,7 @@
 														<p>Molestiae sed enim laboriosam atque delectus voluptates rerum nostrum sapiente obcaecati molestias quasi optio exercitationem, voluptate quis consequatur libero incidunt, in, quod. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos nobis officiis, autem earum tenetur quidem. Quae non dicta earum. Ipsum autem eaque cum dolor placeat corporis quisquam dolorum at nesciunt.</p>
 													</div>
 													<div class="col-md-6">
-														<img src="images/portfolio-2.jpg" alt="">
+														<img src="{% static "images/portfolio-2.jpg" %}" alt="">
 													</div>
 												</div>
 											</div>
@@ -447,7 +331,7 @@
 							<div class="col-sm-6 col-md-3 isotope-item web-design">
 								<div class="image-box">
 									<div class="overlay-container">
-										<img src="images/portfolio-3.jpg" alt="">
+										<img src="{% static "images/portfolio-3.jpg" %}" alt="">
 										<a class="overlay" data-toggle="modal" data-target="#project-3">
 											<i class="fa fa-search-plus"></i>
 											<span>Web Design</span>
@@ -471,7 +355,7 @@
 														<p>Molestiae sed enim laboriosam atque delectus voluptates rerum nostrum sapiente obcaecati molestias quasi optio exercitationem, voluptate quis consequatur libero incidunt, in, quod. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos nobis officiis, autem earum tenetur quidem. Quae non dicta earum. Ipsum autem eaque cum dolor placeat corporis quisquam dolorum at nesciunt.</p>
 													</div>
 													<div class="col-md-6">
-														<img src="images/portfolio-3.jpg" alt="">
+														<img src="{% static "images/portfolio-3.jpg" %}" alt="">
 													</div>
 												</div>
 											</div>
@@ -487,7 +371,7 @@
 							<div class="col-sm-6 col-md-3 isotope-item site-building">
 								<div class="image-box">
 									<div class="overlay-container">
-										<img src="images/portfolio-4.jpg" alt="">
+										<img src="{% static "images/portfolio-4.jpg" %}" alt="">
 										<a class="overlay" data-toggle="modal" data-target="#project-4">
 											<i class="fa fa-search-plus"></i>
 											<span>Site Building</span>
@@ -511,7 +395,7 @@
 														<p>Molestiae sed enim laboriosam atque delectus voluptates rerum nostrum sapiente obcaecati molestias quasi optio exercitationem, voluptate quis consequatur libero incidunt, in, quod. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos nobis officiis, autem earum tenetur quidem. Quae non dicta earum. Ipsum autem eaque cum dolor placeat corporis quisquam dolorum at nesciunt.</p>
 													</div>
 													<div class="col-md-6">
-														<img src="images/portfolio-4.jpg" alt="">
+														<img src="{% static "images/portfolio-4.jpg" %}" alt="">
 													</div>
 												</div>
 											</div>
@@ -527,7 +411,7 @@
 							<div class="col-sm-6 col-md-3 isotope-item app-development">
 								<div class="image-box">
 									<div class="overlay-container">
-										<img src="images/portfolio-5.jpg" alt="">
+										<img src="{% static "images/portfolio-5.jpg" %}" alt="">
 										<a class="overlay" data-toggle="modal" data-target="#project-5">
 											<i class="fa fa-search-plus"></i>
 											<span>App Development</span>
@@ -551,7 +435,7 @@
 														<p>Molestiae sed enim laboriosam atque delectus voluptates rerum nostrum sapiente obcaecati molestias quasi optio exercitationem, voluptate quis consequatur libero incidunt, in, quod. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos nobis officiis, autem earum tenetur quidem. Quae non dicta earum. Ipsum autem eaque cum dolor placeat corporis quisquam dolorum at nesciunt.</p>
 													</div>
 													<div class="col-md-6">
-														<img src="images/portfolio-5.jpg" alt="">
+														<img src="{% static "images/portfolio-5.jpg" %}" alt="">
 													</div>
 												</div>
 											</div>
@@ -567,7 +451,7 @@
 							<div class="col-sm-6 col-md-3 isotope-item web-design">
 								<div class="image-box">
 									<div class="overlay-container">
-										<img src="images/portfolio-6.jpg" alt="">
+										<img src="{% static "images/portfolio-6.jpg" %}" alt="">
 										<a class="overlay" data-toggle="modal" data-target="#project-6">
 											<i class="fa fa-search-plus"></i>
 											<span>Web Design</span>
@@ -591,7 +475,7 @@
 														<p>Molestiae sed enim laboriosam atque delectus voluptates rerum nostrum sapiente obcaecati molestias quasi optio exercitationem, voluptate quis consequatur libero incidunt, in, quod. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos nobis officiis, autem earum tenetur quidem. Quae non dicta earum. Ipsum autem eaque cum dolor placeat corporis quisquam dolorum at nesciunt.</p>
 													</div>
 													<div class="col-md-6">
-														<img src="images/portfolio-6.jpg" alt="">
+														<img src="{% static "images/portfolio-6.jpg" %}" alt="">
 													</div>
 												</div>
 											</div>
@@ -607,7 +491,7 @@
 							<div class="col-sm-6 col-md-3 isotope-item site-building">
 								<div class="image-box">
 									<div class="overlay-container">
-										<img src="images/portfolio-7.jpg" alt="">
+										<img src="{% static "images/portfolio-7.jpg" %}" alt="">
 										<a class="overlay" data-toggle="modal" data-target="#project-7">
 											<i class="fa fa-search-plus"></i>
 											<span>Site Building</span>
@@ -631,7 +515,7 @@
 														<p>Molestiae sed enim laboriosam atque delectus voluptates rerum nostrum sapiente obcaecati molestias quasi optio exercitationem, voluptate quis consequatur libero incidunt, in, quod. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos nobis officiis, autem earum tenetur quidem. Quae non dicta earum. Ipsum autem eaque cum dolor placeat corporis quisquam dolorum at nesciunt.</p>
 													</div>
 													<div class="col-md-6">
-														<img src="images/portfolio-7.jpg" alt="">
+														<img src="{% static "images/portfolio-7.jpg" %}" alt="">
 													</div>
 												</div>
 											</div>
@@ -647,7 +531,7 @@
 							<div class="col-sm-6 col-md-3 isotope-item web-design">
 								<div class="image-box">
 									<div class="overlay-container">
-										<img src="images/portfolio-8.jpg" alt="">
+										<img src="{% static "images/portfolio-8.jpg" %}" alt="">
 										<a class="overlay" data-toggle="modal" data-target="#project-8">
 											<i class="fa fa-search-plus"></i>
 											<span>Web Design</span>
@@ -671,7 +555,7 @@
 														<p>Molestiae sed enim laboriosam atque delectus voluptates rerum nostrum sapiente obcaecati molestias quasi optio exercitationem, voluptate quis consequatur libero incidunt, in, quod. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos nobis officiis, autem earum tenetur quidem. Quae non dicta earum. Ipsum autem eaque cum dolor placeat corporis quisquam dolorum at nesciunt.</p>
 													</div>
 													<div class="col-md-6">
-														<img src="images/portfolio-8.jpg" alt="">
+														<img src="{% static "images/portfolio-8.jpg" %}" alt="">
 													</div>
 												</div>
 											</div>
@@ -687,7 +571,7 @@
 							<div class="col-sm-6 col-md-3 isotope-item web-design">
 								<div class="image-box">
 									<div class="overlay-container">
-										<img src="images/portfolio-9.jpg" alt="">
+										<img src="{% static "images/portfolio-9.jpg" %}" alt="">
 										<a class="overlay" data-toggle="modal" data-target="#project-9">
 											<i class="fa fa-search-plus"></i>
 											<span>Web Design</span>
@@ -711,7 +595,7 @@
 														<p>Molestiae sed enim laboriosam atque delectus voluptates rerum nostrum sapiente obcaecati molestias quasi optio exercitationem, voluptate quis consequatur libero incidunt, in, quod. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos nobis officiis, autem earum tenetur quidem. Quae non dicta earum. Ipsum autem eaque cum dolor placeat corporis quisquam dolorum at nesciunt.</p>
 													</div>
 													<div class="col-md-6">
-														<img src="images/portfolio-9.jpg" alt="">
+														<img src="{% static "images/portfolio-9.jpg" %}" alt="">
 													</div>
 												</div>
 											</div>
@@ -727,7 +611,7 @@
 							<div class="col-sm-6 col-md-3 isotope-item site-building">
 								<div class="image-box">
 									<div class="overlay-container">
-										<img src="images/portfolio-10.jpg" alt="">
+										<img src="{% static "images/portfolio-10.jpg" %}" alt="">
 										<a class="overlay" data-toggle="modal" data-target="#project-10">
 											<i class="fa fa-search-plus"></i>
 											<span>Site Building</span>
@@ -751,7 +635,7 @@
 														<p>Molestiae sed enim laboriosam atque delectus voluptates rerum nostrum sapiente obcaecati molestias quasi optio exercitationem, voluptate quis consequatur libero incidunt, in, quod. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos nobis officiis, autem earum tenetur quidem. Quae non dicta earum. Ipsum autem eaque cum dolor placeat corporis quisquam dolorum at nesciunt.</p>
 													</div>
 													<div class="col-md-6">
-														<img src="images/portfolio-10.jpg" alt="">
+														<img src="{% static "images/portfolio-10.jpg" %}" alt="">
 													</div>
 												</div>
 											</div>
@@ -767,7 +651,7 @@
 							<div class="col-sm-6 col-md-3 isotope-item web-design">
 								<div class="image-box">
 									<div class="overlay-container">
-										<img src="images/portfolio-11.jpg" alt="">
+										<img src="{% static "images/portfolio-11.jpg" %}" alt="">
 										<a class="overlay" data-toggle="modal" data-target="#project-11">
 											<i class="fa fa-search-plus"></i>
 											<span>Web Design</span>
@@ -791,7 +675,7 @@
 														<p>Molestiae sed enim laboriosam atque delectus voluptates rerum nostrum sapiente obcaecati molestias quasi optio exercitationem, voluptate quis consequatur libero incidunt, in, quod. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos nobis officiis, autem earum tenetur quidem. Quae non dicta earum. Ipsum autem eaque cum dolor placeat corporis quisquam dolorum at nesciunt.</p>
 													</div>
 													<div class="col-md-6">
-														<img src="images/portfolio-11.jpg" alt="">
+														<img src="{% static "images/portfolio-11.jpg" %}" alt="">
 													</div>
 												</div>
 											</div>
@@ -807,7 +691,7 @@
 							<div class="col-sm-6 col-md-3 isotope-item app-development">
 								<div class="image-box">
 									<div class="overlay-container">
-										<img src="images/portfolio-12.jpg" alt="">
+										<img src="{% static "images/portfolio-12.jpg" %}" alt="">
 										<a class="overlay" data-toggle="modal" data-target="#project-12">
 											<i class="fa fa-search-plus"></i>
 											<span>App Development</span>
@@ -831,7 +715,7 @@
 														<p>Molestiae sed enim laboriosam atque delectus voluptates rerum nostrum sapiente obcaecati molestias quasi optio exercitationem, voluptate quis consequatur libero incidunt, in, quod. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos nobis officiis, autem earum tenetur quidem. Quae non dicta earum. Ipsum autem eaque cum dolor placeat corporis quisquam dolorum at nesciunt.</p>
 													</div>
 													<div class="col-md-6">
-														<img src="images/portfolio-12.jpg" alt="">
+														<img src="{% static "images/portfolio-12.jpg" %}" alt="">
 													</div>
 												</div>
 											</div>
@@ -863,7 +747,7 @@
 					<div class="col-md-4">
 						<div class="media testimonial">
 							<div class="media-left">
-								<img src="images/testimonial-1.png" alt="">
+								<img src="{% static "images/testimonial-1.png" %}" alt="">
 							</div>
 							<div class="media-body">
 								<h3 class="media-heading">You are Amazing!</h3>
@@ -877,7 +761,7 @@
 					<div class="col-md-4">
 						<div class="media testimonial">
 							<div class="media-left">
-								<img src="images/testimonial-2.png" alt="">
+								<img src="{% static "images/testimonial-2.png" %}" alt="">
 							</div>
 							<div class="media-body">
 								<h3 class="media-heading">Yeah!</h3>
@@ -891,7 +775,7 @@
 					<div class="col-md-4">
 						<div class="media testimonial">
 							<div class="media-left">
-								<img src="images/testimonial-3.png" alt="">
+								<img src="{% static "images/testimonial-3.png" %}" alt="">
 							</div>
 							<div class="media-body">
 								<h3 class="media-heading">Thank You!</h3>
@@ -907,7 +791,7 @@
 					<div class="col-md-4">
 						<div class="media testimonial">
 							<div class="media-left">
-								<img src="images/testimonial-2.png" alt="">
+								<img src="{% static "images/testimonial-2.png" %}" alt="">
 							</div>
 							<div class="media-body">
 								<h3 class="media-heading">Thank You!</h3>
@@ -921,7 +805,7 @@
 					<div class="col-md-4">
 						<div class="media testimonial">
 							<div class="media-left">
-								<img src="images/testimonial-3.png" alt="">
+								<img src="{% static "images/testimonial-3.png" %}" alt="">
 							</div>
 							<div class="media-body">
 								<h3 class="media-heading">Amazing!</h3>
@@ -935,7 +819,7 @@
 					<div class="col-md-4">
 						<div class="media testimonial">
 							<div class="media-left">
-								<img src="images/testimonial-1.png" alt="">
+								<img src="{% static "images/testimonial-1.png" %}" alt="">
 							</div>
 							<div class="media-body">
 								<h3 class="media-heading">Best!</h3>
@@ -957,12 +841,12 @@
 
 							<div class="col-xs-6">
 								<div class="list-horizontal-item">
-									<img src="images/client-5.png" alt="client">
+									<img src="{% static "images/client-5.png" %}" alt="client">
 								</div>
 							</div>
 							<div class="col-xs-6">
 								<div class="list-horizontal-item">
-									<img src="images/client-6.png" alt="client">
+									<img src="{% static "images/client-6.png" %}" alt="client">
 								</div>
 							</div>
 						</div>
@@ -1078,6 +962,7 @@
 			</div>
 			<!-- .footer end -->
 
+
 			<!-- .subfooter start -->
 			<!-- ================ -->
 			<div class="subfooter">
@@ -1094,29 +979,4 @@
 		</footer>
 		<!-- footer end -->
 
-		<!-- JavaScript files placed at the end of the document so the pages load faster
-		================================================== -->
-		<!-- Jquery and Bootstap core js files -->
-		<script type="text/javascript" src="plugins/jquery.min.js"></script>
-		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
-
-		<!-- Modernizr javascript -->
-		<script type="text/javascript" src="plugins/modernizr.js"></script>
-
-		<!-- Isotope javascript -->
-		<script type="text/javascript" src="plugins/isotope/isotope.pkgd.min.js"></script>
-
-		<!-- Backstretch javascript -->
-		<script type="text/javascript" src="plugins/jquery.backstretch.min.js"></script>
-
-		<!-- Appear javascript -->
-		<script type="text/javascript" src="plugins/jquery.appear.js"></script>
-
-		<!-- Initialization of Plugins -->
-		<script type="text/javascript" src="js/template.js"></script>
-
-		<!-- Custom Scripts -->
-		<script type="text/javascript" src="js/custom.js"></script>
-
-	</body>
-</html>
+{% endblock content %}

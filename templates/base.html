@@ -1,0 +1,80 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+<!--<![endif]-->
+	<head>
+		<meta charset="utf-8">
+		<title>{% block title %}Haedrian | Empower the next 3 billion{% endblock %}</title>
+		<meta name="description" content="Haedrian is an upcoming startup focused on bringing finance to developing countries">
+		<meta name="author" content="Austin Harrison">
+
+		<!-- Mobile Meta -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<!-- Favicon -->
+		<link rel="shortcut icon" href="{% static "images/favicon.ico" %}">
+
+		<!-- Web Fonts -->
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700,300&amp;subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Raleway:700,400,300' rel='stylesheet' type='text/css'>
+
+		<!-- Bootstrap core CSS -->
+		<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+
+		<!-- Font Awesome CSS -->
+		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+		<!-- Plugins -->
+		<link href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.2.3/animate.min.css" rel="stylesheet">
+
+		<!-- Worthy core CSS file -->
+		<link href="{% static "css/style.css" %}" rel="stylesheet">
+
+		<!-- Custom css -->
+		<link href="{% static "css/custom.css" %}" rel="stylesheet">
+	</head>
+
+	<body class="no-trans">
+		<!-- scrollToTop -->
+		<!-- ================ -->
+		<div class="scrollToTop"><i class="icon-up-open-big"></i></div>
+
+		<!-- header start -->
+		<!-- ================ -->
+		{% include "header.html" %}
+		<!-- header end -->
+
+		{% block content %}
+		{% endblock %}
+
+		<!-- JavaScript files placed at the end of the document so the pages load faster
+		================================================== -->
+		<!-- Jquery and Bootstap core js files -->
+		<script type="text/javascript" src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+		<!-- Modernizr javascript -->
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+
+		<!-- Isotope javascript -->
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.1.1/isotope.pkgd.min.js"></script>
+
+		<!-- Backstretch javascript -->
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-backstretch/2.0.4/jquery.backstretch.min.js"></script>
+
+		<!-- Appear javascript -->
+		<!--<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.appear/0.3.3/jquery.appear.min.js"></script> -->
+		<script type="text/javascript" src="{% static "plugins/jquery.appear.js" %}"></script>
+
+		<!-- Initialization of Plugins -->
+		<script type="text/javascript" src="{% static "js/template.js" %}"></script>
+
+		<!-- Custom Scripts -->
+		<script type="text/javascript" src="{% static "js/custom.js" %}"></script>
+
+{% block footer_scripts %}{% endblock %}
+	</body>
+</html>

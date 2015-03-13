@@ -1,4 +1,8 @@
 from django.contrib import admin
 from haedrian.models import BetaApplicant
 
-admin.site.register(BetaApplicant)
+class PersonAdmin(admin.ModelAdmin):
+    list_display = ('name','country','reason')
+
+admin.site.register(BetaApplicant, PersonAdmin)
+

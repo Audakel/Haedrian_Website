@@ -21,6 +21,7 @@ SITE_ID = 1
 ALLOWED_HOSTS = (
     '104.236.160.220',
     'localhost',
+    'haedrian.io'
 )
 
 ADMINS = (

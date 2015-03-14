@@ -2,7 +2,7 @@ Haedrian Website
 =======================================================================
 Empower the next 3 billion
 
-Please help spread the word!
+Please help spread the word!!
 
 License
 =======================================================================

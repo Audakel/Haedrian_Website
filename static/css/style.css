@@ -506,6 +506,9 @@ textarea {
 	.header.navbar-fixed-top {
 		position: absolute;
 	}
+    .logo {
+        margin-left: 0px !important;
+    }
 }
 
 /* Fixed Header
@@ -542,7 +545,7 @@ textarea {
 /* Logo, Site Name, Site Slogan
 ---------------------------------- */
 .logo {
-	margin: 10px 10px 10px 0;
+	margin: 10px 10px 10px -40px;
 	-webkit-transition: all 0.3s ease-in-out;
 	-moz-transition: all 0.3s ease-in-out;
 	-o-transition: all 0.3s ease-in-out;

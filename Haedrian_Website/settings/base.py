@@ -10,7 +10,7 @@ PUBLIC_ROOT = os.path.abspath(os.path.join(PROJECT_ROOT, 'public'))
 try:
     SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 except KeyError:
-    print "Error! You need to set the DJANGO_SECRET_KEY environment variable"
+    print("Error! You need to set the DJANGO_SECRET_KEY environment variable")
     sys.exit(1)
 
 DEBUG = False

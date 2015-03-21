@@ -3,7 +3,7 @@ from base import *
 try:
     POSTGRES_PWD = os.environ["DJANGO_POSTGRES_PASSWORD"]
 except KeyError:
-    print "Error! You need to set the DJANGO_SECRET_KEY environment variable"
+    print("Error! You need to set the DJANGO_SECRET_KEY environment variable")
     sys.exit(1)
 
 # Database

@@ -37,14 +37,19 @@ ROOT_URLCONF = 'Haedrian_Website.urls'
 WSGI_APPLICATION = 'Haedrian_Website.wsgi.application'
 
 INSTALLED_APPS = (
+    # django builtin
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # external applications 
+    'django_countries',
+    'rest_framework',
+    # our apps
+    'apiv1',
     'haedrian',
-    'django_countries'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -109,6 +114,16 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
+
+# rest conf
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 
 # Logging
 

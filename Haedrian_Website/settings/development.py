@@ -12,3 +12,5 @@ DATABASES = {
         'NAME': os.path.join(PROJECT_ROOT, 'db.sqlite3'),
     }
 }
+
+INSTALLED_APPS = INSTALLED_APPS + ('debug_toolbar',)

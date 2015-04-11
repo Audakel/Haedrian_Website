@@ -1,0 +1,9 @@
+pillow
+py-moneyed
+django==1.7.3
+django-money
+django-countries
+djangorestframework
+django-phonenumber-field
+django-axes
+django-debug-toolbar

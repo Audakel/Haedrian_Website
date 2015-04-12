@@ -5,7 +5,8 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', include('haedrian.urls')),
-
     url(r'^admin/', include(admin.site.urls)),
+    
+    url(r'', include('haedrian.urls')),
+
 )

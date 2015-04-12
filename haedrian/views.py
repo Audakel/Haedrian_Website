@@ -16,3 +16,12 @@ def index(request):
     context["form"] = form
     context["count"] = BetaApplicant.objects.count()
     return render(request, 'index.html', context)
+
+def graph(request):
+    return render(request, 'graphs/stockGraph.html')
+
+def graph1(request):
+    return render(request, 'graphs/bundleGraph.html')
+
+def graph2(request):    
+    return render(request, 'graphs/pieGraph.html')

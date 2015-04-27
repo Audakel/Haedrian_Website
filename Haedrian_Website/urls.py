@@ -6,7 +6,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^admin/', include(admin.site.urls)),
-    
-    url(r'', include('haedrian.urls')),
-
+    url(r'^accounts/', include('django.contrib.auth.urls')),
+    url(r'^dashboard/', include('dashboard.urls', namespace='dashboard')),
+    url(r'', include('haedrian.urls', namespace='haedrian')),
 )

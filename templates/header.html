@@ -1,6 +1,9 @@
 {% load staticfiles %}
+{# WARNING #}
+{# THIS FILE ISN'T USED ANYMORE #}
+{# but I want to get it in use again someday :( #}
 
-		<header class="header fixed clearfix navbar navbar-fixed-top">
+		<header class="nav-header fixed clearfix navbar navbar-fixed-top">
 			<div class="container">
 				<div class="row">
 					<div class="col-md-4">
@@ -10,16 +13,13 @@
 						<!-- ================ -->
 						<div class="header-left clearfix">
 
-							<!-- logo -->
-							<div class="logo smooth-scroll">
-
-								<!-- <a href="#footer"><img id="logoApple" src="{% static "images/appleDroid4.png" %}" alt="Apple"></a> -->
-
-
-
-							<!--	<a href="#banner"><img id="logo" src="{% static "images/client-6.png" %}" alt="Haedrian"></a> -->
-
-							</div>
+{#							<!-- logo -->#}
+{#							<div class="logo smooth-scroll">#}
+{##}
+{#								<!-- <a href="#footer"><img id="logoApple" src="{% static "images/appleDroid4.png" %}" alt="Apple"></a> -->#}
+{#							<!--	<a href="#banner"><img id="logo" src="{% static "images/client-6.png" %}" alt="Haedrian"></a> -->#}
+{##}
+{#							</div>#}
 
 							<!-- name-and-slogan -->
 							<div class="site-name-and-slogan smooth-scroll">
@@ -59,12 +59,21 @@
 										<!-- Collect the nav links, forms, and other content for toggling -->
 										<div class="collapse navbar-collapse scrollspy smooth-scroll" id="navbar-collapse-1">
 											<ul class="nav navbar-nav navbar-right">
-												<li class="active"><a href="#banner">Home</a></li>
-												<li><a href="#about">About</a></li>
-												<li><a href="#services">Services</a></li>
-												<li><a href="#portfolio">Exchanges</a></li>
-												<li><a href="#beta">Reviews</a></li>
-												<li><a href="#footer">Sign Up</a></li>
+
+                                                {% block menu_item %}
+												<li class="active"><a href="{% url "haedrian:index" %}#banner">Home</a></li>
+												<li><a href="{% url "haedrian:index" %}#about">About</a></li>
+												<li><a href="{% url "haedrian:index" %}#services">Services</a></li>
+												<li><a href="{% url "haedrian:index" %}#portfolio">Exchanges</a></li>
+												<li><a href="{% url "haedrian:index" %}#beta">Reviews</a></li>
+												<li><a href="{% url "haedrian:index" %}#footer">Sign Up</a></li>
+                                                {% if user.is_authenticated %}
+												<li><a href="{% url "logout" %}#">Log Out</a></li>
+												<li><a href="{% url "dashboard:index" %}">Dashboard</a></li>
+                                                {% else %}
+												<li><a href="{% url "login" %}">Log In</a></li>
+                                                {% endif %}
+                                                {% endblock %}
 											</ul>
 										</div>
 

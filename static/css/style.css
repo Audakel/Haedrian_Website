@@ -17,6 +17,7 @@ body {
 html,
 body {
 	height: 100%;
+    margin: 71px 0 0 0;
 }
 body {
 	font-size: 15px;
@@ -114,7 +115,7 @@ blockquote {
 
 /* Layout
 ----------------------------------------------------------------------------- */
-.header {
+.nav-header {
 	color: #ffffff;
 	background-color: rgba(0, 0, 0, 0.10);
 	padding: 10px 0;
@@ -147,7 +148,7 @@ blockquote {
 }
 .banner-caption {
 	position: absolute;
-	top: 40%;
+	top: 30%;
 	width: 100%;
 	z-index: 2;
 }
@@ -254,13 +255,13 @@ blockquote {
 /* Targeting only Firefox for smoothest animations */
 @-moz-document url-prefix() {
 	.object-visible,
-	.touch .object-non-visible {
-		-webkit-transition: opacity 0.6s ease-in-out;
-		-moz-transition: opacity 0.6s ease-in-out;
-		-o-transition: opacity 0.6s ease-in-out;
-		-ms-transition: opacity 0.6s ease-in-out;
-		transition: opacity 0.6s ease-in-out;
-	}
+	/*.touch .object-non-visible {*/
+		/*-webkit-transition: opacity 0.6s ease-in-out;*/
+		/*-moz-transition: opacity 0.6s ease-in-out;*/
+		/*-o-transition: opacity 0.6s ease-in-out;*/
+		/*-ms-transition: opacity 0.6s ease-in-out;*/
+		/*transition: opacity 0.6s ease-in-out;*/
+	/*}*/
 }
 .space {
 	padding: 20px 0;
@@ -296,7 +297,7 @@ blockquote {
 ----------------------------------------------------------------------------- */
 /* Buttons
 ---------------------------------- */
-.btn {
+.btn-index {
 	padding: 8px 15px;
 	font-size: 14px;
 	line-height: 1.42857143;
@@ -461,7 +462,7 @@ textarea {
 
 /* Navigations
 ----------------------------------------------------------------------------- */
-.header .navbar {
+.nav-header .navbar {
 	margin-bottom: 0;
 }
 .main-navigation .navbar-default {
@@ -503,7 +504,7 @@ textarea {
 	}
 }
 @media (max-width:767px) {
-	.header.navbar-fixed-top {
+	.nav-header.navbar-fixed-top {
 		position: absolute;
 	}
     .logo {
@@ -513,7 +514,7 @@ textarea {
 
 /* Fixed Header
 ----------------------------------------------------------------------------- */
-.fixed-header-on .header {
+.fixed-header-on .nav-header {
 	background-color: rgba(0, 0, 0, 0.95);
 	padding: 5px 0;
 }
@@ -710,7 +711,7 @@ textarea {
 	left: 50%;
 	top: 50%;
 	font-size: 18px;
-	line-height: 1x;
+	line-height: 1px;
 	color: #ffffff;
 	margin-top: -8px;
 	margin-left: -8px;

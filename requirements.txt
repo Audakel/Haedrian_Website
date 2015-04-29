@@ -1,0 +1,10 @@
+pillow
+py-moneyed
+django==1.7.3
+# we need to check every now and then to see when django-money supports django 1.8 and stick to that version
+django-money
+django-countries
+djangorestframework
+django-phonenumber-field
+django-axes
+django-debug-toolbar

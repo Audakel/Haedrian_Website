@@ -37,14 +37,25 @@ ROOT_URLCONF = 'Haedrian_Website.urls'
 WSGI_APPLICATION = 'Haedrian_Website.wsgi.application'
 
 INSTALLED_APPS = (
+    # django builtin
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # external applications 
+    'django_countries',
+    'rest_framework',
+    'phonenumber_field',
+    # money handling is hard :p still need to mke the currency conversion
+    'djmoney',
+    # failed login request handling
+    # TODO maybe production only?
+    'axes',
+    # our apps
+    'apiv1',
     'haedrian',
-    'django_countries'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -54,10 +65,10 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'axes.middleware.FailedLoginMiddleware',
 )
 
 # Templates
-
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
@@ -76,6 +87,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_ROOT, 'templates'),
+    os.path.join(PROJECT_ROOT, 'haedrian', 'templates'),
+    os.path.join(PROJECT_ROOT, 'dashboard', 'templates'),
 )
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
@@ -109,6 +122,51 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
+
+# countries conf
+
+COUNTRIES_FIRST = (
+    'US',
+)
+COUNTRIES_FIRST_REPEAT = True
+
+# rest conf
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
+
+# define the bitcoin currency for python money
+
+import moneyed
+from moneyed.localization import _FORMATTER
+from decimal import ROUND_HALF_EVEN
+
+# see http://en.wikipedia.org/wiki/ISO_4217#Unofficial_currency_codes
+
+BITCOIN = moneyed.add_currency(
+    code='XBT',
+    numeric='',
+    name='Bitcoin',
+    countries=('', )
+)
+
+_FORMATTER.add_sign_definition(
+    'default',
+    BITCOIN,
+    prefix=u'Ƀ '
+)
+
+_FORMATTER.add_formatting_definition(
+    'en_us',
+    group_size=0, group_separator="", decimal_point=".",
+    positive_sign="",  trailing_positive_sign="",
+    negative_sign="-", trailing_negative_sign="",
+    rounding_method=ROUND_HALF_EVEN)
 
 # Logging
 

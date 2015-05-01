@@ -17,6 +17,8 @@ def index(request):
     context["count"] = BetaApplicant.objects.count()
     return render(request, 'index.html', context)
 
+# def
+
 def graph(request):
     return render(request, 'graphs/stockGraph.html')
 

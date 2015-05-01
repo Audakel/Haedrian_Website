@@ -11,13 +11,14 @@ File Description:Main CSS file of the template */
 body {
 	font-family: 'Open Sans', sans-serif;
 }
+
 .site-name {
 	font-family: 'Raleway', sans-serif;
 }
 html,
 body {
 	height: 100%;
-    margin: 0 0 0 0;
+    margin: 40px 0 0 0;
 }
 body {
 	font-size: 15px;

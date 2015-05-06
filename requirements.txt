@@ -1,6 +1,8 @@
 pillow
 py-moneyed
-django==1.7.3
+django==1.7.8
+requests
+Celery
 # we need to check every now and then to see when django-money supports django 1.8 and stick to that version
 django-money
 django-countries
@@ -8,3 +10,5 @@ djangorestframework
 django-phonenumber-field
 django-axes
 django-debug-toolbar
+# hopefully gem will add python 3 support soon
+round

@@ -6,6 +6,8 @@ TEMPLATE_DEBUG = True
 ADMINS = ()
 MANAGERS = ADMINS
 
+SECRET_KEY = 'TEST'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

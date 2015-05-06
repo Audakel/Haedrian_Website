@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import sys
 
@@ -11,7 +12,7 @@ try:
     SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 except KeyError:
     print("Error! You need to set the DJANGO_SECRET_KEY environment variable")
-    sys.exit(1)
+    # sys.exit(1)
 
 DEBUG = False
 TEMPLATE_DEBUG = False
@@ -149,7 +150,7 @@ from decimal import ROUND_HALF_EVEN
 # see http://en.wikipedia.org/wiki/ISO_4217#Unofficial_currency_codes
 
 BITCOIN = moneyed.add_currency(
-    code='XBT',
+    code='BTC',
     numeric='',
     name='Bitcoin',
     countries=('', )

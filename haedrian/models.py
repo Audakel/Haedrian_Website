@@ -52,15 +52,15 @@ class Transaction(models.Model):
     sender = models.ForeignKey(User, related_name="sent")
     receiver = models.ForeignKey(User, related_name="received")
     # TODO verify the currency fields when its not 4AM
-    amount_btc = MoneyField(max_digits=16, decimal_places=16, default_currency='BTC')
-    amount_local = MoneyField(max_digits=16, decimal_places=16)
+    amount_btc = MoneyField(max_digits=32, decimal_places=16, default_currency='BTC')
+    amount_local = MoneyField(max_digits=32, decimal_places=16)
     date_modified = models.DateTimeField(auto_now_add=True)
-    type = models.ForeignKey("TransactionType")
+    # type = models.ForeignKey("TransactionType")
 
-class TransactionType(models.Model):
-    type = models.CharField(max_length="20")
+# class TransactionType(models.Model):
+#     type = models.CharField(max_length="20")
 
 class BitcoinRates(models.Model):
     code = models.CharField(max_length=4)
     name = models.CharField(max_length=50)
-    rate = MoneyField(max_digits=20, decimal_places=10)
+    rate = models.DecimalField(max_digits=20, decimal_places=10)

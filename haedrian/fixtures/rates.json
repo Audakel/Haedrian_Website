@@ -1,0 +1,20 @@
+[
+    {
+        "model": "haedrian.bitcoinrates",
+        "pk": 1,
+        "fields": {
+            "code": "USD",
+            "name": "US Dollar",
+            "rate": "234.23"
+        }
+    },
+    {
+        "model": "haedrian.bitcoinrates",
+        "pk": 2,
+        "fields": {
+            "code": "PHP",
+            "name": "Phillipine Peso",
+            "rate": "10000.000"
+        }
+    }
+]

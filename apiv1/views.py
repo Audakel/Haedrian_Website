@@ -1,32 +1,49 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import authentication, permissions
+from rest_framework import authentication
 from rest_framework.decorators import api_view, authentication_classes
-from rest_framework import status
+from django.conf import settings
+from money import Money, xrates
 
-from haedrian.models import Project, UserData, BitcoinRates, Transaction
+from haedrian.models import Project, UserData, Transaction
 from apiv1.serializers import ProjectSerializer, SendSerializer
 
-@api_view(http_method_names=['POST'])
-@authentication_classes(authentication.TokenAuthentication)
-def send(request):
-    send_data = SendSerializer(request.data)
-    if send_data.is_valid():
-        # convert amount to bitcoin using best exchange rates?
-        sender = request.user
-        # TODO figure out whether this is a handle, phone number or email.
-        receiver = UserData.objects.get(handle=send_data.receiver).user
-        currency = UserData.objects.get(user=sender).default_currency
-        amount_btc = BitcoinRates.objects.get(code=currency).rate * send_data.amount_local
-        transaction = Transaction(sender=sender, receiver=receiver, amount_btc=amount_btc, amount_local=send_data.amount_local)
+# haedrian_account = UserData.objects.get(handle='@haedrian').user
+xrates.install('apiv1.btc_exchange_rate.BTCExchangeBackend')
 
+@api_view(http_method_names=['POST'])
+@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+def send(request):
+    return _send(request.user, request.data)
+
+def _send(user, data):
+    haedrian_account = UserData.objects.get(handle='@haedrian').user
+    """ Internal API for the SMS app to call as well """
+    send_data = SendSerializer(data=data)
+    if send_data.is_valid():
+        sender = user
+        # TODO figure out whether this is a handle, phone number or email.
+        receiver = UserData.objects.get(handle=send_data.data['receiver']).user
+        currency = UserData.objects.get(user=sender).default_currency
+        amount_btc = Money(amount=send_data.data['amount_local'], currency=currency).to('BTC')
+        amount_fee = amount_btc * settings.FEE_AMOUNT
+        total_sent = amount_btc - amount_fee
+        total_sent_local = Money(amount=total_sent.amount, currency='BTC').to(currency)
+        fee_local = Money(amount=amount_fee.amount, currency='BTC').to(currency)
+        transaction = Transaction(sender=sender, receiver=receiver,
+                                  amount_btc=total_sent.amount, amount_btc_currency='BTC',
+                                  amount_local=total_sent_local.amount, amount_local_currency=total_sent_local.currency)
+        fee = Transaction(sender=sender, receiver=haedrian_account,
+                          amount_btc=amount_fee.amount, amount_btc_currency='BTC',
+                          amount_local=fee_local.amount, amount_local_currency=fee_local.currency)
+        # TODO send with the wallet here
+        fee.save()
         transaction.save()
         return Response(status=201)
-    return Response(status=400)
+    return Response(send_data.errors, status=400)
 
 class Projects(APIView):
     """Create or list projects by a user
-
     * Requires token authentication.
     """
     authentication_classes = (authentication.TokenAuthentication,)

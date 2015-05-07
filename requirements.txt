@@ -12,3 +12,6 @@ django-axes
 django-debug-toolbar
 # hopefully gem will add python 3 support soon
 round
+django-twilio
+rapidsms
+git+https://github.com/caktus/rapidsms-twilio.git@develop

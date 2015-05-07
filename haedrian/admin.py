@@ -1,8 +1,11 @@
 from django.contrib import admin
-from haedrian.models import BetaApplicant
+from haedrian.models import BetaApplicant, UserData
 
 class PersonAdmin(admin.ModelAdmin):
     list_display = ('name','country','reason')
 
-admin.site.register(BetaApplicant, PersonAdmin)
+class UserDataAdmin(admin.ModelAdmin):
+    list_display = ('user', 'phone', 'handle', 'credit_score', 'default_currency')
 
+admin.site.register(BetaApplicant, PersonAdmin)
+admin.site.register(UserData, UserDataAdmin)

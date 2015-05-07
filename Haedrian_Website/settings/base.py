@@ -51,6 +51,7 @@ INSTALLED_APPS = (
     # external applications 
     'django_countries',
     'rest_framework',
+    'rest_framework.authtoken',
     'phonenumber_field',
     # money handling is hard :p still need to mke the currency conversion
     'djmoney',
@@ -168,15 +169,23 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ],
 }
 
 # define the bitcoin currency for python money
 
 import moneyed
 from moneyed.localization import _FORMATTER
-from decimal import ROUND_HALF_EVEN
+from decimal import Decimal, ROUND_HALF_EVEN
+
+FEE_AMOUNT = Decimal(".01") # as a decimal number 1 = 100% .01 = 1%
 
 # see http://en.wikipedia.org/wiki/ISO_4217#Unofficial_currency_codes
 

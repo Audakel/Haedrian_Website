@@ -39,7 +39,7 @@ def _send(user, data):
         # TODO send with the wallet here
         fee.save()
         transaction.save()
-        return Response(status=201)
+        return Response(status=200)
     return Response(send_data.errors, status=400)
 
 class Projects(APIView):

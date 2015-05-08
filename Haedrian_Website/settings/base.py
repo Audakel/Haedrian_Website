@@ -64,15 +64,13 @@ INSTALLED_APPS = (
     'haedrian',
     # SMS and RapidSMS
     'rapidsms',
-    'rapidsms.contrib.handlers',
     'sms',
+    # "rapidsms.contrib.handlers",
     # "rapidsms.contrib.default",
 
 )
 
 INSTALLED_BACKENDS = {
-    # ...
-    # other backends, if any
     "twilio-backend": {
         "ENGINE": "rtwilio.outgoing.TwilioBackend",
         'config': {
@@ -85,11 +83,11 @@ INSTALLED_BACKENDS = {
     },
 }
 
-RAPIDSMS_HANDLERS = [
-    'sms.myhandlers.HelpHandler',
-    'sms.myhandlers.SendHandler',
-    'sms.myhandlers.BalanceHandler',
- ]
+# RAPIDSMS_HANDLERS = [
+#     'sms.myhandlers.HelpHandler',
+#     'sms.myhandlers.SendHandler',
+#     'sms.myhandlers.BalanceHandler',
+#  ]
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',

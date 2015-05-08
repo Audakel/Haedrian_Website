@@ -3,50 +3,56 @@ from rapidsms.apps.base import AppBase
 from decimal import Decimal
 from apiv1.views import _send
 from haedrian.models import UserData
+from rest_framework import status
 
 class SMSApplication(AppBase):
     def handle(self, msg):
-        parts = msg.text.split(' ')
-        command = parts[0].trim().lower()
+        parts = msg.text.lower().split(' ')
+        command = parts[0]
         if command == 'ping':
             msg.respond('pong')
             return True
         elif command == 'send':
             try:
-                amount = Decimal(parts[1].trim().lower())
+                amount = Decimal(parts[1])
             except:
-                self.respond("Error: Enter a monetary amount to send.")
-                return False
+                msg.respond("Error: Enter a monetary amount to send.")
+                return True
 
             if amount < 0:
-                self.respond("Error: The amount to send must be positive")
-                return False
+                msg.respond("Error: The amount to send must be positive")
+                return True
 
             try:
-                user = UserData.objects.get(phone_number=msg.number).user
+                user = UserData.objects.get(phone=msg.connections[0].identity).user
             except: # User not found exception
-                self.respond("Error: You must register before sending money")
-                return False
+                msg.respond("Error: You must register before sending money %s" %msg.connections[0].identity)
+                return True
 
-            receiver_name = parts[2].trim().lower()
-            if receiver[0] != '@':
-                self.respond("Error: The receiver must be an @ handle.")
-                return False
+            receiver_name = parts[2]
+            if receiver_name[0] != '@':
+                msg.respond("Error: The receiver must be an @ handle.")
+                return True
             try:
-                receiver = UserData.objects.get(handle=receiver_name).user
+                UserData.objects.get(handle=receiver_name).user
             except:
-                self.respond("Error: Receiving party not found. Please check the @handle")
-                return False
+                msg.respond("Error: Receiving party not found. Please check the @handle")
+                return True
 
             data = {
-                "receiver": receiver,
+                "receiver": receiver_name,
                 "amount_local": amount,
             }
-            response = _send(user, data)
-            if response.status != status.OK:
-                self.respond("Error while sending money.")
-                return False
-            self.respond("Send completed successfully")
+            try:
+                response = _send(user, data)
+            except Exception as e:
+                msg.respond("Error something went wrong %s" %e)
+                return True
+            # print(dir(response))
+            if response.status_code != status.HTTP_200_OK:
+                msg.respond("Error while sending money.")
+                return True
+            msg.respond("Send completed successfully")
             return True
         return False
 

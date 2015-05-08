@@ -237,7 +237,12 @@ LOGGING = {
             'class': 'django.utils.log.AdminEmailHandler',
             'filters': ['require_debug_false'],
             'include_html': True,
-        }
+        },
+        'rapidsms_file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'rapidsms.log',
+        },
     },
     'loggers': {
         'django': {
@@ -253,6 +258,11 @@ LOGGING = {
             'handlers': ['null'],
             'level': 'WARNING',
             'propagate': False,
-        }
+        },
+        'rapidsms': {
+            'handlers': ['rapidsms_file'],
+            'propagate': True,
+            'level': 'DEBUG',
+        },
     }
 }

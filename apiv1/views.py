@@ -42,6 +42,18 @@ def _send(user, data):
         return Response(status=200)
     return Response(send_data.errors, status=400)
 
+
+def history(request):
+    return _history(request.user)
+
+def _history(user):
+    outgoing = Transaction.objects.filter(sender=user)
+    incoming = Transaction.objects.filter(receiver=user)
+    data = {'outgoing': 10, 'incoming': 36}
+
+    return Response(data, status=200)
+
+
 class Projects(APIView):
     """Create or list projects by a user
     * Requires token authentication.

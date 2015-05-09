@@ -67,6 +67,7 @@ INSTALLED_APPS = (
     'sms',
     # "rapidsms.contrib.handlers",
     # "rapidsms.contrib.default",
+    'rapidsms.contrib.messagelog',
 
 )
 

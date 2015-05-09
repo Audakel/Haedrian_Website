@@ -10,4 +10,5 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('django.contrib.auth.urls')),
     url(r'^dashboard/', include('dashboard.urls', namespace='dashboard')),
     url(r'', include('haedrian.urls', namespace='haedrian')),
+    url(r"^messagelog/", include("rapidsms.contrib.messagelog.urls")),
 )

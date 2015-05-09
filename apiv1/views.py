@@ -49,7 +49,7 @@ def history(request):
 def _history(user):
     outgoing = Transaction.objects.filter(sender=user)
     incoming = Transaction.objects.filter(receiver=user)
-    data = {'outgoing': 10, 'incoming': 36}
+    data = {'outgoing': 10, 'incoming': 36, 'loan': 528}
 
     return Response(data, status=200)
 

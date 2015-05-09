@@ -1,9 +1,9 @@
 from rapidsms.apps.base import AppBase
-
 from decimal import Decimal
 from apiv1.views import _send, _history
 from haedrian.models import UserData
 from rest_framework import status
+from models import SmsMessage
 #  BEST DEBUGGING HELP +++++++++ ========= import pdb; pdb.set_trace()
 
 class SMSApplication(AppBase):
@@ -11,21 +11,23 @@ class SMSApplication(AppBase):
         parts = msg.text.lower().split(' ')
         command = parts[0]
 
+        save_message(msg)
+
         if command == 'ping':
-            msg.respond('pong')
+            msg.respond('pong!')
             return True
 
         if command == 'balance':
             return sms_balance(msg)
         elif command == 'send':
             return sms_send(msg, parts)
-        elif command == 'help':
+        elif command == 'use':
             return sms_help(msg)
         #  ==================== Tagolog
         elif command == 'tulong':  # help
             return sms_tulong(msg)
         else:
-            msg.respond("There has been an error, we are sorry :(")
+            msg.respond("There has been an error, we are sorry\n:(")
             return True
 
         return False
@@ -60,7 +62,7 @@ def sms_send(msg, parts):
     try:
         UserData.objects.get(handle=receiver_name).user
     except:
-        msg.respond("Error: Receiving party not found. Please check the @handle")
+        msg.respond("Sorry, %s was not found.\nPlease check the @handle\n: (" % receiver_name)
         return True
 
     print "Place 2"
@@ -83,7 +85,7 @@ def sms_send(msg, parts):
 
 
 def sms_help(msg):
-    msg.respond("""Example send: 'Send 15 @mi'\nExample balance: 'Balance'""")
+    msg.respond("Usage Commands  : )\nExample send $15: 'Send 15 @mi'\nExample get balance: 'Balance'")
     return True
 
 def sms_tulong(msg):  # Help
@@ -94,8 +96,17 @@ def sms_balance(msg):
     # data = _get_balance(msg.connections[0].identity)
     # msg.respond("Incoming funds: %d | Outgoing funds: %d" % (1,2))#(data[0], data[1]))
     response = _history(msg.connections[0].identity)
-    msg.respond("Your balance is:\nOutgoing: %d\nIncoming: %d" % (response.data['outgoing'], response.data['incoming']))
+    msg.respond("Your balance is\n-Outgoing: $%d\n-Incoming: $%d\n-Loan Outstanding: $%d" %
+                (response.data['outgoing'], response.data['incoming'], response.data['loan']))
 
     return True
 
 
+def save_message(msg):
+    message=SmsMessage(from_number=msg.fields['From'],
+                       to_number=msg.fields['To'],
+                       message_body=msg.text,
+                       from_city="cantFindInCode",
+                       from_country="cantFindInCode")
+    message.save()
+    return

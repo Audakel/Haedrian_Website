@@ -34,9 +34,9 @@ class UserData(models.Model):
 # class FriendType(models.Model):
 #     title = models.CharField(max_length=50)
 
-class Wallet(models.Model):
-    user = models.OneToOneField(User, primary_key=True)
-    guid = models.CharField(max_length=50)
+# class Wallet(models.Model):
+#     user = models.OneToOneField(User, primary_key=True)
+#     guid = models.CharField(max_length=50)
 
 class Project(models.Model):
     user = models.ForeignKey(User)

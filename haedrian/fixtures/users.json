@@ -39,6 +39,24 @@
         }
     },
     {
+        "model": "auth.user",
+        "pk": 3,
+        "fields": {
+            "username": "audakel",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": true,
+            "is_staff": true,
+            "last_login": "2015-05-07T16:56:56.323Z",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$15000$dQpOpFCydC06$LKEh41V+lRf3sSUJcSq7jUNlWclBWcFtEh6ClMxSBNg=",
+            "email": "audakel@example.com",
+            "date_joined": "2015-05-07T16:56:46.588Z"
+        }
+    },
+    {
         "model": "haedrian.userdata",
         "pk": 1,
         "fields": {
@@ -55,6 +73,16 @@
             "credit_score": 800,
             "phone": "+12345559898",
             "handle": "@james",
+            "default_currency": "USD"
+        }
+    },
+    {
+        "model": "haedrian.userdata",
+        "pk": 3,
+        "fields": {
+            "credit_score": 800,
+            "phone": "+14803591947",
+            "handle": "@audakel",
             "default_currency": "USD"
         }
     }

@@ -8,6 +8,9 @@ PROJECT_APP_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 PROJECT_ROOT = os.path.abspath(os.path.dirname(PROJECT_APP_ROOT))
 PUBLIC_ROOT = os.path.abspath(os.path.join(PROJECT_ROOT, 'public'))
 
+TWILIO_ACCOUNT_SID = 'AC4f7dec744e3bcad378e19888b8213af3'
+TWILIO_AUTH_TOKEN = '0c7b01582cbe2ce27123e2dc7ac983d6'
+
 try:
     SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 except KeyError:
@@ -60,10 +63,37 @@ INSTALLED_APPS = (
     # failed login request handling
     # TODO maybe production only?
     'axes',
+    'rtwilio',
     # our apps
     'apiv1',
     'haedrian',
+    # SMS and RapidSMS
+    'rapidsms',
+    'sms',
+    # "rapidsms.contrib.handlers",
+    # "rapidsms.contrib.default",
+    'rapidsms.contrib.messagelog',
+
 )
+
+INSTALLED_BACKENDS = {
+    "twilio-backend": {
+        "ENGINE": "rtwilio.outgoing.TwilioBackend",
+        'config': {
+            'account_sid': 'AC4f7dec744e3bcad378e19888b8213af3',  # (required)
+            'auth_token': '0c7b01582cbe2ce27123e2dc7ac983d6',  # (required)
+            'number': '(920) 645-2134',  # your Twilio phone number (required)
+            # optional callback URL
+            # 'callback': 'http://<public-django-instance>/backend/twilio/status-callback/',
+        }
+    },
+}
+
+# RAPIDSMS_HANDLERS = [
+#     'sms.myhandlers.HelpHandler',
+#     'sms.myhandlers.SendHandler',
+#     'sms.myhandlers.BalanceHandler',
+#  ]
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -213,7 +243,12 @@ LOGGING = {
             'class': 'django.utils.log.AdminEmailHandler',
             'filters': ['require_debug_false'],
             'include_html': True,
-        }
+        },
+        'rapidsms_file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'rapidsms.log',
+        },
     },
     'loggers': {
         'django': {
@@ -229,6 +264,11 @@ LOGGING = {
             'handlers': ['null'],
             'level': 'WARNING',
             'propagate': False,
-        }
+        },
+        'rapidsms': {
+            'handlers': ['rapidsms_file'],
+            'propagate': True,
+            'level': 'DEBUG',
+        },
     }
 }

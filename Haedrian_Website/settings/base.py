@@ -32,6 +32,11 @@ ADMINS = (
 )
 MANAGERS = ADMINS
 
+AUTHENTICATION_BACKENDS = (
+    'haedrian.gem.GemBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 # Application definition
 
 ROOT_URLCONF = 'Haedrian_Website.urls'

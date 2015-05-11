@@ -17,7 +17,7 @@ class UserData(models.Model):
     user = models.OneToOneField(User, primary_key=True)
     phone = PhoneNumberField()
     handle = models.CharField(max_length=50)
-    credit_score = models.IntegerField(max_length=4)
+    credit_score = models.IntegerField(max_length=4, default=0)
     default_currency = models.CharField(max_length=4, default='USD')
     # symmetrical=False means that if i am your friend you are not forced to be my friend
     # friends = models.ManyToManyField("self", symmetrical=False, through="Friend", through_fields=('me', 'them'))

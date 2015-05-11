@@ -4,7 +4,8 @@ from rest_framework import authentication
 from rest_framework.decorators import api_view, authentication_classes
 from django.conf import settings
 from money import Money, xrates
-
+from haedrian.models import UserData
+from django.contrib.auth.models import User
 from haedrian.models import Project, UserData, Transaction
 from apiv1.serializers import ProjectSerializer, SendSerializer
 
@@ -41,6 +42,18 @@ def _send(user, data):
         transaction.save()
         return Response(status=200)
     return Response(send_data.errors, status=400)
+
+# TODO check with James - Userdata and authuser have same PK?
+def create_user(msg):
+    pass
+
+
+
+
+
+
+
+
 
 
 def history(request):

@@ -10,4 +10,9 @@ class SmsMessage(models.Model):
     from_country = models.CharField(max_length=10, blank=True)
 
     def __str__(self):
-        return self.from_number
+        return self.message_body
+
+
+class SmsSignup(models.Model):
+    phone_number = models.CharField(max_length=30)
+    user_handle = models.CharField(max_length=100, default="")

@@ -98,6 +98,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'axes.middleware.FailedLoginMiddleware',
+    # TODO Check with james on translations
+    #'django.middleware.locale.LocaleMiddleware',
 )
 
 # Templates

@@ -15,10 +15,19 @@ class BetaApplicant(models.Model):
 # stores app specific data about a user
 class UserData(models.Model):
     user = models.OneToOneField(User, primary_key=True)
+    # email = models.EmailField()
     phone = PhoneNumberField()
+<<<<<<< HEAD
     handle = models.CharField(max_length=50)
     credit_score = models.IntegerField(max_length=4, default=0)
+=======
+    # handle is the same thing as username
+    # handle = models.CharField(max_length=50)
+    credit_score = models.IntegerField(max_length=4)
+    country = CountryField(blank_label='(Country)')
+>>>>>>> 36e13c99bc8552b305665c3266cf83a9a584588b
     default_currency = models.CharField(max_length=4, default='USD')
+    device_token = models.CharField(max_length=50)
     # symmetrical=False means that if i am your friend you are not forced to be my friend
     # friends = models.ManyToManyField("self", symmetrical=False, through="Friend", through_fields=('me', 'them'))
 
@@ -30,9 +39,9 @@ class UserData(models.Model):
 # class FriendType(models.Model):
 #     title = models.CharField(max_length=50)
 
-class Wallet(models.Model):
-    user = models.OneToOneField(User, primary_key=True)
-    guid = models.CharField(max_length=50)
+# class Wallet(models.Model):
+#     user = models.OneToOneField(User, primary_key=True)
+#     guid = models.CharField(max_length=50)
 
 class Project(models.Model):
     user = models.ForeignKey(User)
@@ -51,7 +60,6 @@ class Category(models.Model):
 class Transaction(models.Model):
     sender = models.ForeignKey(User, related_name="sent")
     receiver = models.ForeignKey(User, related_name="received")
-    # TODO verify the currency fields when its not 4AM
     amount_btc = MoneyField(max_digits=32, decimal_places=16, default_currency='BTC')
     amount_local = MoneyField(max_digits=32, decimal_places=16)
     date_modified = models.DateTimeField(auto_now_add=True)

@@ -3,13 +3,14 @@ from rest_framework.response import Response
 from rest_framework import authentication
 from rest_framework.decorators import api_view, authentication_classes
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from money import Money, xrates
 from haedrian.models import UserData
 from django.contrib.auth.models import User
 from haedrian.models import Project, UserData, Transaction
 from apiv1.serializers import ProjectSerializer, SendSerializer
+import haedrian.gem
 
-# haedrian_account = UserData.objects.get(handle='@haedrian').user
 xrates.install('apiv1.btc_exchange_rate.BTCExchangeBackend')
 
 @api_view(http_method_names=['POST'])
@@ -18,14 +19,15 @@ def send(request):
     return _send(request.user, request.data)
 
 def _send(user, data):
-    haedrian_account = UserData.objects.get(handle='@haedrian').user
+    UserModel = get_user_model()
+    haedrian_account = UserModel.objects.get(handle='@haedrian')
     """ Internal API for the SMS app to call as well """
     send_data = SendSerializer(data=data)
     if send_data.is_valid():
         sender = user
         # TODO figure out whether this is a handle, phone number or email.
-        receiver = UserData.objects.get(handle=send_data.data['receiver']).user
-        currency = UserData.objects.get(user=sender).default_currency
+        receiver = UserModel.objects.get(handle=send_data.data['receiver'])
+        currency = sender.default_currency
         amount_btc = Money(amount=send_data.data['amount_local'], currency=currency).to('BTC')
         amount_fee = amount_btc * settings.FEE_AMOUNT
         total_sent = amount_btc - amount_fee

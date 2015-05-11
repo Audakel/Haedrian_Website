@@ -1,3 +1,6 @@
+// the password is dummydata for both users. Do NOT add these fixtures live, or Mr. Kovu will never love you again.
+
+//noinspection BadExpressionStatementJS
 [
     {
         "model": "auth.user",
@@ -83,4 +86,4 @@
             "default_currency": "USD"
         }
     }
-]
+];

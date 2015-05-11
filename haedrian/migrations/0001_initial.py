@@ -88,19 +88,10 @@ class Migration(migrations.Migration):
             fields=[
                 ('user', models.OneToOneField(primary_key=True, serialize=False, to=settings.AUTH_USER_MODEL)),
                 ('phone', phonenumber_field.modelfields.PhoneNumberField(max_length=128)),
-                ('handle', models.CharField(max_length=50)),
                 ('credit_score', models.IntegerField(max_length=4)),
+                ('country', django_countries.fields.CountryField(max_length=2)),
                 ('default_currency', models.CharField(default=b'USD', max_length=4)),
-            ],
-            options={
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='Wallet',
-            fields=[
-                ('user', models.OneToOneField(primary_key=True, serialize=False, to=settings.AUTH_USER_MODEL)),
-                ('guid', models.CharField(max_length=50)),
+                ('device_token', models.CharField(max_length=50)),
             ],
             options={
             },

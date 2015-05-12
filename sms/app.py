@@ -4,28 +4,34 @@ from apiv1.views import _send, _history
 from haedrian.models import UserData
 from rest_framework import status
 from models import SmsMessage, SmsSignup
+from sms_verify import verify_sender, str_usage_commands
 import random
 #  BEST DEBUGGING HELP +++++++++ ========= import pdb; pdb.set_trace()
 
+
 class SMSApplication(AppBase):
     def handle(self, msg):
-        verify_sender(msg)
-        parts = msg.text.lower().split(' ')
-        command = parts[0]
-        save_message(msg)
+        # sms sender is in our DB
+        if verify_sender(msg):
+            parts = msg.text.lower().strip().split(" ")
+            command = parts[0]
+            save_message(msg)
 
-        if command == 'balance':
-            sms_balance(msg)
-        elif command == 'send':
-            sms_send(msg, parts)
-        elif command == 'use':
-            sms_help(msg)
-        elif command == 'tulong':  # Tagolog help
-            sms_tulong(msg)
-        # else:
-        #     msg.respond("There has been an error, we are sorry\n:(")
-        #     return True
+            if command == 'balance':
+                sms_balance(msg)
+            elif command == 'send':
+                sms_send(msg, parts)
+            elif command == 'use':
+                sms_help(msg)
+            elif command == 'tulong':  # Tagolog help
+                sms_tulong(msg)
+            elif command == 'whoami':
+                sms_whoami(msg)
+            # else:
+            #     msg.respond("There has been an error, we are sorry\n:(")
+            #     return True
 
+            # we handled sms, no need to keep looking
         return True
 
 
@@ -49,6 +55,7 @@ def sms_send(msg, parts):
     except:  # User not found exception
         msg.respond("Error: You must register before sending money %s" % msg.connections[0].identity)
         return
+
 
     receiver_name = parts[2]
     if receiver_name[0] != '@':
@@ -104,52 +111,9 @@ def save_message(msg):
     return
 
 
-def verify_sender(msg):
-    if not check_number_exist(msg):
-        if msg.text[0] == '@':
-            create_handle(msg)
-        else:
-            msg.respond("Please create a username.\nType '@' followed by your desired username. Example: @monkey")
+def verify(msg):
+    verify_sender(msg)
 
 
-def check_signing_up(msg):
-    # Check for phone number in DB
-    return True if SmsSignup.objects.get(phone_number=msg.connections[0].identity).phone.exists() else False
-
-
-def check_number_exist(msg):
-    # Check for phone number in DB
-    if not UserData.objects.get(phone=msg.connections[0].identity).phone.exists():
-        if not check_signing_up(msg):
-            signup = SmsSignup(phone_number=msg.connections[0].identity)
-            signup.save()
-        return False
-    return True
-
-
-def check_handle_exist(msg):
-    # Check for user handle in DB
-    if SmsSignup.objects.get(phone_number=msg.connections[0].identity).handle == "":
-        return False
-        # Check for unique handle
-    return True
-
-
-def create_handle(msg):
-    msg_handle = msg.text.strip().lower()
-    if not UserData.objects.get(handle=msg_handle).handle.exists:
-        # Handle does not exist
-        new_user = UserData(phone=msg.connections[0].identity, handle=msg_handle)
-        new_user.save()
-        SmsSignup.objects.get(phone_number=msg.connections[0].identity).delete()
-        msg.respond("Welcome @%s!" % msg_handle)
-    else:
-        # Handle does exist
-        # TODO make beter check for existing handle / better collison avoidance
-        random_number = str(random.randint(0, 9999))
-        new_user = UserData(phone=msg.connections[0].identity, handle=msg_handle+random_number)
-        new_user.save()
-        SmsSignup.objects.get(phone_number=msg.connections[0].identity).delete()
-        msg.respond("Welcome!\nFrom henceforth you shall be known as %s\n(Sadly, %s was already taken)"
-                    % (msg_handle+random_number, msg_handle))
-    return
+def sms_whoami(msg):
+        msg.respond(UserData.objects.get(phone=msg.connections[0].identity).handle)

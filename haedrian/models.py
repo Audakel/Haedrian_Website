@@ -17,15 +17,11 @@ class UserData(models.Model):
     user = models.OneToOneField(User, primary_key=True)
     # email = models.EmailField()
     phone = PhoneNumberField()
-<<<<<<< HEAD
     handle = models.CharField(max_length=50)
     credit_score = models.IntegerField(max_length=4, default=0)
-=======
     # handle is the same thing as username
     # handle = models.CharField(max_length=50)
-    credit_score = models.IntegerField(max_length=4)
     country = CountryField(blank_label='(Country)')
->>>>>>> 36e13c99bc8552b305665c3266cf83a9a584588b
     default_currency = models.CharField(max_length=4, default='USD')
     device_token = models.CharField(max_length=50)
     # symmetrical=False means that if i am your friend you are not forced to be my friend

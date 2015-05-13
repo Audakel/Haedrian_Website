@@ -37,10 +37,14 @@ def coinsph_send(url):
 
 
 def coinsph_exchanges(url):
+    nonce = my_hmac.get_nonce()
+    signature = my_hmac.sign_request(url, nonce)
     headers = {
-    'Authorization': 'Bearer {}'.format(TOKEN),
-    'Content-Type': 'application/json;charset=UTF-8',
-    'Accept': 'application/json'
+        'ACCESS_SIGNATURE': signature,
+        'ACCESS_KEY': my_hmac.API_KEY,
+        'ACCESS_NONCE': nonce,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
     }
 
     return headers

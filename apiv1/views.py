@@ -52,35 +52,6 @@ def create_user(msg):
     pass
 
 
-@api_view(http_method_names=['GET'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
-def wallet_info(request):
-    return _wallet_info()
-
-
-def _wallet_info():
-    url = 'https://coins.ph/api/v3/crypto-accounts/'
-    headers = coinsph_wallet_info(url)
-    data = requests.get(url, headers=headers).text
-    return Response(data)
-
-
-@api_view(http_method_names=['GET'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
-# TODO: put in the amount and address, using dummy data now
-def coins_send(request):
-    return _coins_send()
-
-
-def _coins_send():
-    url = 'https://coins.ph/api/v3/transfers/'
-    headers = coinsph_send(url)
-    data = requests.get(url, headers=headers).text
-    return Response(data)
-
-
-
-
 def history(request):
     return _history(request.user)
 
@@ -112,3 +83,41 @@ class Projects(APIView):
             serializer.save()
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
+
+# Testing for coins.ph
+
+
+@api_view(http_method_names=['GET'])
+@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+def wallet_info(request):
+    return _wallet_info()
+
+
+def _wallet_info():
+    url = 'https://coins.ph/api/v3/crypto-accounts/'
+    headers = coinsph_wallet_info(url)
+    data = requests.get(url, headers=headers).text
+    return Response(data)
+
+
+@api_view(http_method_names=['GET'])
+@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+# TODO: put in the amount and address, using dummy data now
+def coins_send(request):
+    return _coins_send()
+
+
+def _coins_send():
+    url = 'https://coins.ph/api/v3/transfers/'
+    headers = coinsph_send(url)
+    data = requests.get(url, headers=headers).text
+    return Response(data)
+
+
+@api_view(http_method_names=['GET'])
+@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+def exchange(request):
+    url = 'https://coins.ph/d/api/payout-outlets'
+    headers = coinsph_wallet_info(url)
+    data = requests.get(url, headers=headers).text
+    return Response(data)

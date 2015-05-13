@@ -46,5 +46,4 @@ def coinsph_exchanges(url):
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     }
-
     return headers

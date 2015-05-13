@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django_countries.fields import CountryField
 from phonenumber_field.modelfields import PhoneNumberField
 
-import moneyed
 from djmoney.models.fields import MoneyField
 
 class BetaApplicant(models.Model):
@@ -15,15 +14,13 @@ class BetaApplicant(models.Model):
 # stores app specific data about a user
 class UserData(models.Model):
     user = models.OneToOneField(User, primary_key=True)
-    # email = models.EmailField()
     phone = PhoneNumberField()
-    handle = models.CharField(max_length=50)
     credit_score = models.IntegerField(max_length=4, default=0)
     # handle is the same thing as username
     # handle = models.CharField(max_length=50)
     country = CountryField(blank_label='(Country)')
     default_currency = models.CharField(max_length=4, default='USD')
-    device_token = models.CharField(max_length=50)
+    # device_token = models.CharField(max_length=50)
     # symmetrical=False means that if i am your friend you are not forced to be my friend
     # friends = models.ManyToManyField("self", symmetrical=False, through="Friend", through_fields=('me', 'them'))
 
@@ -38,14 +35,22 @@ class UserData(models.Model):
 
 # class WalletType(models.Model):
 #     name = models.CharField(max_length=50)
-
+from haedrian.wallets.coins_ph import CoinsPhWallet
+from haedrian.wallets.gem import GemWallet
+from haedrian.wallets.wallet import TestWallet
 class Wallet(models.Model):
     COINS_PH = 'CH'
     GEM = 'GM'
     SELF = 'SE'
     TEST = 'TS'
+    WALLET_CLASS = {
+        COINS_PH: CoinsPhWallet,
+        GEM: GemWallet,
+        SELF: TestWallet,
+        TEST: TestWallet,
+    }
     WALLET_TYPE= (
-        (COINS_PH, 'coins.ph'),
+        (COINS_PH, 'Coins.ph'),
         (GEM, 'Gem'),
         (SELF, 'Self hosted'),
         (TEST, 'Fake wallet for testing purposes'),

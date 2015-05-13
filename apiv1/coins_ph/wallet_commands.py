@@ -1,7 +1,6 @@
 __author__ = 'audakel'
 
-import requests
-import my_hmac
+from haedrian import my_hmac
 
 
 def coinsph_wallet_info(url):

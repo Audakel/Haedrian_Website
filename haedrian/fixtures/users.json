@@ -1,6 +1,4 @@
-// the password is dummydata for both users. Do NOT add these fixtures live, or Mr. Kovu will never love you again.
 
-//noinspection BadExpressionStatementJS
 [
     {
         "model": "auth.user",
@@ -60,30 +58,44 @@
         "model": "haedrian.userdata",
         "pk": 1,
         "fields": {
+            "user": 1,
             "credit_score": 800,
             "phone": "+12345551212",
-            "handle": "@haedrian",
-            "default_currency": "USD"
+            "default_currency": "USD",
+            "country": "US"
         }
     },
     {
         "model": "haedrian.userdata",
         "pk": 2,
         "fields": {
+            "user": 2,
             "credit_score": 800,
             "phone": "+12345559898",
-            "handle": "@james",
-            "default_currency": "USD"
+            "default_currency": "USD",
+            "country": "US"
+
         }
     },
     {
         "model": "haedrian.userdata",
         "pk": 3,
         "fields": {
+            "user": 3,
             "credit_score": 800,
             "phone": "+14803591947",
-            "handle": "@audakel",
-            "default_currency": "USD"
+            "default_currency": "USD",
+            "country": "US"
+
         }
+    },
+    {
+      "model": "haedrian.wallet",
+        "pk": 1,
+        "fields": {
+            "user": 2,
+            "type": "CH"
+        }
+
     }
-];
+]

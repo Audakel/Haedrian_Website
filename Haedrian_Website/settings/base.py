@@ -36,7 +36,7 @@ ADMINS = (
 MANAGERS = ADMINS
 
 AUTHENTICATION_BACKENDS = (
-    'haedrian.gem.GemBackend',
+    'haedrian.wallets.gem.GemBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -105,6 +105,7 @@ MIDDLEWARE_CLASSES = (
     'axes.middleware.FailedLoginMiddleware',
     # TODO Check with james on translations
     #'django.middleware.locale.LocaleMiddleware',
+    'subdomains.middleware.SubdomainURLRoutingMiddleware ',
 )
 
 # Templates
@@ -274,3 +275,4 @@ LOGGING = {
         },
     }
 }
+

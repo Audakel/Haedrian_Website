@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 
 from haedrian.forms import BetaApplicantForm, NewUserForm
 from haedrian.models import BetaApplicant, Wallet
-
+import pycountry
 # from haedrian.gem import create_app_user
 
 
@@ -31,9 +31,9 @@ def create_account(request):
             data = data_form.save(commit=False)
             data.user = new_user
             data.credit_score = 0
+            _country = pycountry.countries.get(alpha3=data.country.alpha3)
+            data.default_currency = pycountry.currencies.get(numeric=_country.numeric).letter
             wallet = Wallet(user=new_user, type=Wallet.TEST)
-
-            # data.device_token = create_app_user(new_user.email, request.POST['password1'])
             wallet.save()
             data_form.save()
             new_user.save()
@@ -45,6 +45,14 @@ def create_account(request):
         'user_form': user_form,
         'data_form': data_form,
     })
+
+def _create_account(user_data):
+    """API friendly INTERNAL USE ONLY account registration end point
+    :param user_data - Dict that contains all the fields that are expected for the user to fill out.
+    Required keys in the dict are
+    ["username", "email", "password1", "password2", "phone", "country"]"""
+    # TODO make this happen
+    pass
 
 # register a signal to listen to when we make a new User object
 # @receiver(pre_save, sender=User)

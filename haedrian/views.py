@@ -30,7 +30,6 @@ def create_account(request):
             data = data_form.save(commit=False)
             data.user = new_user
             data.credit_score = 0
-            import pdb; pdb.set_trace()
             data.device_token = create_app_user(new_user.email, request.POST['password1'])
             new_user.save()
             data_form.save()

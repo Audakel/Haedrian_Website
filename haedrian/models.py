@@ -17,9 +17,10 @@ class UserData(models.Model):
     user = models.OneToOneField(User, primary_key=True)
     # email = models.EmailField()
     phone = PhoneNumberField()
+    handle = models.CharField(max_length=50)
+    credit_score = models.IntegerField(max_length=4, default=0)
     # handle is the same thing as username
     # handle = models.CharField(max_length=50)
-    credit_score = models.IntegerField(max_length=4)
     country = CountryField(blank_label='(Country)')
     default_currency = models.CharField(max_length=4, default='USD')
     device_token = models.CharField(max_length=50)

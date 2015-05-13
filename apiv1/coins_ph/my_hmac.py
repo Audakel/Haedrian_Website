@@ -1,13 +1,13 @@
 __author__ = 'audakel'
 # TODO put into environment variables
-from Haedrian_Website.settings.development import COINS_API_KEY, COINS_SECRET
+from django.conf import settings
 import hashlib
 import hmac
 import time
 import json
 
-API_KEY = COINS_API_KEY  # Replace this with your API Key
-API_SECRET = COINS_SECRET  # Replace this with your API secret
+API_KEY = settings.COINS_API_KEY  # Replace this with your API Key
+API_SECRET = settings.COINS_SECRET  # Replace this with your API secret
 
 
 def get_nonce():

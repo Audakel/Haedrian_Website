@@ -9,7 +9,9 @@ from haedrian.models import UserData
 from django.contrib.auth.models import User
 from haedrian.models import Project, UserData, Transaction
 from apiv1.serializers import ProjectSerializer, SendSerializer
+from coins_ph.wallet_commands import *
 import haedrian.gem
+import requests
 
 xrates.install('apiv1.btc_exchange_rate.BTCExchangeBackend')
 
@@ -50,10 +52,31 @@ def create_user(msg):
     pass
 
 
+@api_view(http_method_names=['GET'])
+@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+def wallet_info(request):
+    return _wallet_info()
 
 
+def _wallet_info():
+    url = 'https://coins.ph/api/v3/crypto-accounts/'
+    headers = coinsph_wallet_info(url)
+    data = requests.get(url, headers=headers).text
+    return Response(data)
 
 
+@api_view(http_method_names=['GET'])
+@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+# TODO: put in the amount and address, using dummy data now
+def coins_send(request):
+    return _coins_send()
+
+
+def _coins_send():
+    url = 'https://coins.ph/api/v3/transfers/'
+    headers = coinsph_send(url)
+    data = requests.get(url, headers=headers).text
+    return Response(data)
 
 
 

@@ -1,10 +1,10 @@
 from django.forms import widgets
 from rest_framework import serializers
-from haedrian.models import Project, Transaction
+from haedrian.models import Transaction
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Project
+        # model = Project
         fields = ('id', 'user', 'title', 'description', 'category', 'location', 'goal')
 
 

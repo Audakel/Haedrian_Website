@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from money import Money, xrates
 from haedrian.models import UserData
 from django.contrib.auth.models import User
-from haedrian.models import Project, UserData, Transaction
+from haedrian.models import UserData, Transaction
 from apiv1.serializers import ProjectSerializer, SendSerializer
 from coins_ph.wallet_commands import *
 import haedrian.gem

@@ -28,17 +28,20 @@ class GemWallet(BaseWallet):
         pass
 
 
-# def create_app_user(email, password):
+def create_app_user(email, password):
+    pass
 #     """
 #     :param email The new user's email address
 #     """
 #     return client.users.create(email=email, device_name="Haedrian App", passphrase=password)
 #
 # def create_sms_user(phone):
+    pass
 #     """Add a new Account to the Haedrian SMS wallet"""
 #     pass
 
 # class GemBackend(object):
+    pass
 #     def authenticate(self, username, password, **kwargs):
 #         UserModel = get_user_model()
 #         # import pdb; pdb.set_trace()

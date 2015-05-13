@@ -40,16 +40,18 @@ class UserData(models.Model):
 #     name = models.CharField(max_length=50)
 
 class Wallet(models.Model):
-    user = models.OneToOneField(User, primary_key=True)
     COINS_PH = 'CH'
     GEM = 'GM'
     SELF = 'SE'
+    TEST = 'TS'
     WALLET_TYPE= (
         (COINS_PH, 'coins.ph'),
         (GEM, 'Gem'),
         (SELF, 'Self hosted'),
+        (TEST, 'Fake wallet for testing purposes'),
     )
-    year_in_school = models.CharField(max_length=2,
+    user = models.ForeignKey(User, primary_key=True)
+    type = models.CharField(max_length=2,
                                       choices=WALLET_TYPE,
                                       default=COINS_PH)
 

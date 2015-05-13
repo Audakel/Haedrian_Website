@@ -35,20 +35,34 @@ class UserData(models.Model):
 # class FriendType(models.Model):
 #     title = models.CharField(max_length=50)
 
-# class Wallet(models.Model):
-#     user = models.OneToOneField(User, primary_key=True)
-#     guid = models.CharField(max_length=50)
 
-class Project(models.Model):
-    user = models.ForeignKey(User)
-    title = models.CharField(max_length=255)
-    description = models.TextField()
-    category = models.ForeignKey('Category')
-    # TODO latitude and longitude should be handled with GIS such as DjangoGEO
-    city = models.CharField(max_length=100)
-    country = CountryField(blank_label='(Country)')
-    goal = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
-    image = models.ImageField(upload_to='images/%Y-%m', blank=True, null=True)
+# class WalletType(models.Model):
+#     name = models.CharField(max_length=50)
+
+class Wallet(models.Model):
+    user = models.OneToOneField(User, primary_key=True)
+    COINS_PH = 'CH'
+    GEM = 'GM'
+    SELF = 'SE'
+    WALLET_TYPE= (
+        (COINS_PH, 'coins.ph'),
+        (GEM, 'Gem'),
+        (SELF, 'Self hosted'),
+    )
+    year_in_school = models.CharField(max_length=2,
+                                      choices=WALLET_TYPE,
+                                      default=COINS_PH)
+
+# class Project(models.Model):
+#     user = models.ForeignKey(User)
+#     title = models.CharField(max_length=255)
+#     description = models.TextField()
+#     category = models.ForeignKey('Category')
+#     # TODO latitude and longitude should be handled with GIS such as DjangoGEO
+#     city = models.CharField(max_length=100)
+#     country = CountryField(blank_label='(Country)')
+#     goal = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+#     image = models.ImageField(upload_to='images/%Y-%m', blank=True, null=True)
 
 class Category(models.Model):
     title = models.CharField(max_length=50)
@@ -62,7 +76,7 @@ class Transaction(models.Model):
     # type = models.ForeignKey("TransactionType")
 
 # class TransactionType(models.Model):
-#     type = models.CharField(max_length="20")
+#     type = models.CharField(max_length=20)
 
 class BitcoinRates(models.Model):
     code = models.CharField(max_length=4)

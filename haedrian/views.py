@@ -3,8 +3,9 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.forms import UserCreationForm
 
 from haedrian.forms import BetaApplicantForm, NewUserForm
-from haedrian.models import BetaApplicant
-from haedrian.gem import create_app_user
+from haedrian.models import BetaApplicant, Wallet
+
+# from haedrian.gem import create_app_user
 
 
 def index(request):
@@ -30,9 +31,12 @@ def create_account(request):
             data = data_form.save(commit=False)
             data.user = new_user
             data.credit_score = 0
-            data.device_token = create_app_user(new_user.email, request.POST['password1'])
-            new_user.save()
+            wallet = Wallet(user=new_user, type=Wallet.TEST)
+
+            # data.device_token = create_app_user(new_user.email, request.POST['password1'])
+            wallet.save()
             data_form.save()
+            new_user.save()
             return HttpResponseRedirect("/")
     else:
         data_form = NewUserForm()

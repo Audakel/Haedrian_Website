@@ -1,8 +1,12 @@
 pillow
-py-moneyed
 django==1.7.8
 requests
 Celery
+# It'd be nice to consolidate these, but till then this is how each is used
+# used to convert the country name to the currency name
+py-moneyed
+# used to convert currencies between each other using exchange rates to and from BTC
+# This should be updated to have seperate BUY and SELL rates as well I think
 money
 # we need to check every now and then to see when django-money supports django 1.8 and stick to that version
 django-money
@@ -15,4 +19,5 @@ django-debug-toolbar
 round
 django-twilio
 rapidsms
+#
 git+https://github.com/caktus/rapidsms-twilio.git@develop

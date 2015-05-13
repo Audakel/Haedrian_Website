@@ -11,4 +11,4 @@ class BetaApplicantForm(ModelForm):
 class NewUserForm(ModelForm):
     class Meta:
         model = UserData
-        exclude = ['user', 'credit_score', 'default_currency', 'device_token']
+        exclude = ['user', 'credit_score', 'default_currency']

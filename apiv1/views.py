@@ -5,12 +5,10 @@ from rest_framework.decorators import api_view, authentication_classes
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from money import Money, xrates
-from haedrian.models import UserData
-from django.contrib.auth.models import User
-from haedrian.models import Project, UserData, Transaction
-from apiv1.serializers import ProjectSerializer, SendSerializer
+from haedrian.models import UserData, Transaction
+from apiv1.serializers import SendSerializer
 from coins_ph.wallet_commands import *
-import haedrian.gem
+
 import requests
 
 xrates.install('apiv1.btc_exchange_rate.BTCExchangeBackend')
@@ -91,24 +89,23 @@ def _history(user):
 
     return Response(data, status=200)
 
-
-class Projects(APIView):
-    """Create or list projects by a user
-    * Requires token authentication.
-    """
-    authentication_classes = (authentication.TokenAuthentication,)
-    # permission_classes = (permissions.IsAdminUser,)
-
-    def get(self, request, format=None):
-        """Return a list of all projects
-        """
-        snippets = Project.objects.all()
-        serializer = ProjectSerializer(snippets, many=True)
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
-        serializer = ProjectSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)
+# class Projects(APIView):
+#     """Create or list projects by a user
+#     * Requires token authentication.
+#     """
+#     authentication_classes = (authentication.TokenAuthentication,)
+#     # permission_classes = (permissions.IsAdminUser,)
+#
+#     def get(self, request, format=None):
+#         """Return a list of all projects
+#         """
+#         snippets = Project.objects.all()
+#         serializer = ProjectSerializer(snippets, many=True)
+#         return Response(serializer.data)
+#
+#     def post(self, request, format=None):
+#         serializer = ProjectSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=201)
+#         return Response(serializer.errors, status=400)

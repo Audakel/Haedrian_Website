@@ -16,3 +16,5 @@ DATABASES = {
         'HOST': '', # connect through unix socket
     }
 }
+
+MIDDLEWARE_CLASSES += ['subdomains.middleware.SubdomainURLRoutingMiddleware',]

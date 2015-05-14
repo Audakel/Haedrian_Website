@@ -172,7 +172,7 @@ def _send(user, data):
         fee = Transaction(sender=sender, receiver=haedrian_account,
                           amount_btc=amount_fee.amount, amount_btc_currency='BTC',
                           amount_local=fee_local.amount, amount_local_currency=fee_local.currency)
-        # TODO send with the wallet here
+
         fee.save()
         transaction.save()
         return Response(status=200)

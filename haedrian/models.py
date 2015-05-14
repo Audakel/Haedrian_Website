@@ -14,7 +14,8 @@ class BetaApplicant(models.Model):
 # stores app specific data about a user
 class UserData(models.Model):
     user = models.OneToOneField(User, primary_key=True)
-    phone = PhoneNumberField()
+    # phone = PhoneNumberField()
+    phone = models.CharField(max_length=15)
     credit_score = models.IntegerField(max_length=4, default=0)
     # handle is the same thing as username
     # handle = models.CharField(max_length=50)

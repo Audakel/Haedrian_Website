@@ -11,6 +11,12 @@ from haedrian.models import Transaction
 
 
 class SendSerializer(serializers.Serializer):
+    def create(self, validated_data):
+        return super(SendSerializer,self).create(validated_data)
+
+    def update(self, instance, validated_data):
+        return super(SendSerializer,self).create(instance, validated_data)
+
     # sender = serializers.CharField()
     receiver = serializers.CharField()
     note = serializers.CharField(required=False, default="", allow_blank=True)

@@ -83,3 +83,4 @@ class TestWallet(BaseWallet):
 
     def send_to_address(self, address, amount_btc):
         logger.debug("Test: user {} sent {} to address {}".format(self.user.username, amount_btc, address))
+

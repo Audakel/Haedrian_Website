@@ -1,4 +1,3 @@
-__author__ = 'audakel'
 # TODO put into environment variables
 from django.conf import settings
 import hashlib

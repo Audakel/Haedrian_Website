@@ -16,7 +16,7 @@ django-phonenumber-field
 django-axes
 django-debug-toolbar
 # hopefully gem will add python 3 support soon
-round
+# round
 django-twilio
 rapidsms
 #

@@ -96,7 +96,9 @@ INSTALLED_BACKENDS = {
 #     'sms.myhandlers.BalanceHandler',
 #  ]
 
-MIDDLEWARE_CLASSES = (
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 30 # One month
+
+MIDDLEWARE_CLASSES = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -106,8 +108,7 @@ MIDDLEWARE_CLASSES = (
     'axes.middleware.FailedLoginMiddleware',
     # TODO Check with james on translations
     #'django.middleware.locale.LocaleMiddleware',
-    # 'subdomains.middleware.SubdomainURLRoutingMiddleware ',
-)
+]
 
 # Templates
 TEMPLATE_LOADERS = (
@@ -165,14 +166,12 @@ STATICFILES_FINDERS = (
 )
 
 # countries conf
-
 COUNTRIES_FIRST = (
     'US',
 )
 COUNTRIES_FIRST_REPEAT = True
 
 # rest conf
-
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.

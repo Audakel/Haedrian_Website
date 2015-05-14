@@ -14,59 +14,100 @@ import requests
 xrates.install('apiv1.btc_exchange_rate.BTCExchangeBackend')
 
 
+@api_view(http_method_names=['GET'])
+@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+def get_exchanges(request):
+    try:
+        data = _get_exchanges(request.user, request.data)
+        return Response(data)
+    except:
+        return Response(status=400)
+
 
 @api_view(http_method_names=['GET'])
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def get_address(request):
-    return _get_address(request.user, request.data)
+    try:
+        data = _get_address(request.user, request.data)
+        return Response(data)
+    except:
+        return Response(status=400)
 
 
 @api_view(http_method_names=['GET'])
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def get_user_wallet_handel(request):
-    return _get_user_wallet_handel(request.user, request.data)
+    try:
+        data = _get_user_wallet_handel(request.user, request.data)
+        return Response(data)
+    except:
+        return Response(status=400)
 
 
-@api_view(http_method_names=['POST'])
+@api_view(http_method_names=['GET'])
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def get_balance(request):
-    return _get_balance()
-
+    try:
+        data = _get_balance(request.user, request.data)
+        return Response(data)
+    except:
+        return Response(status=400)
 
 @api_view(http_method_names=['POST'])
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def get_pending_balance(request):
-    return _get_pending_balance(request.user, request.data)
-
+    try:
+        data = _get_pending_balance(request.user, request.data)
+        return Response(data)
+    except:
+        return Response(status=400)
 
 
 @api_view(http_method_names=['POST'])
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def send_to_address(request):
-    return _send_to_address(request.user, request.data)
+    try:
+        data = _send_to_address(request.user, request.data)
+        return Response(data)
+    except:
+        return Response(status=400)
 
 
 @api_view(http_method_names=['POST'])
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def send_to_user_handle(request):
-    if _send_to_user_handle(request.user, request.data):
-        return Response()
-    else:
+    try:
+        data = _send_to_user_handle(request.user, request.data)
+        return Response(data)
+    except:
         return Response(status=400)
 
+
+def _get_exchanges(user, data):
+    wallet = get_temp_wallet(user)
+    try:
+        data = wallet.get_exchanges()
+        return data
+    except:
+        return False
 
 def _send_to_user_handle(user, data):
     wallet = get_temp_wallet(user)
     try:
-        wallet.send_to_user(data["receiving_user"], data["amount_btc"], data["target_address"])
-        return True
+        data = wallet.send_to_user(data["receiving_user"], data["amount_btc"], data["target_address"])
+        return data
     except:
         return False
 
 
 
 def _send_to_address(user, data):
-    pass
+    wallet = get_temp_wallet(user)
+    try:
+        data = wallet.send_to_address(data["receiving_user"], data["amount_btc"], data["target_address"])
+        return data
+    except:
+        return False
 
 
 def _get_pending_balance(user, data):
@@ -74,14 +115,19 @@ def _get_pending_balance(user, data):
 
 
 def _get_balance(user, data):
-    pass
+    wallet = get_temp_wallet(user)
+    try:
+        data = wallet.get_balance()
+        return data
+    except:
+        return False
 
 
 def _get_user_wallet_handel(user, data):
     wallet = get_temp_wallet(user)
     try:
-        wallet.get_user_wallet_handel()
-        return True
+        data = wallet.get_user_wallet_handel()
+        return data
     except:
         return False
 

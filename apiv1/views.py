@@ -21,7 +21,7 @@ def get_address(request):
     return _get_address(request.user, request.data)
 
 
-@api_view(http_method_names=['POST'])
+@api_view(http_method_names=['GET'])
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def get_user_wallet_handel(request):
     return _get_user_wallet_handel(request.user, request.data)
@@ -55,14 +55,10 @@ def send_to_user_handle(request):
         return Response(status=400)
 
 
-
-
 def _send_to_user_handle(user, data):
     wallet = get_temp_wallet(user)
-
-    # return wallet.send_to_user(data['receiving_user'], data['amount_btc'])
     try:
-        wallet.send_to_user("", "")
+        wallet.send_to_user(data["receiving_user"], data["amount_btc"], data["target_address"])
         return True
     except:
         return False
@@ -82,7 +78,12 @@ def _get_balance(user, data):
 
 
 def _get_user_wallet_handel(user, data):
-    pass
+    wallet = get_temp_wallet(user)
+    try:
+        wallet.get_user_wallet_handel()
+        return True
+    except:
+        return False
 
 
 def _get_address(user, data):

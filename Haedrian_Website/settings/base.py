@@ -73,6 +73,7 @@ INSTALLED_APPS = (
     # "rapidsms.contrib.handlers",
     # "rapidsms.contrib.default",
     'rapidsms.contrib.messagelog',
+    'subdomains',
 
 )
 
@@ -105,7 +106,7 @@ MIDDLEWARE_CLASSES = (
     'axes.middleware.FailedLoginMiddleware',
     # TODO Check with james on translations
     #'django.middleware.locale.LocaleMiddleware',
-    'subdomains.middleware.SubdomainURLRoutingMiddleware ',
+    # 'subdomains.middleware.SubdomainURLRoutingMiddleware ',
 )
 
 # Templates
@@ -276,3 +277,13 @@ LOGGING = {
     }
 }
 
+# ROOT_URLCONF = 'Haedrian_Website.urls'
+
+SUBDOMAIN_URLCONFS = {
+    # None: 'Haedrian_Website.urls',  # no subdomain, e.g. ``example.com``
+    # 'www': 'Haedrian_Website.urls',
+    # 'api': 'Haedrian_Website.urls.api',
+    # 'mfi': 'Haedrian_Website.urls.mfi',
+    # 'users': 'Haedrian_Website.urls.users',
+
+}

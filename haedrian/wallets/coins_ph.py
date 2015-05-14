@@ -6,7 +6,7 @@ import requests
 
 class CoinsPhWallet(BaseWallet):
     def get_user_wallet_handel(self):
-        coinsph_wallet_info()
+        return coinsph_wallet_info()
 
     def get_pending_balance(self):
         pass
@@ -14,13 +14,13 @@ class CoinsPhWallet(BaseWallet):
     def __init__(self, user):
         super(CoinsPhWallet, self).__init__(user)
 
-    def send_to_user(self, user, amount_btc):
+    def send_to_user(self, user, amount_btc, address):
         url = 'https://coins.ph/api/v3/transfers'
         nonce = my_hmac.get_nonce()
         body = {
-            'amount': 10501,
-            'account': 'a243155',
-            'target_address': '21av32v25zaA'
+            'amount': amount_btc,
+            'account': user,
+            'target_address': address
         }
         signature = my_hmac.sign_request(url, nonce, body)
         headers = {
@@ -50,9 +50,10 @@ class CoinsPhWallet(BaseWallet):
 
 
 def coinsph_wallet_info(body):
-    url = 'https://coins.ph/api/v3/crypto-accounts/'
+    url = 'https://coins.ph/api/v3/crypto-accounts'
     nonce = my_hmac.get_nonce()
-    signature = my_hmac.sign_request(url, nonce, body)
+    signature = my_hmac.sign_request(url, nonce)
+
     headers = {
         'ACCESS_SIGNATURE': signature,
         'ACCESS_KEY': my_hmac.API_KEY,
@@ -60,7 +61,9 @@ def coinsph_wallet_info(body):
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     }
-    data = requests.get(url, headers=headers).text
+
+    data = requests.get(url, headers=headers)
+    import pdb; pdb.set_trace()
     return data
 
 

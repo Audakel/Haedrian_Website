@@ -10,16 +10,22 @@ py-moneyed
 money
 # we need to check every now and then to see when django-money supports django 1.8 and stick to that version
 django-money
+# Django countries does the CountryField support
 django-countries
 djangorestframework
-django-phonenumber-field
+# django-phonenumber-field
 django-axes
 django-debug-toolbar
-# hopefully gem will add python 3 support soon
+# Commented out for now to simply getting setup on windows. Later we will add it when we add Gem support
 # round
 django-twilio
 rapidsms
-#
+# this branch included a fix that we needed
 git+https://github.com/caktus/rapidsms-twilio.git@develop
+# Handles the problem of getting the default currency for a given nation
 pycountry
 django-subdomains
+# Not sure we need either right now
+# django-organizations
+# django-mptt
+django-extensions

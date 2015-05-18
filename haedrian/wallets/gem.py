@@ -51,7 +51,6 @@ def create_sms_user(phone):
 #     pass
 
 class GemBackend(object):
-    pass
 
     def authenticate(self, username, password, **kwargs):
         pass

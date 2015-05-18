@@ -1,9 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django_countries.fields import CountryField
-from phonenumber_field.modelfields import PhoneNumberField
-
 from djmoney.models.fields import MoneyField
+
+from mptt.models import MPTTModel, TreeForeignKey
 
 class BetaApplicant(models.Model):
     name = models.CharField(max_length=255)
@@ -14,28 +14,33 @@ class BetaApplicant(models.Model):
 # stores app specific data about a user
 class UserData(models.Model):
     user = models.OneToOneField(User, primary_key=True)
-    # phone = PhoneNumberField()
     phone = models.CharField(max_length=15)
     credit_score = models.IntegerField(max_length=4, default=0)
     # handle is the same thing as username
     handle = models.CharField(max_length=50)
     country = CountryField(blank_label='(Country)')
     default_currency = models.CharField(max_length=4, default='USD')
-    # device_token = models.CharField(max_length=50)
-    # symmetrical=False means that if i am your friend you are not forced to be my friend
-    # friends = models.ManyToManyField("self", symmetrical=False, through="Friend", through_fields=('me', 'them'))
+#
+# class Node(MPTTModel):
+#     name = models.CharField(max_length=50, unique=True)
+#     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
+#     def __str__(self):
+#         return self.name
+#     def __repr__(self):
+#         return self.name
+#     def __unicode__(self):
+#         return self.name
+#     class Meta:
+#         verbose_name = "Organization"
+#     class MPTTMeta:
+#         order_insertion_by = ['name']
 
-# class Friend(models.Model):
-#     me = models.ForeignKey(UserData, related_name='my_friends')
-#     them = models.ForeignKey(UserData, related_name='their_friends')
-#     friend_type = models.ForeignKey('FriendType')
 
-# class FriendType(models.Model):
-#     title = models.CharField(max_length=50)
+# TODO hook into the new backend
+class Organization(models.Model):
+    pass
 
 
-# class WalletType(models.Model):
-#     name = models.CharField(max_length=50)
 from haedrian.wallets.coins_ph import CoinsPhWallet
 from haedrian.wallets.gem import GemWallet
 from haedrian.wallets.wallet import TestWallet
@@ -53,7 +58,7 @@ class Wallet(models.Model):
     WALLET_TYPE= (
         (COINS_PH, 'Coins.ph'),
         (GEM, 'Gem'),
-        (SELF, 'Self hosted'),
+        (SELF, 'I have my own wallet'),
         (TEST, 'Fake wallet for testing purposes'),
     )
     user = models.ForeignKey(User, primary_key=True)
@@ -61,32 +66,25 @@ class Wallet(models.Model):
                                       choices=WALLET_TYPE,
                                       default=COINS_PH)
 
-# class Project(models.Model):
-#     user = models.ForeignKey(User)
-#     title = models.CharField(max_length=255)
-#     description = models.TextField()
-#     category = models.ForeignKey('Category')
-#     # TODO latitude and longitude should be handled with GIS such as DjangoGEO
-#     city = models.CharField(max_length=100)
-#     country = CountryField(blank_label='(Country)')
-#     goal = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
-#     image = models.ImageField(upload_to='images/%Y-%m', blank=True, null=True)
-
-class Category(models.Model):
-    title = models.CharField(max_length=50)
-
 class Transaction(models.Model):
     sender = models.ForeignKey(User, related_name="sent")
     receiver = models.ForeignKey(User, related_name="received")
+    # MoneyFields represent two fields in the database. One with amount and one with the currency name
     amount_btc = MoneyField(max_digits=32, decimal_places=16, default_currency='BTC')
     amount_local = MoneyField(max_digits=32, decimal_places=16)
     date_modified = models.DateTimeField(auto_now_add=True)
-    # type = models.ForeignKey("TransactionType")
-
-# class TransactionType(models.Model):
-#     type = models.CharField(max_length=20)
+    REPAYMENT = 'Re'
+    SEND = 'Sd'
+    TRANSACTION_TYPE= (
+        (REPAYMENT, 'Loan Repayment'),
+        (SEND, 'Send'),
+    )
+    type = models.CharField(max_length=2,
+                                      choices=TRANSACTION_TYPE,
+                                      default=SEND)
 
 class BitcoinRates(models.Model):
     code = models.CharField(max_length=4)
     name = models.CharField(max_length=50)
-    rate = models.DecimalField(max_digits=20, decimal_places=10)
+    buy_rate = models.DecimalField(max_digits=20, decimal_places=10)
+    sell_rate = models.DecimalField(max_digits=20, decimal_places=10)

@@ -27,6 +27,12 @@ class BaseWallet(object):
         pass
 
     @abstractmethod
+    def create_wallet(self, email, password):
+        """Make a new node on wallet provider backend"""
+
+        pass
+
+    @abstractmethod
     def get_user_wallet_handel(self):
         """Return a unique handle, ID, or other type of address that given wallet provider uses"""
         pass

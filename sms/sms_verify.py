@@ -51,6 +51,8 @@ def check_handle_exist(msg_handle):
 
 
 def create_handle(msg):
+    # import pdb; pdb.set_trace()
+
     msg_handle = msg.text.strip().lower()
     if check_handle_exist(msg_handle):
         # TODO make beter check for existing handle / better collison avoidance

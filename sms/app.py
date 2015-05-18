@@ -1,11 +1,12 @@
 from rapidsms.apps.base import AppBase
 from decimal import Decimal
-from apiv1.views import _send, _history
+from apiv1.views import _send, _history, _get_balance
 from haedrian.models import UserData
 from rest_framework import status
 from models import SmsMessage, SmsSignup
 from sms_verify import verify_sender, str_usage_commands
 import random
+import pdb
 #  BEST DEBUGGING HELP +++++++++ ========= import pdb; pdb.set_trace()
 
 
@@ -95,9 +96,10 @@ def sms_tulong(msg):  # Help
 def sms_balance(msg):
     # data = _get_balance(msg.connections[0].identity)
     # msg.respond("Incoming funds: %d | Outgoing funds: %d" % (1,2))#(data[0], data[1]))
-    response = _history(msg.connections[0].identity)
-    msg.respond("Your balance is\n-Outgoing: $%d\n-Incoming: $%d\n-Loan Outstanding: $%d" %
-                (response.data['outgoing'], response.data['incoming'], response.data['loan']))
+    #TODO: figure out how to find the user ID from authusers
+    response = _get_balance(2)
+    # pdb.set_trace()
+    msg.respond("Your balance is: %s" % response)
 
 
 def save_message(msg):

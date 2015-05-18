@@ -13,6 +13,15 @@ import requests
 
 xrates.install('apiv1.btc_exchange_rate.BTCExchangeBackend')
 
+@api_view(http_method_names=['POST'])
+@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+def create_wallet(request):
+    try:
+        data = _create_wallet(request.user, request.data)
+        return Response(data)
+    except:
+        return Response(status=400)
+
 
 @api_view(http_method_names=['GET'])
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
@@ -53,7 +62,7 @@ def get_balance(request):
     except:
         return Response(status=400)
 
-@api_view(http_method_names=['POST'])
+@api_view(http_method_names=['GET'])
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def get_pending_balance(request):
     try:
@@ -83,6 +92,15 @@ def send_to_user_handle(request):
         return Response(status=400)
 
 
+def _create_wallet(user, data):
+    wallet = get_temp_wallet(user)
+    try:
+        data = wallet.create_wallet(data['email'], data['password'])
+        return data
+    except:
+        return False
+
+
 def _get_exchanges(user, data):
     wallet = get_temp_wallet(user)
     try:
@@ -91,6 +109,7 @@ def _get_exchanges(user, data):
     except:
         return False
 
+
 def _send_to_user_handle(user, data):
     wallet = get_temp_wallet(user)
     try:
@@ -98,7 +117,6 @@ def _send_to_user_handle(user, data):
         return data
     except:
         return False
-
 
 
 def _send_to_address(user, data):
@@ -111,10 +129,15 @@ def _send_to_address(user, data):
 
 
 def _get_pending_balance(user, data):
-    pass
+    wallet = get_temp_wallet(user)
+    try:
+        data = wallet.get_pending_balance()
+        return data
+    except:
+        return False
 
 
-def _get_balance(user, data):
+def _get_balance(user, data=None):
     wallet = get_temp_wallet(user)
     try:
         data = wallet.get_balance()
@@ -133,7 +156,12 @@ def _get_user_wallet_handel(user, data):
 
 
 def _get_address(user, data):
-    pass
+    wallet = get_temp_wallet(user)
+    try:
+        data = wallet.get_address()
+        return data
+    except:
+        return False
 
 
 def get_temp_wallet(sender):

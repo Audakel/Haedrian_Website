@@ -6,11 +6,17 @@ import hashlib
 import hmac
 import time
 import json
+import pdb
 """
 {
-"receiving_user":"",
-"amount_btc":"",
-"target_address":""
+"receiving_user":"eaffcc17b0ab42a79130e299445958fe",
+"amount_btc": 0.0005,
+"target_address":"12UkkQ58ksRXHzHdNzhcy4e6f8JwWGTG3H"
+}
+
+{
+"email":"testingthisthingout",
+"password":"testingthisthingout"
 }
 """
 class CoinsPhWallet(BaseWallet):
@@ -18,42 +24,79 @@ class CoinsPhWallet(BaseWallet):
         super(CoinsPhWallet, self).__init__(user)
 
     def get_user_wallet_handel(self):
-        return coinsph_wallet_info()
+        url = 'https://coins.ph/api/v3/crypto-accounts/'
+        data = make_request(url)
+        return data['crypto-accounts'][0]['id']
 
     def get_pending_balance(self):
         url = 'https://coins.ph/api/v3/crypto-accounts/'
-        data = make_request(url)['crypto-accounts']
+        _data = make_request(url)['crypto-accounts'][0]
+        data = {
+            "pending": _data['pending_balance'],
+            "currency": currency[0]
+        }
         return data
 
     def send_to_user(self, user, amount_btc, address):
         url = 'https://coins.ph/api/v3/transfers/'
         body = {
-            'amount': .0005,
-            'account': 'eaffcc17b0ab42a79130e299445958fe',
-            'target_address': "12UkkQ58ksRXHzHdNzhcy4e6f8JwWGTG3H"
+            'amount': amount_btc,
+            'account': user,
+            'target_address': address
         }
-        data = make_request(url, body)
-        return data
+        try:
+            _data = make_request(url, body)
+            data = {
+                "status": _data["transfer"]['status'],
+                "fee": "0.00000",
+                "target": _data["transfer"]['target_address'],
+                "amount": _data["transfer"]['amount'],
+                "currency": currency[0]
+            }
+        except:
+            data = _data['errors']
 
+        return data
 
     def send_to_address(self, receiving_user, amount_btc,target_address):
         url = 'https://coins.ph/api/v3/crypto-payments/'
         body = {
-            'amount': .0005,
-            'account': 'eaffcc17b0ab42a79130e299445958fe',
-            'target_address': "12UkkQ58ksRXHzHdNzhcy4e6f8JwWGTG3H"
+            'amount': amount_btc,
+            'account': receiving_user,
+            'target_address': target_address
         }
-        data = make_request(url, body)
+        try:
+            # import pdb; pdb.set_trace()
+            _data = make_request(url, body)
+            data = {
+                "status": _data["crypto-payment"]['status'],
+                "fee": _data["crypto-payment"]['fee_amount'],
+                "target": _data["crypto-payment"]['target_address'],
+                "amount": _data["crypto-payment"]['amount'],
+                "currency": currency[0]
+            }
+        except:
+            data = _data['errors']
+
         return data
 
     def get_balance(self):
         url = 'https://coins.ph/api/v3/crypto-accounts/'
-        data = make_request(url)['crypto-accounts']
+        _data = make_request(url)['crypto-accounts'][0]
+        data = {
+            "balance": _data['balance'],
+            "pending_balance": _data['pending_balance'],
+            "currency": currency[0]
+        }
         return data
 
     def get_address(self):
         url = 'https://coins.ph/api/v3/crypto-accounts/'
-        data = make_request(url)['crypto-accounts']
+        _data = make_request(url)['crypto-accounts'][0]
+        data = {
+            "default_address": _data['default_address'],
+            "currency": currency[0]
+        }
         return data
 
     def get_exchanges(self):
@@ -61,45 +104,23 @@ class CoinsPhWallet(BaseWallet):
         data = make_request(url)
         return data
 
+    def create_wallet(self, email, password):
+        print "here 2"
 
-def coinsph_wallet_info():
-    url = 'https://coins.ph/api/v3/crypto-accounts/'
-    data = make_request(url)['crypto-accounts']
-    return data
-
-
-def coinsph_send(url):
-    nonce = get_nonce()
-    body = {
-        'amount': 0.5,
-        'account': '2r45ab4',
-        'target_address': 'audakel@gmail.com'
-    }
-    signature = sign_request(url, nonce, body)
-
-    headers = {
-        'ACCESS_SIGNATURE': signature,
-        'ACCESS_KEY': API_KEY,
-        'ACCESS_NONCE': nonce,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    }
-    return headers
+        url = 'https://coins.ph/api/v2/user'
+        body = {
+            'email': email+'@mailinator.com',
+            'password': password
+        }
+        try:
+            data = make_request(url, body)
+        except:
+            data = "error on make_request"
+        return data
 
 
-def coinsph_exchanges(url):
-    nonce = get_nonce()
-    signature = sign_request(url, nonce)
-    headers = {
-        'ACCESS_SIGNATURE': signature,
-        'ACCESS_KEY': API_KEY,
-        'ACCESS_NONCE': nonce,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    }
-    return headers
 
-
+currency = ["BTC", "CLP", "PBTC"]
 
 API_KEY = settings.COINS_API_KEY  # Replace this with your API Key
 API_SECRET = settings.COINS_SECRET  # Replace this with your API secret

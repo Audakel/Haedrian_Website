@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django_countries.fields import CountryField
 from djmoney.models.fields import MoneyField
 
-from mptt.models import MPTTModel, TreeForeignKey
+# from mptt.models import MPTTModel, TreeForeignKey
 
 class BetaApplicant(models.Model):
     name = models.CharField(max_length=255)
@@ -17,7 +17,7 @@ class UserData(models.Model):
     phone = models.CharField(max_length=15)
     credit_score = models.IntegerField(max_length=4, default=0)
     # handle is the same thing as username
-    handle = models.CharField(max_length=50)
+    # handle = models.CharField(max_length=50)
     country = CountryField(blank_label='(Country)')
     default_currency = models.CharField(max_length=4, default='USD')
 #
@@ -43,7 +43,9 @@ class Organization(models.Model):
 
 from haedrian.wallets.coins_ph import CoinsPhWallet
 from haedrian.wallets.gem import GemWallet
-from haedrian.wallets.wallet import TestWallet
+from haedrian.wallets.test_wallet import TestWallet
+
+
 class Wallet(models.Model):
     COINS_PH = 'CH'
     GEM = 'GM'

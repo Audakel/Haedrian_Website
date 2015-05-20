@@ -9,14 +9,23 @@ import json
 import pdb
 """
 {
-"receiving_user":"eaffcc17b0ab42a79130e299445958fe",
-"amount_btc": 0.0005,
-"target_address":"12UkkQ58ksRXHzHdNzhcy4e6f8JwWGTG3H"
+
+"amount_local": 45874
+
 }
 
 {
-"email":"testingthisthingout",
+"email":"austin.harrison@byu.net",
 "password":"testingthisthingout"
+}
+
+{
+"username": "billy",
+"email": "a@gmail.com",
+"password1": "hello1",
+"password2": "hello1",
+"phone": "4105521082",
+"country": "US"
 }
 """
 class CoinsPhWallet(BaseWallet):
@@ -48,7 +57,7 @@ class CoinsPhWallet(BaseWallet):
             _data = make_request(url, body)
             data = {
                 "status": _data["transfer"]['status'],
-                "fee": "0.00000",
+                "fee": 0.00000,
                 "target": _data["transfer"]['target_address'],
                 "amount": _data["transfer"]['amount'],
                 "currency": currency[0]
@@ -58,10 +67,10 @@ class CoinsPhWallet(BaseWallet):
 
         return data
 
-    def send_to_address(self, receiving_user, amount_btc,target_address):
+    def send_to_address(self, receiving_user, amount_local,target_address):
         url = 'https://coins.ph/api/v3/crypto-payments/'
         body = {
-            'amount': amount_btc,
+            'amount': amount_local,
             'account': receiving_user,
             'target_address': target_address
         }
@@ -105,11 +114,10 @@ class CoinsPhWallet(BaseWallet):
         return data
 
     def create_wallet(self, email, password):
-        print "here 2"
 
         url = 'https://coins.ph/api/v2/user'
         body = {
-            'email': email+'@mailinator.com',
+            'email': email,
             'password': password
         }
         try:

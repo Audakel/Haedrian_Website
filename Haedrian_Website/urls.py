@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from organizations.backends import invitation_backend
+# from organizations.backends import invitation_backend
 admin.autodiscover()
 
 authurls = patterns('django.contrib.auth.views',
@@ -20,8 +20,8 @@ urlpatterns = patterns('',
     url(r'^sms/', include('sms.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^account/', include(authurls)),
-    url(r'^accounts/', include('organizations.urls'),),
-    url(r'^invitations/', include(invitation_backend().get_urls())),
+    # url(r'^accounts/', include('organizations.urls'),),
+    # url(r'^invitations/', include(invitation_backend().get_urls())),
     url(r'^dashboard/', include('dashboard.urls', namespace='dashboard')),
     url(r"^messagelog/", include("rapidsms.contrib.messagelog.urls")),
     url(r'', include('haedrian.urls', namespace='haedrian')),

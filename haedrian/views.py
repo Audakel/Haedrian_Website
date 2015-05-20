@@ -46,9 +46,12 @@ def _create_account(user_data):
     ["username", "email", "password1", "password2", "phone", "country"]
 
     :returns True if the account creation was successful"""
+
     data_form = NewUserForm(user_data)
     user_form = UserCreationForm(user_data)
-    if user_form.is_valid() and data_form.is_valid():
+    # import pdb;pdb.set_trace()
+    try:
+        user_form.is_valid() and data_form.is_valid()
         new_user = user_form.save(commit=False)
         data = data_form.save(commit=False)
         data.user = new_user
@@ -57,11 +60,13 @@ def _create_account(user_data):
         data.default_currency = pycountry.currencies.get(numeric=_country.numeric).letter
         wallet = Wallet(user=new_user, type=Wallet.TEST)
         wallet.save()
+        wallet.save()
         data_form.save()
         new_user.save()
         # TODO: send verification email or something
         return True
-    return False
+    except Exception as e:
+        return e.message
 
 from django.contrib.auth import views
 def login(request, *args, **kwargs):

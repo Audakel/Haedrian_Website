@@ -22,7 +22,7 @@
         "model": "auth.user",
         "pk": 2,
         "fields": {
-            "username": "james",
+            "username": "mentors_international",
             "first_name": "",
             "last_name": "",
             "is_active": true,
@@ -93,8 +93,17 @@
       "model": "haedrian.wallet",
         "pk": 1,
         "fields": {
+            "user": 1,
+            "type": "TS"
+        }
+
+    },
+    {
+      "model": "haedrian.wallet",
+        "pk": 2,
+        "fields": {
             "user": 2,
-            "type": "CH"
+            "type": "TS"
         }
 
     }

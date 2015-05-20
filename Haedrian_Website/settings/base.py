@@ -58,7 +58,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'rest_framework.authtoken',
     'phonenumber_field',
-    'organizations',
+    #'organizations',
     # money handling is hard :p still need to mke the currency conversion
     'djmoney',
     'subdomains',

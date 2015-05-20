@@ -11,10 +11,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
+        migrations.RemoveField(
             model_name='userdata',
-            name='phone',
-            field=models.CharField(max_length=15),
-            preserve_default=True,
+            name='handle',
         ),
     ]

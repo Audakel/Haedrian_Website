@@ -1,0 +1,110 @@
+
+[
+    {
+        "model": "auth.user",
+        "pk": 1,
+        "fields": {
+            "username": "haedrian",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": true,
+            "is_staff": true,
+            "last_login": "2015-05-07T16:56:56.323Z",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$15000$dQpOpFCydC06$LKEh41V+lRf3sSUJcSq7jUNlWclBWcFtEh6ClMxSBNg=",
+            "email": "haedrian@example.com",
+            "date_joined": "2015-05-07T16:56:46.588Z"
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 2,
+        "fields": {
+            "username": "mentors_international",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": true,
+            "is_staff": true,
+            "last_login": "2015-05-07T16:56:56.323Z",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$15000$dQpOpFCydC06$LKEh41V+lRf3sSUJcSq7jUNlWclBWcFtEh6ClMxSBNg=",
+            "email": "james@example.com",
+            "date_joined": "2015-05-07T16:56:46.588Z"
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 3,
+        "fields": {
+            "username": "audakel",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": true,
+            "is_staff": true,
+            "last_login": "2015-05-07T16:56:56.323Z",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$15000$dQpOpFCydC06$LKEh41V+lRf3sSUJcSq7jUNlWclBWcFtEh6ClMxSBNg=",
+            "email": "audakel@example.com",
+            "date_joined": "2015-05-07T16:56:46.588Z"
+        }
+    },
+    {
+        "model": "haedrian.userdata",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "credit_score": 800,
+            "phone": "+12345551212",
+            "default_currency": "USD",
+            "country": "US"
+        }
+    },
+    {
+        "model": "haedrian.userdata",
+        "pk": 2,
+        "fields": {
+            "user": 2,
+            "credit_score": 800,
+            "phone": "+12345559898",
+            "default_currency": "USD",
+            "country": "US"
+
+        }
+    },
+    {
+        "model": "haedrian.userdata",
+        "pk": 3,
+        "fields": {
+            "user": 3,
+            "credit_score": 800,
+            "phone": "+14803591947",
+            "default_currency": "USD",
+            "country": "US"
+
+        }
+    },
+    {
+      "model": "haedrian.wallet",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "type": "TS"
+        }
+
+    },
+    {
+      "model": "haedrian.wallet",
+        "pk": 2,
+        "fields": {
+            "user": 2,
+            "type": "TS"
+        }
+
+    }
+]

@@ -1,4 +1,4 @@
-from base import *
+from .base import *
 
 try:
     POSTGRES_PWD = os.environ["DJANGO_POSTGRES_PASSWORD"]
@@ -16,3 +16,5 @@ DATABASES = {
         'HOST': '', # connect through unix socket
     }
 }
+
+MIDDLEWARE_CLASSES += ['subdomains.middleware.SubdomainURLRoutingMiddleware',]

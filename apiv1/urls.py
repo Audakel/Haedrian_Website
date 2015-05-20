@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^address/', get_address),
     url(r'^exchanges/', get_exchanges),
     url(r'^create/', new_user),
+    url(r'get-locations/', get_locations),
 
     # testing
     url(r'^create-wallet/', create_wallet),

@@ -9,6 +9,8 @@ from haedrian.models import Transaction, Wallet
 from apiv1.serializers import SendSerializer
 from coins_ph.wallet_commands import *
 from haedrian.wallets.coins_ph import CoinsPhWallet
+from haedrian.google.places import GooglePlaces
+from haedrian.google.lang import *
 from haedrian.views import _create_account
 import requests
 from haedrian.models import UserData
@@ -102,6 +104,23 @@ def create_wallet(request):
         return Response(data)
     except:
         return Response(status=400)
+
+@api_view(http_method_names=['GET'])
+@authentication_classes((authentication.BaseAuthentication, authentication.TokenAuthentication,))
+def get_locations(request):
+    try:
+        data = _get_locations(request.user, request.data)
+        return Response(data)
+    except:
+        return Response(status=400)
+
+
+def _get_locations(user, data):
+    try:
+        google_places = GooglePlaces()
+        return google_places.text_search("bank")
+    except:
+        return False
 
 
 def _create_wallet(user, data):

@@ -33,11 +33,11 @@ class TestWallet(BaseWallet):
         }
         return data
 
-    def send_to_address(self, amount_local):
+    def send_to_address(self, receiver, amount_local, target_address):
         data = {
             "status": "pending",
-            "fee": "0.00000",
-            "target": "Mentors International",
+            "fee": 0.00000,
+            "target": target_address,
             "amount": amount_local,
             "currency": "PHP"
         }

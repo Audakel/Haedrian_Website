@@ -16,13 +16,13 @@ from haedrian.models import UserData
 xrates.install('apiv1.btc_exchange_rate.BTCExchangeBackend')
 
 @api_view(http_method_names=['POST'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+# @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def new_user(request):
     try:
-        data = _new_user(request.user, request.data)
+        data = _new_user(request.data)
         return Response(data)
-    except:
-        return Response(status=400)
+    except Exception as e:
+        return Response("Error: " + e.message, status=400)
 
 
 @api_view(http_method_names=['GET'])
@@ -62,7 +62,7 @@ def get_balance(request):
         data = _get_balance(request.user, request.data)
         return Response(data)
     except Exception as e:
-        return Response(e, status=400)
+        return Response(e.message, status=400)
 
 @api_view(http_method_names=['GET'])
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
@@ -81,7 +81,7 @@ def send_to_address(request):
         data = _send_to_address(request.user, request.data)
         return Response(data)
     except Exception as e:
-        return Response(e, status=400)
+        return Response(e.message, status=400)
 
 
 @api_view(http_method_names=['POST'])
@@ -107,6 +107,7 @@ def create_wallet(request):
 def _create_wallet(user, data):
     # TODO: fix hard coded only creation of coins.ph wallets
     # wallet = get_temp_wallet(user)
+    # import pdb; pdb.set_trace()
     wallet = CoinsPhWallet(user)
     try:
         data = wallet.create_wallet(data['email'], data['password'])
@@ -115,7 +116,7 @@ def _create_wallet(user, data):
         return False
 
 
-def _new_user(user, data):
+def _new_user(data):
     new_data = {
         "username": data['username'],
         "email": data['email'],
@@ -128,7 +129,7 @@ def _new_user(user, data):
         user = _create_account(new_data)
         return user
     except Exception as e:
-        return e
+        return e.message
 
 
 def _get_exchanges(user, data):
@@ -155,6 +156,8 @@ def _send_to_address(user, data):
 
     UserModel = get_user_model()
     haedrian_account = UserModel.objects.get(username='haedrian')
+    mentors_international_account = UserModel.objects.get(username='mentors_international')
+
     """ Internal API for the SMS app to call as well """
     send_data = SendSerializer(data=data)
     try:
@@ -162,8 +165,7 @@ def _send_to_address(user, data):
             sender = user
             # import pdb; pdb.set_trace()
             # TODO figure out whether this is a handle, phone number or email.
-            # receiver = UserModel.objects.get(username=send_data.data['receiver'])
-            receiver = UserModel.objects.get(username='mentors_international')
+            receiver = UserModel.objects.get(username=send_data.data['receiver'])
             currency = UserData.objects.get(user_id=sender.id).default_currency
             amount_btc = Money(amount=send_data.data['amount_local'], currency=currency).to('BTC')
             amount_fee = amount_btc * settings.FEE_AMOUNT
@@ -172,7 +174,10 @@ def _send_to_address(user, data):
             fee_local = Money(amount=amount_fee.amount, currency='BTC').to(currency)
 
             try:
-                data = wallet.send_to_address(total_sent)
+                # TODO:: put logic in to find bitcoin address
+                data = wallet.send_to_address(mentors_international_account,
+                                              total_sent.amount, data['target_address'])
+                wallet.send_to_address(haedrian_account, total_sent.amount, send_data['target_address'])
             except Exception as e:
                 return e.message
 
@@ -185,8 +190,8 @@ def _send_to_address(user, data):
 
             fee.save()
             transaction.save()
-            return Response(data, status=200)
-        return Response(send_data.errors, status=400)
+            return data
+        return Response(send_data.errors)
     except Exception as e:
         return e.message
 

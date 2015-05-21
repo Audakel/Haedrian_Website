@@ -16,6 +16,8 @@ class UserData(models.Model):
     user = models.OneToOneField(User, primary_key=True)
     phone = models.CharField(max_length=15)
     credit_score = models.IntegerField(max_length=4, default=0)
+
+    sms_balance = models.DecimalField(max_digits=12, decimal_places=4, default=0)
     # handle is the same thing as username
     # handle = models.CharField(max_length=50)
     country = CountryField(blank_label='(Country)')

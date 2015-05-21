@@ -19,8 +19,9 @@ class SendSerializer(serializers.Serializer):
 
     # sender = serializers.CharField()
     # TODO:: Fix default receiver
-    receiver = serializers.CharField(required=False,  default="mentors_international", allow_blank=True)
+    receiver = serializers.CharField()
     note = serializers.CharField(required=False, default="", allow_blank=True)
+    target_address = serializers.CharField(required=False, default="", allow_blank=True)
     amount_local = serializers.DecimalField(max_digits=32, decimal_places=16)
 
 # class TransactionSerializer(serializers.Serializer):

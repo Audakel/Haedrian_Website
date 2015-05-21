@@ -9,23 +9,28 @@ import json
 import pdb
 """
 {
-
-"amount_local": 45874
-
+    "receiver": "mentors_international",
+    "amount_local": 45781,
+    "target_address": "4dfu3iunf98rmkff91d34edsff3f"
 }
 
 {
-"email":"austin.harrison@byu.net",
-"password":"testingthisthingout"
+    "email": "austin.harrison@byu.net",
+    "password": "thisisaverybadpassword1",
+    "api_key": "unZUljzAcdFEeWJzX9WfhwdBgjtBVzKEklsd5AkT"
 }
 
 {
-"username": "billy",
-"email": "a@gmail.com",
-"password1": "hello1",
-"password2": "hello1",
-"phone": "4105521082",
-"country": "US"
+    "email":"austin.harrison@byu.net",
+    "password":"testingthisthingout"
+}
+
+{
+    "username": "raka",
+    "email": "rr@gmail.com",
+    "password": "thisisaverybadpassword",
+    "phone": "4105521220",
+    "country": "US"
 }
 """
 class CoinsPhWallet(BaseWallet):
@@ -47,31 +52,32 @@ class CoinsPhWallet(BaseWallet):
         return data
 
     def send_to_user(self, user, amount_btc, address):
-        url = 'https://coins.ph/api/v3/transfers/'
-        body = {
-            'amount': amount_btc,
-            'account': user,
-            'target_address': address
-        }
-        try:
-            _data = make_request(url, body)
-            data = {
-                "status": _data["transfer"]['status'],
-                "fee": 0.00000,
-                "target": _data["transfer"]['target_address'],
-                "amount": _data["transfer"]['amount'],
-                "currency": currency[0]
-            }
-        except:
-            data = _data['errors']
+        pass
+    #     url = 'https://coins.ph/api/v3/transfers/'
+    #     body = {
+    #         'amount': amount_btc,
+    #         'account': user,
+    #         'target_address': address
+    #     }
+    #     try:
+    #         _data = make_request(url, body)
+    #         data = {
+    #             "status": _data["transfer"]['status'],
+    #             "fee": 0.00000,
+    #             "target": _data["transfer"]['target_address'],
+    #             "amount": _data["transfer"]['amount'],
+    #             "currency": currency[0]
+    #         }
+    #     except:
+    #         data = _data['errors']
+    #
+    #     return data
 
-        return data
-
-    def send_to_address(self, receiving_user, amount_local,target_address):
+    def send_to_address(self, receiver, amount_local,target_address):
         url = 'https://coins.ph/api/v3/crypto-payments/'
         body = {
             'amount': amount_local,
-            'account': receiving_user,
+            'account': receiver,
             'target_address': target_address
         }
         try:
@@ -115,15 +121,17 @@ class CoinsPhWallet(BaseWallet):
 
     def create_wallet(self, email, password):
 
-        url = 'https://coins.ph/api/v2/user'
+        # url = 'https://coins.ph/api/v2/user'
+        url = 'https://sandbox.coins.ph/api/v2/user'
         body = {
             'email': email,
-            'password': password
+            'password': password,
+            'api_key': 'unZUljzAcdFEeWJzX9WfhwdBgjtBVzKEklsd5AkT'
         }
         try:
             data = make_request(url, body)
-        except:
-            data = "error on make_request"
+        except Exception as e:
+            return e.message
         return data
 
 
@@ -157,8 +165,13 @@ def make_request(url, body=''):
         'Accept': 'application/json'
     }
     if body:
-        response = requests.post(url, headers=headers, data=body)
+        try:
+            response = requests.post(url, headers=headers, data=body)
+        except Exception as e:
+            return e.message
     else:
-        response = requests.get(url, headers=headers)
-    result = response.json()
-    return result
+        try:
+            response = requests.get(url, headers=headers)
+        except Exception as e:
+            return e.message
+    return response.json()

@@ -49,7 +49,6 @@ def _create_account(user_data):
 
     data_form = NewUserForm(user_data)
     user_form = UserCreationForm(user_data)
-    # import pdb;pdb.set_trace()
     try:
         user_form.is_valid() and data_form.is_valid()
         new_user = user_form.save(commit=False)

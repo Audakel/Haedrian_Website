@@ -6,6 +6,8 @@ from rest_framework import status
 from models import SmsMessage, SmsSignup
 from sms_verify import verify_sender, str_usage_commands
 import random
+from django.contrib.auth import get_user_model
+from django.db.models import F
 import pdb
 #  BEST DEBUGGING HELP +++++++++ ========= import pdb; pdb.set_trace()
 
@@ -28,15 +30,15 @@ class SMSApplication(AppBase):
                 sms_tulong(msg)
             elif command == 'whoami':
                 sms_whoami(msg)
-            # else:
-            #     msg.respond("There has been an error, we are sorry\n:(")
-            #     return True
+            else:
+                sms_help(msg)
 
             # we handled sms, no need to keep looking
         return True
 
 
 def sms_send(msg, parts):
+
     try:
         amount = Decimal(parts[1])
     except:
@@ -47,27 +49,29 @@ def sms_send(msg, parts):
         msg.respond("Error: The amount to send must be positive")
         return
 
-    elif len(parts) == 2:
-        msg.respond("Sent $%d to Mentors International" % amount)
+    if UserData.objects.get(phone=msg.connections[0].identity).sms_balance - amount < 0:
+        msg.respond("Error: Not enough funds : (\nMaybe get a job?")
         return
-
-    try:
-        user = UserData.objects.get(phone=msg.connections[0].identity).user
-    except:  # User not found exception
-        msg.respond("Error: You must register before sending money %s" % msg.connections[0].identity)
-        return
-
 
     receiver_name = parts[2]
     if receiver_name[0] != '@':
         msg.respond("Error: The receiver must be an @ handle.")
         return
     try:
-        UserData.objects.get(handle=receiver_name).user
+        UserModel = get_user_model()
+        UserModel.objects.filter(username=receiver_name[1:]).exists()
     except:
         msg.respond("Sorry, %s was not found.\nPlease check the @handle\n: (" % receiver_name)
         return
 
+    msg.respond("Sent %d to %s successfully!" % (amount, receiver_name))
+    user = UserData.objects.get(phone=msg.connections[0].identity)
+    import pdb;pdb.set_trace()
+
+    user.sms_balance = F('sms_balance')-amount
+    user.save()
+
+    """
     data = {
         "receiver": receiver_name,
         "amount_local": amount,
@@ -83,10 +87,10 @@ def sms_send(msg, parts):
         return
     msg.respond("Sent %d to %s successfully!" % (amount, receiver_name))
     return
-
+    """
 
 def sms_help(msg):
-    msg.respond("Usage Commands  : )\nExample send $15: 'Send 15 @mi'\nExample get balance: 'Balance'")
+    msg.respond(str_usage_commands)
 
 
 def sms_tulong(msg):  # Help
@@ -94,13 +98,15 @@ def sms_tulong(msg):  # Help
 
 
 def sms_balance(msg):
-    # data = _get_balance(msg.connections[0].identity)
-    # msg.respond("Incoming funds: %d | Outgoing funds: %d" % (1,2))#(data[0], data[1]))
     #TODO: figure out how to find the user ID from authusers
-    response = _get_balance(2)
-    # pdb.set_trace()
-    msg.respond("Your balance is: %s" % response)
+    UserModel = get_user_model()
+    user_id = UserData.objects.get(phone=msg.connections[0].identity).user_id
+    # response = _get_balance(UserModel.objects.get(id=user_id))
+    # msg.respond("You have $%s available, with $%s pending. Nice!" % (response['balance'],
+    #                                                           response['pending_balance']))
 
+    response = UserData.objects.get(phone=msg.connections[0].identity).sms_balance
+    msg.respond("You have $%d available, with $%d pending. Nice!" % (response, 0.00))
 
 def save_message(msg):
     message=SmsMessage(from_number=msg.fields['From'],

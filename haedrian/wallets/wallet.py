@@ -48,10 +48,10 @@ class BaseWallet(object):
         pass
 
     @abstractmethod
-    def send_to_address(self, receiving_user, amount_btc,target_address):
+    def send_to_address(self, receiver, amount_local, target_address):
         """Send Bitcoins amount from this wallet to the address provided
         :param address - the address to send the BTC to
-        :param amount_btc - Amount to send in BTC"""
+        :param amount_local - Amount to send in Local"""
         pass
 
     @abstractmethod

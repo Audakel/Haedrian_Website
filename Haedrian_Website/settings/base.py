@@ -29,7 +29,8 @@ SITE_ID = 1
 ALLOWED_HOSTS = (
     '104.236.160.220',
     'localhost',
-    'haedrian.io'
+    'haedrian.io',
+    '127.0.0.1',
 )
 
 ADMINS = (
@@ -65,7 +66,7 @@ INSTALLED_APPS = (
     #'organizations',
     # money handling is hard :p still need to mke the currency conversion
     'djmoney',
-    'subdomains',
+    #'subdomains',
     # 'mptt',
     # failed login request handling
     # TODO maybe production only?
@@ -244,6 +245,11 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
         },
+        'error_log': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(PROJECT_ROOT, 'django_error.log'),
+        },
         'mail_admins': {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler',
@@ -258,7 +264,7 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['mail_admins'],
+            'handlers': ['mail_admins',],
             'level': 'ERROR',
             'propagate': False,
         },

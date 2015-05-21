@@ -1,6 +1,6 @@
 *.TMP
 *.sqlite3
-
+public/
 .idea/
 
 # Byte-compiled / optimized / DLL files

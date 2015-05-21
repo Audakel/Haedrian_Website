@@ -1,13 +1,30 @@
 {% extends "base.html" %}
 
+{% load i18n %}
 {% load static %}
+{% block style %}
+<link href="{% static "css/custom.css" %}">
+{% endblock %}
 {% block content %}
-  <h1>Create an account</h1>
+    <div id="sign_up_body">
+        <section class="register_formcontainer">
+            <div class="Sign_Up">
+                <h2>{% trans "Sign Up" %}</h2>
+                {%  csrf_token %}
+                {{ user_form.as_p }}
+                {{ data_form.as_p }}
+                <input id="sign_up_submit" type="submit" value="Create the account">
+            </div>
+        </section>
+    </div>
+{##}
+{#  <h1>Create an account</h1>#}
+{##}
+{# <form id="register_window" method="post">#}
+{#      {%  csrf_token %}#}
+{#      {{ user_form.as_p }}#}
+{#      {{ data_form.as_p }}#}
+{#      <input type="submit" value="Create the account">#}
+{#  </form> #}
 
-  <form method="post">
-      {%  csrf_token %}
-      {{ user_form.as_p }}
-      {{ data_form.as_p }}
-      <input type="submit" value="Create the account">
-  </form>
 {% endblock %}

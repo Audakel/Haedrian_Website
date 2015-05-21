@@ -95,29 +95,38 @@
 
 										<!-- Toggle get grouped for better mobile display -->
 										<div class="navbar-header">
-											<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-1">
-												<span class="sr-only">Toggle navigation</span>
-												<span class="icon-bar"></span>
-												<span class="icon-bar"></span>
-												<span class="icon-bar"></span>
+										<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-1">
+											<span class="sr-only">Toggle navigation</span>
+											<span class="icon-bar"></span>
+											<span class="icon-bar"></span>
+											<span class="icon-bar"></span>
 											</button>
 										</div>
-
+{#                                        <div id="drop_tags">#}
+{#                                            <ul>#}
+{#                                                <li class="top" style="background-image: url('{% static "images/drop_tags.png" %}');#}
+{#                                                    background-size: contain; width: 50px; height:50px"></li>#}
+{#                                                <li class="item"><a id="tags" href="{% url "haedrian:index" %}">Home</a></li>#}
+{#                                                <li class="item"><a id="tags" href="{% url "haedrian:register" %}">Sign Up</a></li>#}
+{#                                                <li class="item"><a id="tags" href="{% url "login" %}">Log In</a></li>#}
+{#                                            </ul>#}
+{#                                        </div>#}
 										<!-- Collect the nav links, forms, and other content for toggling -->
-										<div class="collapse navbar-collapse scrollspy smooth-scroll" id="navbar-collapse-1">
-											<ul class="nav navbar-nav navbar-right">
-                                                {% block menu_item %}
-												<li class="active"><a href="{% url "haedrian:index" %}#banner">Home</a></li>
-												<li><a href="{% url "haedrian:index" %}#about">About</a></li>
-                                                {% if user.is_authenticated %}
-												<li><a href="{% url "dashboard:index" %}">Dashboard</a></li>
-												<li><a href="{% url "logout" %}">Log Out</a></li>
-                                                {% else %}
-												<li><a href="{% url "haedrian:register" %}">Sign Up</a></li>
-												<li><a href="{% url "login" %}">Log In</a></li>
-                                                {% endif %}
-                                                {% endblock %}
-											</ul>
+										<div>
+{#                                            <div id="tags">#}
+                                                <ul>
+                                                    {% block menu_item %}
+                                                    {% if user.is_authenticated %}
+                                                    <li class="tags"><a id="tags" href="{% url "dashboard:index" %}">Dashboard</a></li>
+                                                    <li class="tags"><a id="tags" href="{% url "logout" %}">Log Out</a></li>
+                                                    {% else %}
+                                                    <li class="tags"><a id="tags" href="{% url "haedrian:register" %}">Sign Up</a></li>
+                                                    <li class="tags"><a id="tags" href="{% url "login" %}">Log In</a></li>
+                                                    {% endif %}
+                                                        <li class="tags"><a id="tags" href="{% url "haedrian:index" %}">Home</a></li>
+                                                    {% endblock %}
+                                                </ul>
+{#                                            </div>#}
 										</div>
 
 									</div>

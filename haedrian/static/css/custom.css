@@ -1,0 +1,53 @@
+#sign_up_body {
+ /*   background-color: pink; */
+    /*background-image: url(/haedrian/static/images/background_720.png);*/
+    /*background: url(/haedrian/static/images/background_720.png) no-repeat #f6f1b9 fixed top right;*/
+    width: 100%;
+    height: 100%;
+}
+
+section.register_formcontainer {
+    margin: 100px auto;
+    width: 640px;
+}
+
+.Sign_Up {
+    position: relative;
+    margin: 0 auto;
+    padding: 20px 20px 20px;
+    width: 100%;
+    background: white;
+    border-radius: 3px;
+}
+
+.Sign_Up:before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  bottom: -8px;
+  left: -8px;
+  z-index: -1;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+}
+
+#id_username {
+    width: 100%;
+}
+
+#id_password1 {
+    width: 100%;
+}
+
+#id_password2 {
+    width: 100%;
+}
+
+#id_phone {
+    width: 100%;
+}
+
+#sign_up_submit {
+    float: right;
+}

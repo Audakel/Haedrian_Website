@@ -11,7 +11,7 @@ PUBLIC_ROOT = os.path.abspath(os.path.join(PROJECT_ROOT, 'public'))
 #TODO fix this shiz
 TWILIO_ACCOUNT_SID = 'AC4f7dec744e3bcad378e19888b8213af3'
 TWILIO_AUTH_TOKEN = '0c7b01582cbe2ce27123e2dc7ac983d6'
-
+GOOGLE_PLACES_API_KEY = 'AIzaSyA9koyYrNBHQKg3nATQKX_YvmjyqMs6eF4'
 COINS_API_KEY = "unZUljzAcdFEeWJzX9WfhwdBgjtBVzKEklsd5AkT"
 COINS_SECRET = "NlfqOzqDwKEsRw7Uw9WNvRT2ktrIX5WN5X2hPFE09YnfITZjGh"
 
@@ -79,6 +79,7 @@ INSTALLED_APPS = (
     'rapidsms',
     'sms',
     'rapidsms.contrib.messagelog',
+    # 'django_google_places',
 )
 
 INSTALLED_BACKENDS = {

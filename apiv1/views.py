@@ -6,10 +6,21 @@ from money import xrates
 from rest_framework.throttling import UserRateThrottle
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
-
-
 from apiv1._views import _create_wallet, _new_user, _get_exchanges, _send_to_user_handle, _send_to_address, \
     _get_pending_balance, _get_balance, _get_user_wallet_handel, _get_address, _get_exchange_fees, _get_exchange_types
+from rest_framework.decorators import api_view, authentication_classes
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from money import Money, xrates
+from haedrian.models import Transaction, Wallet
+from apiv1.serializers import SendSerializer
+from coins_ph.wallet_commands import *
+from haedrian.wallets.coins_ph import CoinsPhWallet
+from haedrian.google.places import GooglePlaces
+from haedrian.google.lang import *
+from haedrian.views import _create_account
+import requests
+from haedrian.models import UserData
 
 xrates.install('apiv1.btc_exchange_rate.BTCExchangeBackend')
 
@@ -127,7 +138,25 @@ def create_wallet(request):
     except:
         return Response(status=400)
 
-# ==================================================================================================
+
+@api_view(http_method_names=['GET'])
+@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+def get_locations(request):
+    try:
+        data = _get_locations(request.user, request.data)
+        return Response(data)
+    except Exception as e:
+        return Response(e.message, status=400)
+
+
+def _get_locations(user, data):
+    try:
+        google_places = GooglePlaces('AIzaSyA9koyYrNBHQKg3nATQKX_YvmjyqMs6eF4')
+        data = google_places.text_search("bank")
+        import pdb; pdb.set_trace()
+        return Response(data.raw_response.values)
+    except Exception as e:
+        return e.message
 
 
 

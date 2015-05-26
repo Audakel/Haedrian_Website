@@ -20,10 +20,6 @@
 		<!-- Favicon -->
 		<link rel="shortcut icon" href="{% static "images/favicon.ico" %}">
 
-		<!-- Web Fonts -->
-		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700,300&amp;subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-		<link href='http://fonts.googleapis.com/css?family=Raleway:700,400,300' rel='stylesheet' type='text/css'>
-
 		<!-- Bootstrap core CSS -->
 		<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
 
@@ -95,29 +91,38 @@
 
 										<!-- Toggle get grouped for better mobile display -->
 										<div class="navbar-header">
-											<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-1">
-												<span class="sr-only">Toggle navigation</span>
-												<span class="icon-bar"></span>
-												<span class="icon-bar"></span>
-												<span class="icon-bar"></span>
+										<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-1">
+											<span class="sr-only">Toggle navigation</span>
+											<span class="icon-bar"></span>
+											<span class="icon-bar"></span>
+											<span class="icon-bar"></span>
 											</button>
 										</div>
-
+{#                                        <div id="drop_tags">#}
+{#                                            <ul>#}
+{#                                                <li class="top" style="background-image: url('{% static "images/drop_tags.png" %}');#}
+{#                                                    background-size: contain; width: 50px; height:50px"></li>#}
+{#                                                <li class="item"><a id="tags" href="{% url "haedrian:index" %}">Home</a></li>#}
+{#                                                <li class="item"><a id="tags" href="{% url "haedrian:register" %}">Sign Up</a></li>#}
+{#                                                <li class="item"><a id="tags" href="{% url "login" %}">Log In</a></li>#}
+{#                                            </ul>#}
+{#                                        </div>#}
 										<!-- Collect the nav links, forms, and other content for toggling -->
-										<div class="collapse navbar-collapse scrollspy smooth-scroll" id="navbar-collapse-1">
-											<ul class="nav navbar-nav navbar-right">
-                                                {% block menu_item %}
-												<li class="active"><a href="{% url "haedrian:index" %}#banner">Home</a></li>
-												<li><a href="{% url "haedrian:index" %}#about">About</a></li>
-                                                {% if user.is_authenticated %}
-												<li><a href="{% url "dashboard:index" %}">Dashboard</a></li>
-												<li><a href="{% url "logout" %}">Log Out</a></li>
-                                                {% else %}
-												<li><a href="{% url "haedrian:register" %}">Sign Up</a></li>
-												<li><a href="{% url "login" %}">Log In</a></li>
-                                                {% endif %}
-                                                {% endblock %}
-											</ul>
+										<div>
+{#                                            <div id="tags">#}
+                                                <ul>
+                                                    {% block menu_item %}
+                                                    {% if user.is_authenticated %}
+                                                    <li class="tags"><a id="tags" href="{% url "dashboard:index" %}">Dashboard</a></li>
+                                                    <li class="tags"><a id="tags" href="{% url "logout" %}">Log Out</a></li>
+                                                    {% else %}
+                                                    <li class="tags"><a id="tags" href="{% url "haedrian:register" %}">Sign Up</a></li>
+                                                    <li class="tags"><a id="tags" href="{% url "login" %}">Log In</a></li>
+                                                    {% endif %}
+                                                        <li class="tags"><a id="tags" href="{% url "haedrian:index" %}">Home</a></li>
+                                                    {% endblock %}
+                                                </ul>
+{#                                            </div>#}
 										</div>
 
 									</div>
@@ -157,9 +162,6 @@
 		<!-- Appear javascript -->
 		<!--<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.appear/0.3.3/jquery.appear.min.js"></script> -->
 		<script type="text/javascript" src="{% static "plugins/jquery.appear.js" %}"></script>
-
-		<!-- Initialization of Plugins -->
-		<script type="text/javascript" src="{% static "js/template.js" %}"></script>
 
 		<!-- Custom Scripts -->
 		<script type="text/javascript" src="{% static "js/custom.js" %}"></script>

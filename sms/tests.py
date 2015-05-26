@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import SmsMessage
+from .models import Message
 from haedrian.models import UserData
 
 # Create your tests here.

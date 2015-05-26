@@ -49,23 +49,28 @@ def _create_account(user_data):
 
     data_form = NewUserForm(user_data)
     user_form = UserCreationForm(user_data)
-    try:
-        user_form.is_valid() and data_form.is_valid()
-        new_user = user_form.save(commit=False)
-        data = data_form.save(commit=False)
-        data.user = new_user
-        data.credit_score = 0
-        _country = pycountry.countries.get(alpha3=data.country.alpha3)
-        data.default_currency = pycountry.currencies.get(numeric=_country.numeric).letter
-        wallet = Wallet(user=new_user, type=Wallet.TEST)
+    # try:
+    if user_form.is_valid() and data_form.is_valid():
+        django_user = user_form.save()
+        # TODO:: Create new form to validate email
+        django_user.email = user_data['email']
+        haedrian_user = data_form.save(commit=False)
+        haedrian_user.user = django_user
+        haedrian_user.credit_score = 0
+        _country = pycountry.countries.get(alpha3=haedrian_user.country.alpha3)
+        haedrian_user.default_currency = pycountry.currencies.get(numeric=_country.numeric).letter
+        # TODO:: fix what type of wallets get created rather than just all coins_ph
+        wallet = Wallet(user=django_user, type=Wallet.COINS_PH)
         wallet.save()
-        wallet.save()
-        data_form.save()
-        new_user.save()
+        django_user.save()
+        haedrian_user.save()
         # TODO: send verification email or something
         return True
-    except Exception as e:
-        return e.message
+    else:
+        return {
+            'user': user_data,
+            'data': data_form
+        }
 
 from django.contrib.auth import views
 def login(request, *args, **kwargs):

@@ -1,8 +1,8 @@
 from django.conf.urls import url, include
 from django.contrib.auth.models import User
 from views import send_to_address, send_to_user_handle,get_address,get_user_wallet_handel, \
-    get_pending_balance,get_balance,get_exchanges, new_user, create_wallet
-from apiv1.views import coins_send, wallet_info, coinsph_exchanges
+    get_pending_balance,get_balance,get_exchanges, new_user, create_wallet, get_exchange_fees, get_exchange_types
+from apiv1._views import wallet_info
 from rest_framework.authtoken import views
 
 
@@ -18,6 +18,8 @@ urlpatterns = [
 
     # testing
     url(r'^create-wallet/', create_wallet),
+    url(r'^exchange-fees/', get_exchange_fees),
+    url(r'^exchange-types/', get_exchange_types),
 
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^token-auth/', views.obtain_auth_token)

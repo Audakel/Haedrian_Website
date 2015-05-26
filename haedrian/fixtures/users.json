@@ -13,7 +13,7 @@
             "last_login": "2015-05-07T16:56:56.323Z",
             "groups": [],
             "user_permissions": [],
-            "password": "pbkdf2_sha256$15000$dQpOpFCydC06$LKEh41V+lRf3sSUJcSq7jUNlWclBWcFtEh6ClMxSBNg=",
+            "password": "pbkdf2_sha256$15000$uc4mu4Xw8KbO$MzijkpMzFlXDzniLjFzKbu9H1VJHLJMkSvgmme7rFyk=",
             "email": "haedrian@example.com",
             "date_joined": "2015-05-07T16:56:46.588Z"
         }
@@ -31,7 +31,7 @@
             "last_login": "2015-05-07T16:56:56.323Z",
             "groups": [],
             "user_permissions": [],
-            "password": "pbkdf2_sha256$15000$dQpOpFCydC06$LKEh41V+lRf3sSUJcSq7jUNlWclBWcFtEh6ClMxSBNg=",
+            "password": "pbkdf2_sha256$15000$uc4mu4Xw8KbO$MzijkpMzFlXDzniLjFzKbu9H1VJHLJMkSvgmme7rFyk=",
             "email": "james@example.com",
             "date_joined": "2015-05-07T16:56:46.588Z"
         }
@@ -40,7 +40,7 @@
         "model": "auth.user",
         "pk": 3,
         "fields": {
-            "username": "audakel",
+            "username": "logan",
             "first_name": "",
             "last_name": "",
             "is_active": true,
@@ -49,8 +49,8 @@
             "last_login": "2015-05-07T16:56:56.323Z",
             "groups": [],
             "user_permissions": [],
-            "password": "pbkdf2_sha256$15000$dQpOpFCydC06$LKEh41V+lRf3sSUJcSq7jUNlWclBWcFtEh6ClMxSBNg=",
-            "email": "audakel@example.com",
+            "password": "pbkdf2_sha256$15000$uc4mu4Xw8KbO$MzijkpMzFlXDzniLjFzKbu9H1VJHLJMkSvgmme7rFyk=",
+            "email": "loganbentley22@gmail.com",
             "date_joined": "2015-05-07T16:56:46.588Z"
         }
     },
@@ -83,7 +83,7 @@
         "fields": {
             "user": 3,
             "credit_score": 800,
-            "phone": "+14803591947",
+            "phone": "+18016905609",
             "default_currency": "USD",
             "country": "US"
 
@@ -94,7 +94,7 @@
         "pk": 1,
         "fields": {
             "user": 1,
-            "type": "TS"
+            "type": "CH"
         }
 
     },
@@ -103,6 +103,15 @@
         "pk": 2,
         "fields": {
             "user": 2,
+            "type": "TS"
+        }
+
+    },
+    {
+      "model": "haedrian.wallet",
+        "pk": 3,
+        "fields": {
+            "user": 3,
             "type": "TS"
         }
 

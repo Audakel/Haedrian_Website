@@ -27,7 +27,7 @@ class GemWallet(BaseWallet):
     def send_to_address(self, address, amount_btc):
         self.user
 
-    def get_balance(self):
+    def get_balance(self, user):
         pass
 
     def get_address(self):

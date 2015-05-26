@@ -6,7 +6,6 @@ from money import Money
 from rest_framework import authentication, exceptions
 from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.response import Response
-from apiv1.coins_ph.wallet_commands import coinsph_send, coinsph_wallet_info
 from apiv1.serializers import SendSerializer
 from haedrian.models import UserData, Transaction, Wallet
 from haedrian.views import _create_account
@@ -227,16 +226,6 @@ def _history(user):
 
     return Response(data, status=200)
 
-
-@api_view(http_method_names=['POST'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
-def wallet_info(request):
-    return _wallet_info()
-
-
-def _wallet_info():
-
-    return Response()
 
 
 

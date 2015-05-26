@@ -2,7 +2,6 @@ from django.conf.urls import url, include
 from django.contrib.auth.models import User
 from views import send_to_address, send_to_user_handle,get_address,get_user_wallet_handel, \
     get_pending_balance,get_balance,get_exchanges, new_user, create_wallet, get_exchange_fees, get_exchange_types, get_locations
-from apiv1._views import wallet_info
 from rest_framework.authtoken import views
 
 

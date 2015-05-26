@@ -71,7 +71,7 @@ INSTALLED_APPS = (
     # failed login request handling
     # TODO maybe production only?
     'axes',
-    'rtwilio',
+    # 'rtwilio',
     # our apps
     'apiv1',
     'haedrian',

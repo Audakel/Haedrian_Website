@@ -72,7 +72,7 @@ class Migration(migrations.Migration):
                 ('user', models.OneToOneField(primary_key=True, serialize=False, to=settings.AUTH_USER_MODEL)),
                 ('phone', models.CharField(max_length=15)),
                 ('credit_score', models.IntegerField(default=0, max_length=4)),
-                ('handle', models.CharField(max_length=50)),
+                ('sms_balance', models.DecimalField(default=0, max_digits=12, decimal_places=4)),
                 ('country', django_countries.fields.CountryField(max_length=2)),
                 ('default_currency', models.CharField(default=b'USD', max_length=4)),
             ],
@@ -85,6 +85,10 @@ class Migration(migrations.Migration):
             fields=[
                 ('user', models.ForeignKey(primary_key=True, serialize=False, to=settings.AUTH_USER_MODEL)),
                 ('type', models.CharField(default=b'CH', max_length=2, choices=[(b'CH', b'Coins.ph'), (b'GM', b'Gem'), (b'SE', b'I have my own wallet'), (b'TS', b'Fake wallet for testing purposes')])),
+                ('wallet_id', models.CharField(default=b'', max_length=60)),
+                ('access_token', models.CharField(default=b'', max_length=60)),
+                ('refresh_token', models.CharField(default=b'', max_length=60)),
+                ('expires_at', models.CharField(default=b'', max_length=60)),
             ],
             options={
             },

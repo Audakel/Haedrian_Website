@@ -8,7 +8,10 @@ from haedrian.models import Transaction
 #         model = Project
 #         fields = ('id', 'user', 'title', 'description', 'category', 'location', 'goal')
 
-
+class PlacesSerializer(serializers.Serializer):
+    query = serializers.CharField()
+    lat = serializers.DecimalField(max_digits=32, decimal_places=16)
+    lng = serializers.DecimalField(max_digits=32, decimal_places=16)
 
 class SendSerializer(serializers.Serializer):
     def create(self, validated_data):

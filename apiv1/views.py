@@ -13,14 +13,14 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from money import Money, xrates
 from haedrian.models import Transaction, Wallet
-from apiv1.serializers import SendSerializer
+from apiv1.serializers import SendSerializer, PlacesSerializer
 from coins_ph.wallet_commands import *
 from haedrian.wallets.coins_ph import CoinsPhWallet
-from haedrian.google.places import GooglePlaces
-from haedrian.google.lang import *
 from haedrian.views import _create_account
 import requests
 from haedrian.models import UserData
+from haedrian.google.places import GooglePlaces
+from haedrian.google.lang import *
 
 xrates.install('apiv1.btc_exchange_rate.BTCExchangeBackend')
 
@@ -142,21 +142,24 @@ def create_wallet(request):
 @api_view(http_method_names=['GET'])
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def get_locations(request):
-    try:
-        data = _get_locations(request.user, request.data)
-        return Response(data)
-    except Exception as e:
-        return Response(e.message, status=400)
+    input_data = PlacesSerializer(data=request.GET)
+    if input_data.is_valid():
+        query = input_data.data['query']
+        lat_lng = {
+            'lat': input_data.data['lat'],
+            'lng': input_data.data['lng'],
+        }
+        radius = 3200 #input_data.data['radius']
+        google_places = GooglePlaces(settings.GOOGLE_PLACES_API_KEY)
+        data = google_places.text_search(query, ENGLISH, lat_lng, radius, [], None)
+        if data[1]['status'].lower() == "ok":
+            return Response(data[1]['results'])
+        else:
+            return Response("Google Places Error: Status code was %s" %data[1]['status'], status=400)
+    return Response(input_data.errors, status=400)
 
 
-def _get_locations(user, data):
-    try:
-        google_places = GooglePlaces('AIzaSyA9koyYrNBHQKg3nATQKX_YvmjyqMs6eF4')
-        data = google_places.text_search("bank")
-        import pdb; pdb.set_trace()
-        return Response(data.raw_response.values)
-    except Exception as e:
-        return e.message
+
 
 
 

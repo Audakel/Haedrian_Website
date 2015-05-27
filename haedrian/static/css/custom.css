@@ -7,14 +7,14 @@
 }
 
 section.register_formcontainer {
-    margin: 100px auto;
+    margin: 80px auto;
     width: 640px;
 }
 
 .Sign_Up {
     position: relative;
     margin: 0 auto;
-    padding: 20px 20px 20px;
+    padding: 20px 20px 50px;
     width: 100%;
     background: white;
     border-radius: 3px;

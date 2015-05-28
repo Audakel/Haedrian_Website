@@ -12,7 +12,7 @@ from wallet import BaseWallet
 # app = client.authenticate_application(settings.GEM_API_TOKEN, settings.GEM_ADMIN_TOKEN)
 
 class GemWallet(BaseWallet):
-    def get_user_wallet_handel(self):
+    def get_wallet_info(self):
         pass
 
     def get_pending_balance(self):

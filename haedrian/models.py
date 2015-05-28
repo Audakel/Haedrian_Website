@@ -66,10 +66,13 @@ class Wallet(models.Model):
     )
     user = models.ForeignKey(User, primary_key=True)
     type = models.CharField(max_length=2, choices=WALLET_TYPE, default=COINS_PH)
-    wallet_id = models.CharField(max_length=60, default="")
+    api_client_id = models.CharField(max_length=60, default="")
+    # token that each wallet provding company uses to id their wallets
+    provider_wallet_id = models.CharField(max_length=60, default="")
     access_token = models.CharField(max_length=60, default="")
     refresh_token = models.CharField(max_length=60, default="")
     expires_at = models.CharField(max_length=60, default="")
+    blockchain_address = models.CharField(max_length=60, default="")
 
 
 class Transaction(models.Model):

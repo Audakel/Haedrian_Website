@@ -7,7 +7,7 @@ from rest_framework.throttling import UserRateThrottle
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
 from apiv1._views import _create_wallet, _new_user, _get_exchanges, _send_to_user_handle, _send_to_address, \
-    _get_pending_balance, _get_balance, _get_user_wallet_handel, _get_address, _get_exchange_fees, _get_exchange_types
+    _get_pending_balance, _get_balance, _get_wallet_info, _get_address, _get_exchange_fees, _get_exchange_types
 from rest_framework.decorators import api_view, authentication_classes
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -30,6 +30,11 @@ class OncePerDayUserThrottle(UserRateThrottle):
 default_response_200 = {}
 default_response_400 = {"success": False, "error": ""}
 
+# finaltest4
+# testendpoint
+global_user = get_user_model().objects.get(username='newtoken8')
+
+
 @api_view(http_method_names=['POST'])
 @permission_classes((AllowAny,))
 # @throttle_classes([OncePerDayUserThrottle])
@@ -45,8 +50,9 @@ def new_user(request):
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def get_exchanges(request):
     try:
-        data = _get_exchanges(request.user, request.data)
-        return Response(default_response_200.update(data=data))
+        data = _get_exchanges(global_user, request.data)
+        # data = _get_exchanges(request.user, request.data)
+        return Response(data=data)
     except:
         return Response(status=400)
 
@@ -55,7 +61,8 @@ def get_exchanges(request):
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def get_exchange_fees(request):
     try:
-        data = _get_exchange_fees(request.user, request.data)
+        data = _get_exchange_fees(global_user, request.data)
+        # data = _get_exchange_fees(request.user, request.data)
         return Response(data)
     except:
         return Response(status=400)
@@ -65,7 +72,8 @@ def get_exchange_fees(request):
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def get_exchange_types(request):
     try:
-        data = _get_exchange_types(request.user, request.data)
+        data = _get_exchange_types(global_user, request.data)
+        # data = _get_exchange_types(request.user, request.data)
         return Response(data)
     except:
         return Response(status=400)
@@ -74,18 +82,20 @@ def get_exchange_types(request):
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def get_address(request):
     try:
-        data = _get_address(request.user, request.data)
-        return Response(default_response_200.update(data=data))
+        data = _get_address(global_user, request.data)
+        # data = _get_address(request.user, request.data)
+        return Response(data)
     except:
         return Response(status=400)
 
 
 @api_view(http_method_names=['GET'])
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
-def get_user_wallet_handel(request):
+def get_wallet_info(request):
     try:
-        data = _get_user_wallet_handel(request.user, request.data)
-        return Response(default_response_200.update(data=data))
+        data = _get_wallet_info(global_user, request.data)
+        # data = _get_user_wallet_handel(request.user, request.data)
+        return Response(data=data)
     except:
         return Response(status=400)
 
@@ -94,7 +104,8 @@ def get_user_wallet_handel(request):
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def get_balance(request):
     try:
-        data = _get_balance(request.user, request.data)
+        data = _get_balance(global_user, request.data)
+        # data = _get_balance(request.user, request.data)
         return Response(data)
     except Exception as e:
         return Response(e.message, status=400)
@@ -103,7 +114,8 @@ def get_balance(request):
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def get_pending_balance(request):
     try:
-        data = _get_pending_balance(request.user, request.data)
+        data = _get_pending_balance(global_user, request.data)
+        # data = _get_pending_balance(request.user, request.data)
         return Response(default_response_200.update(data=data))
     except:
         return Response(status=400)
@@ -113,8 +125,10 @@ def get_pending_balance(request):
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def send_to_address(request):
     try:
-        data = _send_to_address(request.user, request.data)
-        return Response(data,status=200)
+
+        data = _send_to_address(global_user, request.data)
+        # data = _send_to_address(request.user, request.data)
+        return Response(data, status=200)
     except Exception as e:
         return Response(e.message, status=400)
 
@@ -123,7 +137,8 @@ def send_to_address(request):
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def send_to_user_handle(request):
     try:
-        data = _send_to_user_handle(request.user, request.data)
+        data = _send_to_user_handle(global_user, request.data)
+        # data = _send_to_user_handle(request.user, request.data)
         return Response(default_response_200.update(data=data))
     except:
         return Response(status=400)
@@ -133,7 +148,8 @@ def send_to_user_handle(request):
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def create_wallet(request):
     try:
-        data = _create_wallet(request.user, request.data)
+        data = _create_wallet(global_user, request.data)
+        # data = _create_wallet(request.user, request.data)
         return Response(data)
     except:
         return Response(status=400)
@@ -143,7 +159,8 @@ def create_wallet(request):
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def get_locations(request):
     try:
-        data = _get_locations(request.user, request.data)
+        data = _get_locations(global_user, request.data)
+        # data = _get_locations(request.user, request.data)
         return Response(data)
     except Exception as e:
         return Response(e.message, status=400)
@@ -153,7 +170,6 @@ def _get_locations(user, data):
     try:
         google_places = GooglePlaces('AIzaSyA9koyYrNBHQKg3nATQKX_YvmjyqMs6eF4')
         data = google_places.text_search("bank")
-        import pdb; pdb.set_trace()
         return Response(data.raw_response.values)
     except Exception as e:
         return e.message

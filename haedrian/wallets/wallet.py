@@ -33,7 +33,7 @@ class BaseWallet(object):
         pass
 
     @abstractmethod
-    def get_user_wallet_handel(self):
+    def get_wallet_info(self):
         """Return a unique handle, ID, or other type of address that given wallet provider uses"""
         pass
 

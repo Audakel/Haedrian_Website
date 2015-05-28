@@ -14,7 +14,7 @@ class TestWallet(BaseWallet):
     def create_wallet(self, email, password):
         pass
 
-    def get_user_wallet_handel(self):
+    def get_wallet_info(self):
         pass
 
     def get_pending_balance(self):

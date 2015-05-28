@@ -7,12 +7,13 @@ import hashlib
 import hmac
 import time
 import json
-import pdb
+from django.contrib.auth import get_user_model
+
 """
 {
     "receiver": "mentors_international",
-    "amount_local": 45781,
-    "target_address": "4dfu3iunf98rmkff91d34edsff3f"
+    "amount_local": 0.0130,
+    "target_address": "12UkkQ58ksRXHzHdNzhcy4e6f8JwWGTG3H"
 }
 
 {
@@ -38,14 +39,14 @@ class CoinsPhWallet(BaseWallet):
     def __init__(self, user):
         super(CoinsPhWallet, self).__init__(user)
 
-    def get_user_wallet_handel(self):
+    def get_wallet_info(self, user):
         url = 'https://coins.ph/api/v3/crypto-accounts/'
-        data = make_hmac_request(url)
-        return data['crypto-accounts'][0]['id']
+        data = make_oath_request(url, user)['crypto-accounts']
+        return data
 
-    def get_pending_balance(self):
+    def get_pending_balance(self, user):
         url = 'https://coins.ph/api/v3/crypto-accounts/'
-        _data = make_hmac_request(url)['crypto-accounts'][0]
+        _data = make_oath_request(url, user)['crypto-accounts'][0]
         data = {
             "pending": _data['pending_balance'],
             "currency": currency[0]
@@ -53,6 +54,7 @@ class CoinsPhWallet(BaseWallet):
         return data
 
     def send_to_user(self, user, amount_btc, address):
+
         pass
     #     url = 'https://coins.ph/api/v3/transfers/'
     #     body = {
@@ -74,35 +76,40 @@ class CoinsPhWallet(BaseWallet):
     #
     #     return data
 
-    def send_to_address(self, receiver, amount_local, target_address):
+    def send_to_address(self, user, receiver, amount_local, target_address):
+
         url = 'https://coins.ph/api/v3/crypto-payments/'
+        user_wallet = Wallet.objects.filter(user_id=user)[0]
+        sender_account = user_wallet.provider_wallet_id
+        address = target_address
+
         body = {
+            # 'amount': amount_local,
             'amount': amount_local,
-            'account': receiver,
-            'target_address': target_address
+            'account': sender_account,
+            'target_address': address
         }
         try:
-            # import pdb; pdb.set_trace()
-            _data = make_hmac_request(url, body)
+            import pdb;pdb.set_trace()
+            _data = make_oath_request(url, user, body)["crypto-payment"]
             data = {
-                "status": _data["crypto-payment"]['status'],
-                "fee": _data["crypto-payment"]['fee_amount'],
-                "target": _data["crypto-payment"]['target_address'],
-                "amount": _data["crypto-payment"]['amount'],
+                "status": _data['status'],
+                "fee": _data['fee_amount'],
+                "target": _data['target_address'],
+                "amount": _data['amount'],
                 "currency": currency[0]
             }
-        except:
-            data = _data['errors']
+        except Exception as e:
+            data = e.message
 
         return data
 
     def get_balance(self, user):
         # TODO:: fix hard code
-
         url = 'https://coins.ph/api/v3/crypto-accounts/'
-        import pdb;pdb.set_trace()
         try:
-            _data = make_oath_request(url, user)['status']['crypto-accounts'][0]
+            # _data = make_oath_request(url, user)['status']['crypto-accounts'][0]
+            _data = make_oath_request(url, user)['crypto-accounts'][0]
             data = {
                 "balance": _data['balance'],
                 "pending_balance": _data['pending_balance'],
@@ -112,30 +119,45 @@ class CoinsPhWallet(BaseWallet):
         except Exception as e:
             return e.message
 
-    def get_address(self):
+    def get_address(self, user):
         url = 'https://coins.ph/api/v3/crypto-accounts/'
-        _data = make_hmac_request(url)['crypto-accounts'][0]
+        _data = make_oath_request(url, user)['crypto-accounts'][0]
         data = {
             "default_address": _data['default_address'],
             "currency": currency[0]
         }
         return data
 
-    def get_exchanges(self):
-        url = 'https://coins.ph/d/api/payout-outlets/'
-        data = make_hmac_request(url)
+    def get_exchanges(self, user):
+        url = 'https://coins.ph/d/api/payin-outlets/'
+        _data = make_oath_request(url, user)["payin-outlets"]
+        data = []
+        for i in _data:
+            if i['amount_limits'][0]['currency'] == 'PHP':
+                data.append(i)
         return data
 
-    def get_exchange_fees(self):
-        url = 'https://coins.ph/d/api/payout-outlet-fees/'
-        data = make_hmac_request(url)
+    def get_exchange_fees(self, user):
+        url = 'https://coins.ph/d/api/payin-outlet-fees/'
+        data = make_oath_request(url, user)
         return data
 
-    def get_exchange_types(self):
+    def get_exchange_types(self, user, data=''):
         url = 'https://coins.ph/d/api/payin-outlet-categories/'
-        _data = make_hmac_request(url)
-        for i in _data['payin-outlet-categories']:
-            print i['name']
+        try:
+            _data = make_oath_request(url, user)['payin-outlet-categories']
+        except Exception as e:
+            return e.message
+        exchange_list = []
+        # data ={'type':'Bank Deposit'}
+        if data:
+            for i in _data:
+                if i['name'] == data['type']:
+                    return i
+        else:
+            for i in _data:
+                exchange_list.append(i['name'])
+            return exchange_list
 
     def create_wallet(self, user, data):
         url = 'https://coins.ph/api/v2/user'
@@ -146,17 +168,21 @@ class CoinsPhWallet(BaseWallet):
             'api_key': 'unZUljzAcdFEeWJzX9WfhwdBgjtBVzKEklsd5AkT'
         }
 
+        # TODO check for duplicte emails - roll back
         data = make_hmac_request(url, body)
         if data['success']:
             access_token = data['user']['access_token']
-            wallet_id = data['user']['client_id']
             refresh_token = data['user']['refresh_token']
             expires_at = data['user']['expires_at']
             wallet = Wallet.objects.get(user_id=user)
             wallet.access_token = access_token
-            wallet.wallet_id = wallet_id
             wallet.refresh_token = refresh_token
             wallet.expires_at = expires_at
+            wallet.save()
+            # TODO:: Check for false on get address
+            additional_params = get_extra_wallet_info(user)
+            wallet.blockchain_address = additional_params['blockchain_address']
+            wallet.provider_wallet_id = additional_params['provider_wallet_id']
             wallet.save()
         return data
 
@@ -166,6 +192,16 @@ currency = ["BTC", "CLP", "PBTC"]
 
 API_KEY = settings.COINS_API_KEY  # Replace this with your API Key
 API_SECRET = settings.COINS_SECRET  # Replace this with your API secret
+
+# TODO:: fix this internal rewrite
+def get_extra_wallet_info(user):
+    url = 'https://coins.ph/api/v3/crypto-accounts/'
+    _data = make_oath_request(url, user)['crypto-accounts'][0]
+    data = {
+        'blockchain_address': _data['default_address'],
+        'provider_wallet_id': _data['id']
+    }
+    return data
 
 
 def make_oath_request(url, user, body=''):
@@ -229,15 +265,19 @@ def make_hmac_request(url, body=''):
 
 
 def get_user_token(user):
-    user = Wallet.objects.filter(user_id=user)
-    if user.expires_at > time.time():
-        return user.access_token
+    user_wallet = Wallet.objects.filter(user_id=user)[0]
+    if float(user_wallet.expires_at) > time.time():
+        token = user_wallet.access_token
 
-    url = 'https://coins.ph/user/api/authorize'
-    # 'client_id': user.wallet_id,
-    params = {
-        'client_id': 'unZUljzAcdFEeWJzX9WfhwdBgjtBVzKEklsd5AkT',
-        'response_type': 'code',
-        'redirect_uri': 'https://haedrian.io'
-    }
-    requests.get(url, params=params)
+    else:
+        url = 'https://coins.ph/user/oauthtoken'
+        data = {
+            'client_id': user_wallet.provider_wallet_id,
+            'client_secret': settings.SECRET_KEY,
+            'refresh_token': user_wallet.refresh_token,
+            'grant_type': 1,
+            'redirect_uri': 'https://haedrian.io'
+        }
+        token = requests.post(url, data=data)
+
+    return token

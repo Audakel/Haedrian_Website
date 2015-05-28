@@ -9,6 +9,7 @@ from strings import str_deposit_locations
 import random
 from django.contrib.auth import get_user_model
 from django.db.models import F
+from django.utils.translation import ugettext as _
 import pdb;
 
 #  BEST DEBUGGING HELP +++++++++ ========= import pdb; pdb.set_trace()
@@ -25,19 +26,19 @@ class SMSApplication(AppBase):
             _user_id = UserData.objects.get(phone=msg.connections[0].identity).user_id
             user_id = get_user_model().objects.get(id=_user_id)
 
-            if command == 'balance':
+            if command == _('balance'):
                 sms_balance(msg)
-            elif command == 'send':
+            elif command == _('send'):
                 sms_send(msg, parts)
-            elif command == 'use':
+            elif command == _('use'):
                 sms_help(msg)
-            elif command == 'tulong':  # Tagolog help
+            elif command == _('tulong'):  # Tagolog help
                 sms_tulong(msg)
-            elif command == 'whoami':
+            elif command == _('whoami'):
                 sms_whoami(msg)
-            elif command == 'deposit':
+            elif command == _('deposit'):
                 sms_deposit(msg, parts, user_id)
-            elif command == 'where':
+            elif command == _('where'):
                 sms_where(msg, parts, user_id)
             else:
                 sms_help(msg)
@@ -50,29 +51,29 @@ def sms_send(msg, parts):
     try:
         amount = Decimal(parts[1])
     except:
-        msg.respond("Error: Enter a monetary amount to send.")
+        msg.respond(_("Error: Enter a monetary amount to send."))
         return
 
     if amount < 0:
-        msg.respond("Error: The amount to send must be positive")
+        msg.respond(_("Error: The amount to send must be positive"))
         return
 
     if UserData.objects.get(phone=msg.connections[0].identity).sms_balance - amount < 0:
-        msg.respond("Error: Not enough funds : (\nMaybe get a job?")
+        msg.respond(_("Error: Not enough funds"))
         return
 
     receiver_name = parts[2]
     if receiver_name[0] != '@':
-        msg.respond("Error: The receiver must be an @ handle.")
+        msg.respond(_("Error: The receiver must be an @ handle."))
         return
     try:
         UserModel = get_user_model()
         UserModel.objects.filter(username=receiver_name[1:]).exists()
     except:
-        msg.respond("Sorry, %s was not found.\nPlease check the @handle\n: (" % receiver_name)
+        msg.respond(_("Sorry, %s was not found.\nPlease check the @handle\n: (") % receiver_name)
         return
 
-    msg.respond("Sent %d to %s successfully!" % (amount, receiver_name))
+    msg.respond(_("Sent %d to %s successfully!") % (amount, receiver_name))
     user = UserData.objects.get(phone=msg.connections[0].identity)
     # import pdb;pdb.set_trace()
 
@@ -161,7 +162,7 @@ def sms_balance(msg):
     #                                                           response['pending_balance']))
 
     response = UserData.objects.get(phone=msg.connections[0].identity).sms_balance
-    msg.respond("You have $%d available, with $%d pending. Nice!" % (response, 0.00))
+    msg.respond(_("You have $%d available, with $%d pending. Nice!") % (response, 0.00))
 
 
 def save_message(msg):

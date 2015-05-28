@@ -143,44 +143,30 @@ blockquote {
         display: inline;
         float: right;
     }
-    #drop_tags {
-        display: none;
-    }
 }
 @media (max-width:767px) {
     .tags {
         display:none;
     }
-    #drop_tags {  /* Box in the button */
-        display: block;
-        width: 100px;
-        position: fixed;
-        top: 10px;
-        right: 10px;
+}
+.drop_tags {  /* Box in the button */
+        /*border: 2px solid #ffffff;*/
+        text-decoration: none;
+        float: right;
       }
 
-      #drop_tags a {
+      .drop_tags a {
         text-decoration: none;  /* Remove the underline from the links. */
       }
 
-      #drop_tags ul {
-        list-style-type: none;  /* Remove the bullets from the list */
-      }
-
-      #drop_tags .top {
-          background-color: #DDD;  /* The button background */
-          width: 50px;
-          height: 50px;
-      }
-
-      #drop_tags ul li.item {
-        display: none;  /* By default, do not display the items (which contains the links) */
-      }
-
-      #drop_tags ul:active .item {  /* When the user hovers over the button (or any of the links) */
-          display: block;
-          border: 1px solid black;
-          background-color: #EDC;
+      .drop_tags li {
+          border: 1px solid #808080;
+          margin: 1px;
+          padding-top: 3px;
+          padding-bottom: 3px;
+          padding-left: 10px;
+          padding-right: 10px;
+          list-style-type: none;
       }
 }
 /*.banner {*/

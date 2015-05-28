@@ -41,7 +41,7 @@ ADMINS = (
 MANAGERS = ADMINS
 
 AUTHENTICATION_BACKENDS = (
-    'haedrian.wallets.gem.GemBackend',
+    # 'haedrian.wallets.gem.GemBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 

@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^create-wallet/', create_wallet),
 
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^token-auth/', views.obtain_auth_token)
+    url(r'^token-auth/', views.obtain_auth_token),
 
+    url(r'^external/', include('apiv1.external.urls', namespace='external')),
 ]

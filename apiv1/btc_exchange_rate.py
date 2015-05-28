@@ -19,7 +19,7 @@ class BTCExchangeBackend(BackendBase):
     def rate(self, currency):
         if currency == self.base:
             return decimal.Decimal(1)
-        # TODO:: should it be sell rate or buy rate??
+        # TODO: should it be sell rate or buy rate?
         return decimal.Decimal(BitcoinRates.objects.get(code=currency).sell_rate)
         # return self._rates.get(currency, None)
 

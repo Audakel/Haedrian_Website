@@ -73,8 +73,7 @@ def sms_send(msg, parts):
         msg.respond(_("Error: The receiver must be an @ handle."))
         return
     try:
-        UserModel = get_user_model()
-        UserModel.objects.filter(username=receiver_name[1:]).exists()
+        get_user_model().objects.filter(username=receiver_name[1:]).exists()
     except:
         msg.respond(_("Sorry, %s was not found.\nPlease check the @handle\n: (") % receiver_name)
         return
@@ -155,9 +154,6 @@ def sms_help(msg):
     return
     """
 
-# def sms_tulong(msg):  # Help
-#     msg.respond("""Halimbawa send: 'Send 15 @mi'\n Halimbawa balance: 'Balance'""")
-
 
 def sms_balance(msg):
     # TODO: figure out how to find the user ID from authusers
@@ -194,12 +190,12 @@ def sms_where(msg, parts, user_id):
 
 
 def sms_deposit(msg, parts, user_id):
-    _deposit_list = get_deposit_types(user_id)
-    deposit_list = []
-    for i, val in enumerate(_deposit_list):
-        deposit_list.append("%d-%s" % (i, val))
+    # _deposit_list = get_deposit_types(user_id)
+    # deposit_list = []
+    # for i, val in enumerate(_deposit_list):
+    #     deposit_list.append("%d-%s" % (i, val))
     # msg.respond(', '.join(deposit_list))
-    msg.respond(str_deposit_locations)
+    msg.respond(_("To deposit money into your account reply ‘deposit (amount) (BPI or BDO)’. To check account balance reply ‘balance’. To pay loan reply ‘send (amount) @Mentors’."))
 
 
 def get_deposit_types(user_id):

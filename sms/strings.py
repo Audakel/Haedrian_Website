@@ -1,6 +1,21 @@
-__author__ = 'audakel'
+from django.utils.translation import ugettext as _
 
-str_usage_commands = "Usage Commands Examples : )\nSending $15: 'send 15 @mi'\nCheck balance: 'balance'\nTo get help: 'help!'"
-str_please_create_username="Please create a username.\nType '@' followed by your desired username. Example: @monkey"
-str_deposit_locations = "1-Online banking, 2-Over-the-counter, 3-Bank, 4-Cash Deposit Machine, 5-Online bank, 6-Mobile Money, 7-ATM, 8-Remittance center, 9-Prepaid card"
-str_deposit_commands = "Deposit 25 @"
+str_deposit = _('deposit')
+str_next = _('next')
+str_send = _('send')
+str_balance = _('balance')
+str_help_message = _("To deposit money into your account, reply 'deposit (amount) (BPI or BDO)'. To check your account balance, reply �balance�. To pay your loan, reply �send (amount) @Mentors�.")
+str_create_account = _("To create an account create a username. (Example: ilovecats12)")
+str_welcome_username_taken = _("Welcome!\nYou're user name is @%s\n(Sadly, @%s was already taken))")
+str_welcome = _("Welcome @%s!\n%s")
+str_username_not_found = _("Sorry, %s was not found.\nPlease check the username\n: (")
+str_successful_deposit = _("You have successfully deposited %d into your wallet. Current balance: %d. To pay your loan, reply �send (amount) @Mentors�. ")
+str_balance_message = _("You have $%d available, with $%d pending.")
+str_sent_message = _("Sent %d to %s successfully!")
+str_deposit_message = _("Deposited %d to %s successfully!")
+
+str_error_monetary_deposit = _("Error: Enter a monetary amount to deposit.")
+str_error_negative_amount = _("Error: The amount to deposit must be positive")
+str_error_username = _("Error: The deposit receiver must be a username that starts with @")
+str_error_monetary_send = _("Error: Enter a monetary amount to send.")
+str_error_funds = _("Error: Not enough funds")

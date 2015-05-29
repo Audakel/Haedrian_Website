@@ -33,3 +33,4 @@ django-extensions
 # git+https://alexhayes@bitbucket.org/alexhayes/django-google-places.git
 # python-google-places
 # https://github.com/slimkrazy/python-google-places/zipball/master
+babel

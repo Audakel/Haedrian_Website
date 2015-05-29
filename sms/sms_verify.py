@@ -1,12 +1,12 @@
 __author__ = 'audakel'
-from rapidsms.apps.base import AppBase
-from decimal import Decimal
+
 from haedrian.models import UserData
-from rest_framework import status
 from models import Message, Signup
 import random
 from django.contrib.auth import get_user_model
 from haedrian.views import _create_account
+from django.utils import translation
+from django.utils.translation import ugettext as _
 
 #  DEBUGGING HELP +++++++++ ========= import pdb; pdb.set_trace()
 from strings import *
@@ -18,13 +18,10 @@ def verify_sender(msg):
         # add them to the signup database
         signup = Signup(phone_number=msg.connections[0].identity)
         signup.save()
-        msg.respond(str_please_create_username)
+        msg.respond(str_create_account)
         return False
     else:
-        if msg.text[0] == '@':
-            create_handle(msg)
-        else:
-            msg.respond(str_please_create_username)
+        create_handle(msg)
         return False
 
 
@@ -53,8 +50,6 @@ def check_handle_exist(msg_handle):
     return False
 
 
-
-
 def create_handle(msg):
     msg_handle = msg.text.strip().lower()[1:]
     if check_handle_exist(msg_handle):
@@ -65,13 +60,12 @@ def create_handle(msg):
             new_msg_handle = msg_handle + random_number
         sms_create_user(new_msg_handle, msg)
         Signup.objects.get(phone_number=msg.connections[0].identity).delete()
-        msg.respond("Welcome!\nYou're user name is @%s\n(Sadly, @%s was already taken)"
-                    % (msg_handle+random_number, msg_handle))
+        msg.respond(str_welcome_username_taken % (msg_handle+random_number, msg_handle))
     else:
         # Handle does not exist
         sms_create_user(msg_handle, msg)
         Signup.objects.get(phone_number=msg.connections[0].identity).delete()
-        msg.respond("Welcome @%s!\n%s" % (msg_handle, str_usage_commands))
+        msg.respond(str_welcome % (msg_handle, str_help_message))
 
 
 def sms_create_user(username, msg):

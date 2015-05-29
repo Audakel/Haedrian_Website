@@ -5,7 +5,6 @@ from django.contrib.auth.forms import UserCreationForm
 from haedrian.forms import BetaApplicantForm, NewUserForm
 from haedrian.models import BetaApplicant, Wallet
 import pycountry
-# from haedrian.gem import create_app_user
 
 
 def index(request):

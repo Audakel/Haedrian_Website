@@ -15,7 +15,7 @@ DATABASES = {
     }
 }
 
-INSTALLED_APPS = INSTALLED_APPS + ('debug_toolbar',)
+INSTALLED_APPS = INSTALLED_APPS + ('debug_toolbar', 'kombu.transport.django',)
 
 STATICFILES_DIRS = STATICFILES_DIRS + (
     os.path.join(PROJECT_ROOT, 'haedrian', 'static'),
@@ -25,3 +25,4 @@ STATICFILES_DIRS = STATICFILES_DIRS + (
 GEM_API_TOKEN = "0QZLYNhs-2v3MsGwcFf-dJQsEoS9VSMV_8a59B_GnwU"
 GEM_ADMIN_TOKEN = "WdSRt2giHhuK13aicW173cgtcGV36TPm6uk1dOj9SJA"
 
+BROKER_URL = 'django://'

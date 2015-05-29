@@ -11,7 +11,7 @@ PUBLIC_ROOT = os.path.abspath(os.path.join(PROJECT_ROOT, 'public'))
 #TODO fix this shiz
 TWILIO_ACCOUNT_SID = 'AC4f7dec744e3bcad378e19888b8213af3'
 TWILIO_AUTH_TOKEN = '0c7b01582cbe2ce27123e2dc7ac983d6'
-
+GOOGLE_PLACES_API_KEY = 'AIzaSyA9koyYrNBHQKg3nATQKX_YvmjyqMs6eF4'
 COINS_API_KEY = "unZUljzAcdFEeWJzX9WfhwdBgjtBVzKEklsd5AkT"
 COINS_SECRET = "NlfqOzqDwKEsRw7Uw9WNvRT2ktrIX5WN5X2hPFE09YnfITZjGh"
 
@@ -71,7 +71,7 @@ INSTALLED_APPS = (
     # failed login request handling
     # TODO maybe production only?
     'axes',
-    'rtwilio',
+    # 'rtwilio',
     # our apps
     'apiv1',
     'haedrian',
@@ -79,6 +79,7 @@ INSTALLED_APPS = (
     'rapidsms',
     'sms',
     'rapidsms.contrib.messagelog',
+    # 'django_google_places',
 )
 
 INSTALLED_BACKENDS = {
@@ -111,7 +112,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'axes.middleware.FailedLoginMiddleware',
     # TODO Check with james on translations
-    #'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 # Templates
@@ -141,9 +142,10 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
-LANGUAGES = (
-    'en', gettext_noop('English'),
-)
+# Django has strong defaults for this setting so we probably don't need it?
+# LANGUAGES = (
+#     ('en', gettext_noop('English')),
+# )
 
 TIME_ZONE = 'America/Denver'
 USE_I18N = True
@@ -168,6 +170,23 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
+
+# Common celery settings
+
+# List of modules to import when celery starts.
+CELERY_IMPORTS = ('myapp.tasks', )
+
+## Using the database to store task state and results.
+CELERY_RESULT_BACKEND = 'db+sqlite:///results.db'
+
+CELERY_ANNOTATIONS = {'tasks.add': {'rate_limit': '10/s'}}
+
+#: Only add pickle to this list if your broker is secured
+#: from unwanted access (see userguide/security.html)
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
 
 # countries conf
 COUNTRIES_FIRST = (
@@ -287,11 +306,10 @@ LOGGING = {
 
 # ROOT_URLCONF = 'Haedrian_Website.urls'
 
-SUBDOMAIN_URLCONFS = {
+# SUBDOMAIN_URLCONFS = {
     # None: 'Haedrian_Website.urls',  # no subdomain, e.g. ``example.com``
     # 'www': 'Haedrian_Website.urls',
     # 'api': 'Haedrian_Website.urls.api',
     # 'mfi': 'Haedrian_Website.urls.mfi',
     # 'users': 'Haedrian_Website.urls.users',
-
-}
+# }

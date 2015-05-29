@@ -1,6 +1,11 @@
 from django.forms import widgets
 from rest_framework import serializers
 
+class PlacesSerializer(serializers.Serializer):
+    query = serializers.CharField()
+    lat = serializers.DecimalField(max_digits=32, decimal_places=16)
+    lng = serializers.DecimalField(max_digits=32, decimal_places=16)
+
 class SendSerializer(serializers.Serializer):
     def create(self, validated_data):
         return super(SendSerializer, self).create(validated_data)

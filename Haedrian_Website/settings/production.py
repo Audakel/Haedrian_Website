@@ -30,3 +30,7 @@ DATABASES = {
 }
 
 #MIDDLEWARE_CLASSES += ['subdomains.middleware.SubdomainURLRoutingMiddleware',]
+
+## Broker settings.
+# it looks like the guest account is enough since this is a local install
+BROKER_URL = 'amqp://guest:guest@localhost:5672//'

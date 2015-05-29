@@ -5,6 +5,12 @@ __author__ = 'audakel'
 
 class TestWallet(BaseWallet):
 
+    def get_exchange_fees(self):
+        pass
+
+    def get_exchange_types(self):
+        pass
+
     def create_wallet(self, email, password):
         pass
 
@@ -24,11 +30,11 @@ class TestWallet(BaseWallet):
         logger.debug("Test: user {} generated address".format(self.user.username))
         return "0"
 
-    def get_balance(self):
+    def get_balance(self, user):
         logger.debug("Test: user {} getting balance".format(self.user.username))
         data = {
-            "balance": "0.00",
-            "pending_balance": "0.00",
+            "balance": "205.80",
+            "pending_balance": "16.41",
             "currency": "BTC"
         }
         return data

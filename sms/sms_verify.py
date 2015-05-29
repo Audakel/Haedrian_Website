@@ -1,10 +1,9 @@
 __author__ = 'audakel'
 from rapidsms.apps.base import AppBase
 from decimal import Decimal
-from apiv1.views import _send, _history
 from haedrian.models import UserData
 from rest_framework import status
-from models import SmsMessage, SmsSignup
+from models import Message, Signup
 import random
 from django.contrib.auth import get_user_model
 from haedrian.views import _create_account
@@ -17,7 +16,7 @@ def verify_sender(msg):
         return True
     elif not currently_signing_up(msg):
         # add them to the signup database
-        signup = SmsSignup(phone_number=msg.connections[0].identity)
+        signup = Signup(phone_number=msg.connections[0].identity)
         signup.save()
         msg.respond(str_please_create_username)
         return False
@@ -37,7 +36,7 @@ def check_number_exist(msg):
 
 def currently_signing_up(msg):
     # Check for phone number in DB
-    if SmsSignup.objects.filter(phone_number=msg.connections[0].identity).exists():
+    if Signup.objects.filter(phone_number=msg.connections[0].identity).exists():
         return True
     else:
         return False
@@ -46,7 +45,7 @@ def currently_signing_up(msg):
 def check_handle_exist(msg_handle):
     # Check for user handle in DB
     UserModel = get_user_model()
-    if SmsSignup.objects.filter(user_handle=msg_handle).exists():
+    if Signup.objects.filter(user_handle=msg_handle).exists():
         return True
         # Check for unique handle
     elif UserModel.objects.filter(username=msg_handle).exists():
@@ -65,13 +64,13 @@ def create_handle(msg):
             random_number = str(random.randint(0, 9999))
             new_msg_handle = msg_handle + random_number
         sms_create_user(new_msg_handle, msg)
-        SmsSignup.objects.get(phone_number=msg.connections[0].identity).delete()
+        Signup.objects.get(phone_number=msg.connections[0].identity).delete()
         msg.respond("Welcome!\nYou're user name is @%s\n(Sadly, @%s was already taken)"
                     % (msg_handle+random_number, msg_handle))
     else:
         # Handle does not exist
         sms_create_user(msg_handle, msg)
-        SmsSignup.objects.get(phone_number=msg.connections[0].identity).delete()
+        Signup.objects.get(phone_number=msg.connections[0].identity).delete()
         msg.respond("Welcome @%s!\n%s" % (msg_handle, str_usage_commands))
 
 

@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django_countries.fields import CountryField
 from djmoney.models.fields import MoneyField
 
+
+
 # from mptt.models import MPTTModel, TreeForeignKey
 
 class BetaApplicant(models.Model):
@@ -43,9 +45,6 @@ class Organization(models.Model):
     pass
 
 
-from haedrian.wallets.coins_ph import CoinsPhWallet
-from haedrian.wallets.gem import GemWallet
-from haedrian.wallets.test_wallet import TestWallet
 
 
 class Wallet(models.Model):
@@ -54,21 +53,24 @@ class Wallet(models.Model):
     SELF = 'SE'
     TEST = 'TS'
     WALLET_CLASS = {
-        COINS_PH: CoinsPhWallet,
-        GEM: GemWallet,
-        SELF: TestWallet,
-        TEST: TestWallet,
+        COINS_PH: "haedrian.wallets.coins_ph.CoinsPhWallet",
+        GEM: "haedrian.wallets.gem.GemWallet",
+        SELF: "haedrian.wallets.test_wallet.TestWallet",
+        TEST: "haedrian.wallets.test_wallet.TestWallet",
     }
-    WALLET_TYPE= (
+    WALLET_TYPE = (
         (COINS_PH, 'Coins.ph'),
         (GEM, 'Gem'),
         (SELF, 'I have my own wallet'),
         (TEST, 'Fake wallet for testing purposes'),
     )
     user = models.ForeignKey(User, primary_key=True)
-    type = models.CharField(max_length=2,
-                                      choices=WALLET_TYPE,
-                                      default=COINS_PH)
+    type = models.CharField(max_length=2, choices=WALLET_TYPE, default=COINS_PH)
+    wallet_id = models.CharField(max_length=60, default="")
+    access_token = models.CharField(max_length=60, default="")
+    refresh_token = models.CharField(max_length=60, default="")
+    expires_at = models.CharField(max_length=60, default="")
+
 
 class Transaction(models.Model):
     sender = models.ForeignKey(User, related_name="sent")
@@ -92,3 +94,4 @@ class BitcoinRates(models.Model):
     name = models.CharField(max_length=50)
     buy_rate = models.DecimalField(max_digits=20, decimal_places=10)
     sell_rate = models.DecimalField(max_digits=20, decimal_places=10)
+

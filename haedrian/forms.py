@@ -11,7 +11,7 @@ class BetaApplicantForm(ModelForm):
 class NewUserForm(ModelForm):
     class Meta:
         model = UserData
-        exclude = ['user', 'credit_score', 'default_currency']
+        exclude = ['user', 'credit_score', 'default_currency', 'sms_balance']
 
     def clean_phone(self):
         data = self.cleaned_data['phone']

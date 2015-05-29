@@ -5,7 +5,11 @@ import os
 from celery import Celery
 
 # set the default Django settings module for the 'celery' program.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Haedrian_Website.settings.production')
+if os.getenv('DJANGO_POSTGRES_PASSWORD'):
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Haedrian_Website.settings.production')
+else:
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Haedrian_Website.settings.development')
+
 
 from django.conf import settings
 

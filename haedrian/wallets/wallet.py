@@ -38,12 +38,22 @@ class BaseWallet(object):
         pass
 
     @abstractmethod
-    def get_balance(self):
+    def get_balance(self, user):
         """Fetch the latest and most updated balance information in BTC"""
         pass
 
     @abstractmethod
     def get_pending_balance(self):
+        """Fetch the latest and most updated pending balance information in BTC"""
+        pass
+
+    @abstractmethod
+    def get_exchange_fees(self):
+        """Fetch the latest and most updated pending balance information in BTC"""
+        pass
+
+    @abstractmethod
+    def get_exchange_types(self):
         """Fetch the latest and most updated pending balance information in BTC"""
         pass
 

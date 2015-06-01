@@ -142,9 +142,6 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
-LANGUAGES = (
-    'en', gettext_noop('English'),
-)
 
 TIME_ZONE = 'America/Denver'
 USE_I18N = True

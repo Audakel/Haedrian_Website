@@ -56,6 +56,10 @@
     width: 100%;
 }
 
+#id_country {
+    width: 100%;
+}
+
 #sign_up_submit {
     float: right;
 }

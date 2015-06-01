@@ -32,25 +32,30 @@ class SMSApplication(AppBase):
             print("Could not look up the language info for the country {}".format(country_name))
         except AttributeError as f:
             print("Translation for the country {} not found".format(country))
+
+        save_message(msg, country_name)
+
         if verify_sender(msg):
             parts = msg.text.lower().strip().split(" ")
             command = parts[0]
-            save_message(msg, country_name)
             _user_id = UserData.objects.get(phone=msg.connections[0].identity).user_id
             user_id = get_user_model().objects.get(id=_user_id)
 
             if command == str_deposit:
                 sms_deposit(msg, parts)
-            elif command == str_next:
-                sms_deposit_next(msg)
+            elif command == str_done:
+                sms_deposit_done(msg)
             elif command == str_send:
                 sms_send(msg, parts)
             elif command == str_balance:
                 sms_balance(msg)
+            elif command == str_more:
+                sms_more(msg)
             else:
                 sms_help(msg)
 
         return True
+
 
 def save_message(msg, country_name):
     message = Message(from_number=msg.fields['From'],
@@ -62,7 +67,10 @@ def save_message(msg, country_name):
     message.save()
     return
 
+
 def sms_deposit(msg, parts):
+    user = UserData.objects.get(phone=msg.connections[0].identity)
+
     try:
         amount = Decimal(parts[1])
     except:
@@ -70,29 +78,39 @@ def sms_deposit(msg, parts):
         return
 
     if amount < 0:
-        msg.respond(str_error_negative_amount)
+        msg.respond(str_error_deposit_negative_amount)
         return
 
-    receiver_name = parts[2]
-    if receiver_name[0] != '@':
-        msg.respond(str_error_username)
+    if user.sms_pending_balance != 0:
+        msg.respond(str_error_pending_deposit.format(user.sms_pending_balance))
         return
-    try:
-        UserModel = get_user_model()
-        UserModel.objects.filter(username=receiver_name[1:]).exists()
-    except:
-        msg.respond(str_username_not_found % receiver_name)
-        return
+    # Make sure that they included the deposit location
+    if len(parts) > 2:
+        receiver_name = parts[2]
+        if receiver_name.lower() == 'bdo':
+            msg.respond(str_deposit_bdo_message.format(amount))
+            user.sms_pending_balance = F('sms_pending_balance') + amount
+            user.save()
+            return
+        elif receiver_name.lower() == 'bpi':
+            user.sms_pending_balance = F('sms_pending_balance') + amount
+            msg.respond(str_deposit_bpi_message.format(amount))
+            user.save()
+            return
+        else:
+            msg.respond(str_error_deposit_bdo_bpi)
+            return
+    else:
+        msg.respond(str_error_deposit_bdo_bpi)
 
-    msg.respond(str_deposit_message % (amount, receiver_name))
+
+def sms_deposit_done(msg):
     user = UserData.objects.get(phone=msg.connections[0].identity)
-    user.sms_balance = F('sms_balance') + amount
+    user.sms_balance += user.sms_pending_balance
+    msg.respond(str_deposit_message.format(user.sms_pending_balance, user.sms_balance))
+    user.sms_pending_balance = 0
     user.save()
 
-def sms_deposit_next(msg):
-    balance = UserData.objects.get(phone=msg.connections[0].identity).sms_balance
-    deposit_amount = 0.00
-    msg.respond(str_successful_deposit % (deposit_amount, balance))
 
 def sms_send(msg, parts):
     try:
@@ -101,8 +119,8 @@ def sms_send(msg, parts):
         msg.respond(str_error_monetary_send)
         return
 
-    if amount < 0:
-        msg.respond(str_error_negative_amount)
+    if not amount > 0:
+        msg.respond(str_error_send_negative_amount)
         return
 
     if UserData.objects.get(phone=msg.connections[0].identity).sms_balance - amount < 0:
@@ -110,26 +128,33 @@ def sms_send(msg, parts):
         return
 
     receiver_name = parts[2]
-    if receiver_name[0] != '@':
+    if receiver_name != '@mentors':
         msg.respond(str_error_username)
         return
     try:
         get_user_model().objects.filter(username=receiver_name[1:]).exists()
     except:
-        msg.respond(str_username_not_found % receiver_name)
+        msg.respond(str_username_not_found.format(receiver_name))
         return
 
-    msg.respond(str_sent_message % (amount, receiver_name))
+    msg.respond(str_sent_message.format(amount, receiver_name))
     user = UserData.objects.get(phone=msg.connections[0].identity)
     # import pdb;pdb.set_trace()
 
     user.sms_balance = F('sms_balance') - amount
     user.save()
 
+
 def sms_balance(msg):
-    # TODO: figure out how to find the user ID from authusers
-    response = UserData.objects.get(phone=msg.connections[0].identity).sms_balance
-    msg.respond(str_balance_message % (response, 0.00))
+    user = UserData.objects.get(phone=msg.connections[0].identity)
+    balance = user.sms_balance
+    pending_balance = user.sms_pending_balance
+    msg.respond(str_balance_message.format(balance, pending_balance))
+
 
 def sms_help(msg):
-    msg.respond(str_help_message)
+    msg.respond(str_help_message_first_half)
+
+
+def sms_more(msg):
+    msg.respond(str_help_message_second_half)

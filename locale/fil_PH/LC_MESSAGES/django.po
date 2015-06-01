@@ -1,0 +1,122 @@
+#: .\haedrian\forms.py:28
+msgid "Enter a valid phone number."
+msgstr ""
+
+#: .\haedrian\templates\registration\logged_out.html:7
+msgid "Thank you for visiting today! We hope to see you again soon!"
+msgstr ""
+
+#: .\haedrian\templates\registration\login.html:84
+#: .\haedrian\templates\registration\login.html:106
+msgid "Login"
+msgstr ""
+
+#: .\haedrian\templates\registration\login.html:94
+msgid "Username"
+msgstr ""
+
+#: .\haedrian\templates\registration\login.html:99
+msgid "Password"
+msgstr ""
+
+#: .\haedrian\templates\registration\login.html:104
+msgid "Remember me on this computer"
+msgstr ""
+
+#: .\haedrian\templates\registration\register.html:12
+msgid "Sign Up"
+msgstr ""
+
+#: .\sms\strings.py:3
+msgid "deposit"
+msgstr ""
+
+#: .\sms\strings.py:4
+msgid "next"
+msgstr ""
+
+#: .\sms\strings.py:5
+msgid "send"
+msgstr ""
+
+#: .\sms\strings.py:6
+msgid "balance"
+msgstr ""
+
+#: .\sms\strings.py:7
+msgid ""
+"To deposit money into your account, reply deposit (amount) (BPI or BDO). To "
+"check your account balance, reply balance. To pay your loan, reply send "
+"(amount) @Mentors."
+msgstr ""
+
+#: .\sms\strings.py:8
+msgid ""
+"To create an account, reply with your email address, client id and create a "
+"password. (Example: hello@gmail.com, 1256,  password123)"
+msgstr ""
+
+#: .\sms\strings.py:9
+#, python-format
+msgid ""
+"Welcome!\n"
+"You're user name is @%s\n"
+"(Sadly, @%s was already taken))"
+msgstr ""
+
+#: .\sms\strings.py:10
+#, python-format
+msgid ""
+"Welcome @%s!\n"
+"%s"
+msgstr ""
+
+#: .\sms\strings.py:11
+#, python-format
+msgid ""
+"Sorry, %s was not found.\n"
+"Please check the username\n"
+": ("
+msgstr ""
+
+#: .\sms\strings.py:12
+#, python-format
+msgid ""
+"You have successfully deposited %d into your wallet. Current balance: %d. To "
+"pay your loan, reply send (amount) @Mentors. "
+msgstr ""
+
+#: .\sms\strings.py:13
+#, python-format
+msgid "You have $%d available, with $%d pending."
+msgstr ""
+
+#: .\sms\strings.py:14
+#, python-format
+msgid "Sent %d to %s successfully!"
+msgstr ""
+
+#: .\sms\strings.py:15
+#, python-format
+msgid "Deposited %d to %s successfully!"
+msgstr ""
+
+#: .\sms\strings.py:17
+msgid "Error: Enter a monetary amount to deposit."
+msgstr ""
+
+#: .\sms\strings.py:18
+msgid "Error: The amount to deposit must be positive"
+msgstr ""
+
+#: .\sms\strings.py:19
+msgid "Error: The deposit receiver must be a username that starts with @"
+msgstr ""
+
+#: .\sms\strings.py:20
+msgid "Error: Enter a monetary amount to send."
+msgstr ""
+
+#: .\sms\strings.py:21
+msgid "Error: Not enough funds"
+msgstr ""

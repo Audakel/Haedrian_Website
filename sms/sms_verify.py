@@ -51,9 +51,17 @@ def check_handle_exist(msg_handle):
 
 
 def create_handle(msg):
-    msg_handle = msg.text.strip().lower()[1:]
+    msg_handle = msg.text.strip().lower()
+    # This is just in case the user tries to do a username/handle with spaces
+    if " " in msg_handle:
+        parts = msg_handle.split(" ");
+        msg_handle = ""
+        for part in parts:
+            msg_handle += part;
+        print msg_handle
+
     if check_handle_exist(msg_handle):
-        # TODO make beter check for existing handle / better collison avoidance
+        # TODO make better check for existing handle / better collision avoidance
         new_msg_handle = msg_handle
         while check_handle_exist(new_msg_handle):
             random_number = str(random.randint(0, 9999))
@@ -65,7 +73,7 @@ def create_handle(msg):
         # Handle does not exist
         sms_create_user(msg_handle, msg)
         Signup.objects.get(phone_number=msg.connections[0].identity).delete()
-        msg.respond(str_welcome % (msg_handle, str_help_message))
+        msg.respond(str_welcome % (msg_handle, str_help_message_first_half))
 
 
 def sms_create_user(username, msg):
@@ -77,7 +85,8 @@ def sms_create_user(username, msg):
         "password2": "thisisabadpassword",
         "phone": msg.connections[0].identity,
         "country": "US",
-        "sms_balance": 20
+        "sms_balance": 0,
+        "sms_pending_balance": 0,
     }
 
     # import pdb;pdb.set_trace()

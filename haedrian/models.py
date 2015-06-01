@@ -24,6 +24,10 @@ class UserData(models.Model):
     # handle = models.CharField(max_length=50)
     country = CountryField(blank_label='(Country)')
     default_currency = models.CharField(max_length=4, default='USD')
+    sms_pending_balance = models.DecimalField(max_digits=12, decimal_places=4, default=0)
+
+    def __repr__(self):
+        return "User: {}".format(self.user.username)
 #
 # class Node(MPTTModel):
 #     name = models.CharField(max_length=50, unique=True)

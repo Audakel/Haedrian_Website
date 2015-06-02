@@ -11,6 +11,7 @@ from haedrian.serializers import CoinsphBuySerializer
 from django.contrib.auth import get_user_model
 
 """
+# send
 {
     "receiver": "mentors_international",
     "amount_local": 10,
@@ -28,20 +29,23 @@ from django.contrib.auth import get_user_model
     "password":"testingthisthingout"
 }
 
+# create user
 {
         "username": "jmonkey1",
-        "email": "jmonkey1@mailinator",
+        "email": "jmonkey1@mailinator.com",
         "password": "password123",
         "phone": "+14105521258",
         "country": "US"
 }
 
+# buy order -- have to manualy verify email right now
 {
     "currency": "PHP",
     "currency_amount": 100,
     "payment_method": "bdo_deposit",
     "target_account_id": "7049efadaf7e47d59f9b36729e2c217a"
 }
+
 
 {
    "currency": "PHP",

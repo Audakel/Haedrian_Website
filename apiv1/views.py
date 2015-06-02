@@ -44,7 +44,7 @@ def new_user(request):
         data = _new_user(request.data)
         return Response(data)
     except Exception as e:
-        return Response(default_response_400.update(error=e.message), status=400)
+        return Response((e.message), status=400)
 
 
 @api_view(http_method_names=['GET'])
@@ -182,8 +182,8 @@ def get_locations(request):
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def get_history(request):
     try:
-        data = _get_history(global_user, request.data)
-        # data = _get_history(request.user, request.data)
+        # data = _get_history(global_user, request.data)
+        data = _get_history(request.user, request.data)
         return Response(data)
     except:
         return Response(status=400)
@@ -192,7 +192,8 @@ def get_history(request):
 @api_view(http_method_names=['POST'])
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def buy(request):
-    data = _buy(global_user, request.data)
+    # data = _buy(global_user, request.data)
+    data = _buy(request.user, request.data)
 
     return Response(data)
 

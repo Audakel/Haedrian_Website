@@ -46,9 +46,14 @@ def _create_account(user_data):
     ["username", "email", "password1", "password2", "phone", "country"]
 
     :returns True if the account creation was successful"""
-
-    data_form = NewUserForm(user_data)
-    user_form = UserCreationForm(user_data)
+    try:
+        data_form = NewUserForm(user_data)
+        user_form = UserCreationForm(user_data)
+    except Exception as e:
+        return {
+            'error': e.message,
+            'success': False
+        }
     # try:
     if user_form.is_valid() and data_form.is_valid():
         django_user = user_form.save()
@@ -65,11 +70,14 @@ def _create_account(user_data):
         django_user.save()
         haedrian_user.save()
         # TODO: send verification email or something
-        return True
+        return {'success': True}
     else:
         return {
-            'user': user_data,
-            'data': data_form
+            'error':{
+                'user': user_form.error_messages,
+                'data': data_form.errors
+            },
+            'success': False
         }
 
 from django.contrib.auth import views

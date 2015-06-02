@@ -3,6 +3,7 @@ from apiv1 import views
 from rest_framework.authtoken.views import obtain_auth_token
 
 
+
 urlpatterns = [
     # url(r'^send-to-handle/', send_to_user_handle),
     url(r'^send/', views.send_to_address),
@@ -12,7 +13,9 @@ urlpatterns = [
     url(r'^address/', views.get_address),
     url(r'^exchanges/', views.get_exchanges),
     url(r'^create/', views.new_user),
-    url(r'locations/', views.get_locations),
+    url(r'^locations/', views.get_locations),
+    url(r'^history/', views.get_history),
+    url(r'^buy/', views.buy),
 
     # testing
     url(r'^create-wallet/', views.create_wallet),

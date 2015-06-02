@@ -9,6 +9,13 @@ from haedrian.models import Transaction
 #         fields = ('id', 'user', 'title', 'description', 'category', 'location', 'goal')
 
 
+class PlacesSerializer(serializers.Serializer):
+    query = serializers.CharField()
+    lat = serializers.DecimalField(max_digits=32, decimal_places=16)
+    lng = serializers.DecimalField(max_digits=32, decimal_places=16)
+
+
+
 
 class SendSerializer(serializers.Serializer):
     def create(self, validated_data):
@@ -19,9 +26,12 @@ class SendSerializer(serializers.Serializer):
 
     # sender = serializers.CharField()
     # TODO:: Fix default receiver
-    receiver = serializers.CharField()
+    username = serializers.CharField(required=False)
+    # How to do phone serialzation?
+    phone = serializers.CharField(required=False)
+    email = serializers.EmailField(required=False)
+    target_address = serializers.CharField(required=False)
     note = serializers.CharField(required=False, default="", allow_blank=True)
-    target_address = serializers.CharField(required=False, default="", allow_blank=True)
     amount_local = serializers.DecimalField(max_digits=32, decimal_places=16)
 
 # class TransactionSerializer(serializers.Serializer):

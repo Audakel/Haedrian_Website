@@ -30,6 +30,6 @@ django-subdomains
 # django-mptt
 django-extensions
 #django-organizations
-git+https://alexhayes@bitbucket.org/alexhayes/django-google-places.git
-python-google-places
-https://github.com/slimkrazy/python-google-places/zipball/master
+# git+https://alexhayes@bitbucket.org/alexhayes/django-google-places.git
+# python-google-places
+# https://github.com/slimkrazy/python-google-places/zipball/master

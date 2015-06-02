@@ -39,7 +39,7 @@ class TestWallet(BaseWallet):
         }
         return data
 
-    def send_to_address(self, receiver, amount_local, target_address):
+    def send(self, receiver, amount_local, target_address):
         data = {
             "status": "pending",
             "fee": 0.00000,

@@ -27,6 +27,11 @@ class BaseWallet(object):
         pass
 
     @abstractmethod
+    def get_history(self):
+        """Return transaction history for this wallet"""
+        pass
+
+    @abstractmethod
     def create_wallet(self, email, password):
         """Make a new node on wallet provider backend"""
 
@@ -58,7 +63,12 @@ class BaseWallet(object):
         pass
 
     @abstractmethod
-    def send_to_address(self, receiver, amount_local, target_address):
+    def buy(self):
+        """Buy BTC"""
+        pass
+
+    @abstractmethod
+    def send(self, receiver, amount_local, target_address):
         """Send Bitcoins amount from this wallet to the address provided
         :param address - the address to send the BTC to
         :param amount_local - Amount to send in Local"""

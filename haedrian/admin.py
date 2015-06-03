@@ -1,5 +1,7 @@
 from django.contrib import admin
+
 from haedrian.models import BetaApplicant, UserData
+
 # Account, AccountUser
 
 class PersonAdmin(admin.ModelAdmin):

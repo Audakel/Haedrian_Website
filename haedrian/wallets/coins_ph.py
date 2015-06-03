@@ -1,14 +1,14 @@
 __author__ = 'audakel'
-from haedrian.models import Wallet
-from wallet import BaseWallet
-import requests
-from django.conf import settings
 import hashlib
 import hmac
 import time
 import json
-from haedrian.serializers import CoinsphBuySerializer
-from django.contrib.auth import get_user_model
+
+import requests
+from django.conf import settings
+
+from haedrian.models import Wallet
+from wallet import BaseWallet
 
 """
 # send

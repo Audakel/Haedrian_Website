@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import sys
 
 gettext_noop = lambda s: s
 
@@ -23,7 +22,8 @@ SANDBOX_COINS_SECRET = "vCRtKt1kopN0ZwAyNfOv2MDpPJFBFdY2N4fnlBlqic2j9Xxicw"
 try:
     SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 except KeyError:
-    print("Error! You need to set the DJANGO_SECRET_KEY environment variable")
+    pass
+    #print("Error! You need to set the DJANGO_SECRET_KEY environment variable")
     # sys.exit(1)
 
 DEBUG = False
@@ -46,7 +46,7 @@ ADMINS = (
 MANAGERS = ADMINS
 
 AUTHENTICATION_BACKENDS = (
-    'haedrian.wallets.gem.GemBackend',
+    # 'haedrian.wallets.gem.GemBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -147,9 +147,10 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
-LANGUAGES = (
-    ('en', gettext_noop('English')),
-)
+# Django has strong defaults for this setting so we probably don't need it?
+# LANGUAGES = (
+#     ('en', gettext_noop('English')),
+# )
 
 TIME_ZONE = 'America/Denver'
 USE_I18N = True
@@ -174,6 +175,23 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
+
+# Common celery settings
+
+# List of modules to import when celery starts.
+CELERY_IMPORTS = ('myapp.tasks', )
+
+## Using the database to store task state and results.
+CELERY_RESULT_BACKEND = 'db+sqlite:///results.db'
+
+CELERY_ANNOTATIONS = {'tasks.add': {'rate_limit': '10/s'}}
+
+#: Only add pickle to this list if your broker is secured
+#: from unwanted access (see userguide/security.html)
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
 
 # countries conf
 COUNTRIES_FIRST = (
@@ -293,11 +311,10 @@ LOGGING = {
 
 # ROOT_URLCONF = 'Haedrian_Website.urls'
 
-SUBDOMAIN_URLCONFS = {
+# SUBDOMAIN_URLCONFS = {
     # None: 'Haedrian_Website.urls',  # no subdomain, e.g. ``example.com``
     # 'www': 'Haedrian_Website.urls',
     # 'api': 'Haedrian_Website.urls.api',
     # 'mfi': 'Haedrian_Website.urls.mfi',
     # 'users': 'Haedrian_Website.urls.users',
-
-}
+# }

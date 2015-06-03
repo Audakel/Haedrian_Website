@@ -8,13 +8,15 @@
 {% block content %}
     <div id="sign_up_body">
         <section class="register_formcontainer">
-            <div class="Sign_Up">
-                <h2>{% trans "Sign Up" %}</h2>
-                {%  csrf_token %}
-                {{ user_form.as_p }}
-                {{ data_form.as_p }}
-                <input id="sign_up_submit" type="submit" value="Create the account">
-            </div>
+            <form method="post">
+                <div class="Sign_Up">
+                    <h2>{% trans "Sign Up" %}</h2>
+                    {%  csrf_token %}
+                    {{ user_form.as_p }}
+                    {{ data_form.as_p }}
+                    <input id="sign_up_submit" type="submit" value="Create the account">
+                </div>
+            </form>
         </section>
     </div>
 {##}

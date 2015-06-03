@@ -1,12 +1,11 @@
-__author__ = 'audakel'
-from rapidsms.apps.base import AppBase
-from decimal import Decimal
-from haedrian.models import UserData
-from rest_framework import status
-from models import Message, Signup
 import random
+
 from django.contrib.auth import get_user_model
+
+from haedrian.models import UserData
+from models import Signup
 from haedrian.views import _create_account
+
 
 #  DEBUGGING HELP +++++++++ ========= import pdb; pdb.set_trace()
 from strings import *
@@ -86,10 +85,5 @@ def sms_create_user(username, msg):
         "sms_balance": 20
     }
 
-    # import pdb;pdb.set_trace()
     _create_account(user_data)
 
-    # TODO :: change this testing purposes
-    # user = UserData.objects.get(phone=msg.connections[0].identity)
-    # user.sms_balance = 20
-    # user.save()

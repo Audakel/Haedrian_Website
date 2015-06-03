@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from django.contrib.auth.forms import UserCreationForm
-
-from haedrian.forms import BetaApplicantForm, NewUserForm
-from haedrian.models import BetaApplicant, Wallet
 import pycountry
-# from haedrian.gem import create_app_user
+from django.db import transaction
+
+from apiv1.external.views import match_users
+from haedrian.forms import BetaApplicantForm, NewUserForm, EmailUserForm
+from haedrian.models import BetaApplicant, Wallet
 
 
 def index(request):
@@ -30,15 +30,16 @@ def create_account(request):
             return HttpResponseRedirect("/")
         else:
             data_form = NewUserForm(request.POST)
-            user_form = UserCreationForm(request.POST)
+            user_form = EmailUserForm(request.POST)
     else:
         data_form = NewUserForm()
-        user_form = UserCreationForm()
+        user_form = EmailUserForm()
     return render(request, "registration/register.html", {
         'user_form': user_form,
         'data_form': data_form,
     })
 
+@transaction.atomic
 def _create_account(user_data):
     """API friendly INTERNAL USE ONLY account registration end point
     :param user_data - Dict that contains all the fields that are expected for the user to fill out.
@@ -46,19 +47,10 @@ def _create_account(user_data):
     ["username", "email", "password1", "password2", "phone", "country"]
 
     :returns True if the account creation was successful"""
-    try:
-        data_form = NewUserForm(user_data)
-        user_form = UserCreationForm(user_data)
-    except Exception as e:
-        return {
-            'error': e.message,
-            'success': False
-        }
-    # try:
+    data_form = NewUserForm(user_data)
+    user_form = EmailUserForm(user_data)
     if user_form.is_valid() and data_form.is_valid():
         django_user = user_form.save()
-        # TODO:: Create new form to validate email
-        django_user.email = user_data['email']
         haedrian_user = data_form.save(commit=False)
         haedrian_user.user = django_user
         haedrian_user.credit_score = 0
@@ -69,6 +61,7 @@ def _create_account(user_data):
         wallet.save()
         django_user.save()
         haedrian_user.save()
+        match_users(haedrian_user)
         # TODO: send verification email or something
         return {'success': True}
     else:

@@ -1,15 +1,17 @@
-from django.core.exceptions import ObjectDoesNotExist
-import requests
 import importlib
+
+from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import DatabaseError
 from money import Money
+from rest_framework.authtoken.models import Token
+
 from apiv1.serializers import SendSerializer
 from haedrian.models import UserData, Transaction, Wallet
 from haedrian.views import _create_account
 from haedrian.wallets.coins_ph import CoinsPhWallet
-from rest_framework.authtoken.models import Token
+
 __author__ = 'audakel'
 
 

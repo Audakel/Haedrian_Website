@@ -24,6 +24,7 @@ class UserData(models.Model):
     # handle = models.CharField(max_length=50)
     country = CountryField(blank_label='(Country)')
     default_currency = models.CharField(max_length=4, default='USD')
+    external = models.CharField(max_length=50, blank=True, default='')
 #
 # class Node(MPTTModel):
 #     name = models.CharField(max_length=50, unique=True)

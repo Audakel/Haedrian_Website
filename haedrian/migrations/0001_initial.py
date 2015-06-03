@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models, migrations
 from decimal import Decimal
+
+from django.db import models, migrations
 import django_countries.fields
 from django.conf import settings
 import djmoney.models.fields

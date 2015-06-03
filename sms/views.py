@@ -1,7 +1,4 @@
-from django.shortcuts import render
 from django.http import HttpResponse
-from django_twilio.decorators import twilio_view
-from twilio.twiml import Response
 
 """ GET /sms/?ToCountry=US&
         ToState=WI&

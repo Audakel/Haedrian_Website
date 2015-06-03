@@ -1,12 +1,30 @@
+from django.contrib.auth import get_user_model
 from django.forms import ModelForm, ValidationError
+from django.contrib.auth.forms import UserCreationForm
+from django import forms
 from django.utils.translation import ugettext as _
-from haedrian.models import BetaApplicant, UserData
 import phonenumbers
+
+from haedrian.models import BetaApplicant, UserData
+
 
 class BetaApplicantForm(ModelForm):
     class Meta:
         model = BetaApplicant
         fields = ['name', 'email', 'country', 'reason']
+
+class EmailUserForm(UserCreationForm):
+    email = forms.EmailField()
+    class Meta:
+        model = get_user_model()
+        fields = ("username", "email", "password1", "password2")
+
+    def save(self, commit=True):
+        user = super(EmailUserForm, self).save(commit=False)
+        user.email = self.cleaned_data["email"]
+        if commit:
+            user.save()
+        return user
 
 class NewUserForm(ModelForm):
     class Meta:

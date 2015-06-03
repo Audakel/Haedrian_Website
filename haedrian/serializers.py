@@ -1,8 +1,6 @@
 __author__ = 'audakel'
 
-from django.forms import widgets
 from rest_framework import serializers
-from haedrian.models import Transaction
 
 
 class CoinsphBuySerializer(serializers.Serializer):

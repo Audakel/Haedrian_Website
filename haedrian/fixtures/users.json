@@ -1,4 +1,3 @@
-
 [
     {
         "model": "auth.user",
@@ -62,6 +61,7 @@
             "credit_score": 800,
             "phone": "+12345551212",
             "default_currency": "USD",
+            "external": "",
             "country": "US"
         }
     },
@@ -73,6 +73,7 @@
             "credit_score": 800,
             "phone": "+12345559898",
             "default_currency": "USD",
+            "external": "",
             "country": "US"
 
         }
@@ -85,6 +86,7 @@
             "credit_score": 800,
             "phone": "+18016905609",
             "default_currency": "USD",
+            "external": "",
             "country": "US"
 
         }

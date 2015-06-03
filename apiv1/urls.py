@@ -1,8 +1,7 @@
 from django.conf.urls import url, include
-from apiv1 import views
 from rest_framework.authtoken.views import obtain_auth_token
 
-
+from apiv1 import views
 
 urlpatterns = [
     # url(r'^send-to-handle/', send_to_user_handle),
@@ -22,8 +21,7 @@ urlpatterns = [
     url(r'^exchange-fees/', views.get_exchange_fees),
     url(r'^exchange-types/', views.get_exchange_types),
 
-
-
+    url(r'^external/', include('apiv1.external.urls', namespace='external')),
 ]
 
 urlpatterns += [

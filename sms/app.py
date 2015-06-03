@@ -1,24 +1,32 @@
-from rapidsms.apps.base import AppBase
 from decimal import Decimal
-from apiv1._views import _get_balance, _send, _history, _get_exchange_types
-from haedrian.models import UserData
-from rest_framework import status
-from models import Message, Signup
-from sms_verify import verify_sender, str_usage_commands
-from strings import str_deposit_locations
-import random
+
+from rapidsms.apps.base import AppBase
+from django.utils import translation
+from django.utils.translation import ugettext as _
 from django.contrib.auth import get_user_model
 from django.db.models import F
-from django.utils.translation import ugettext as _
-import pdb;
+from phonenumbers import geocoder
+import pycountry
 
-#  BEST DEBUGGING HELP +++++++++ ========= import pdb; pdb.set_trace()
+from apiv1._views import _get_exchange_types
+from haedrian.models import UserData
+from models import Message
+from sms_verify import verify_sender, str_usage_commands
+from strings import str_deposit_locations
 
 
 class SMSApplication(AppBase):
     def handle(self, msg):
         # sms sender is in our DB
-
+        country_name = geocoder.country_name_for_number(msg.connections[0].identity, 'en')
+        try:
+            country = pycountry.countries.get(common_name=country_name)
+            translation.activate(country.alpha2)
+        except KeyError as e:
+            # Translation for this language not found
+            print("Could not look up the short name for the country {}".format(country_name))
+        except AttributeError as f:
+            print("Translation for the country {} not found".format(country))
         if verify_sender(msg):
             parts = msg.text.lower().strip().split(" ")
             command = parts[0]
@@ -32,8 +40,8 @@ class SMSApplication(AppBase):
                 sms_send(msg, parts)
             elif command == _('use'):
                 sms_help(msg)
-            elif command == _('tulong'):  # Tagolog help
-                sms_tulong(msg)
+            # elif command == _('tulong'):  # Tagolog help
+            #     sms_tulong(msg)
             elif command == _('whoami'):
                 sms_whoami(msg)
             elif command == _('deposit'):
@@ -149,9 +157,8 @@ def sms_help(msg):
     return
     """
 
-
-def sms_tulong(msg):  # Help
-    msg.respond("""Halimbawa send: 'Send 15 @mi'\n Halimbawa balance: 'Balance'""")
+# def sms_tulong(msg):  # Help
+#     msg.respond("""Halimbawa send: 'Send 15 @mi'\n Halimbawa balance: 'Balance'""")
 
 
 def sms_balance(msg):

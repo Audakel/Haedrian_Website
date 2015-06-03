@@ -56,9 +56,16 @@ def _create_account(user_data):
         }
     # try:
     if user_form.is_valid() and data_form.is_valid():
-        django_user = user_form.save()
-        # TODO:: Create new form to validate email
+        django_user = user_form.save(commit=False)
         django_user.email = user_data['email']
+        try:
+            django_user.save()
+        except Exception as e:
+            return {
+                'error': e.message,
+                'success': False
+            }
+        # TODO:: Create new form to validate email
         haedrian_user = data_form.save(commit=False)
         haedrian_user.user = django_user
         haedrian_user.credit_score = 0
@@ -66,9 +73,15 @@ def _create_account(user_data):
         haedrian_user.default_currency = pycountry.currencies.get(numeric=_country.numeric).letter
         # TODO:: fix what type of wallets get created rather than just all coins_ph
         wallet = Wallet(user=django_user, type=Wallet.COINS_PH)
-        wallet.save()
-        django_user.save()
-        haedrian_user.save()
+        try:
+            wallet.save()
+            django_user.save()
+            haedrian_user.save()
+        except Exception as e:
+            return {
+                'error': e.message,
+                'success': False
+            }
         # TODO: send verification email or something
         return {'success': True}
     else:

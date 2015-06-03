@@ -33,7 +33,6 @@ default_response_400 = {"success": False, "error": ""}
 # finaltest4
 # testendpoint
 # newtoken8
-global_user = get_user_model().objects.get(username='finaltest4')
 
 
 @api_view(http_method_names=['POST'])
@@ -74,7 +73,7 @@ def get_exchange_fees(request):
 def get_exchange_types(request):
     try:
         # data = _get_exchange_types(global_user, request.data)
-        data = _get_exchange_types(request.user, request.data)
+        data = _get_exchange_types(request.user, request.query_params)
         return Response(data)
     except:
         return Response(status=400)
@@ -105,7 +104,7 @@ def get_wallet_info(request):
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def get_balance(request):
     try:
-        # data = _get_balance(global_user, **request.data)
+        print "got in here niga!"
         data = _get_balance(request.user, request.data)
         return Response(data)
     except Exception as e:

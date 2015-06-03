@@ -46,6 +46,7 @@ from wallet import BaseWallet
     "target_account_id": "7049efadaf7e47d59f9b36729e2c217a"
 }
 
+{'username': u'bob5', 'password1': u'testestest', 'password2': u'testestest', 'country': u'US', 'phone': u'+18016905609', 'email': u'loganbentley22@gmail.com'}
 
 {
    "currency": "PHP",
@@ -79,14 +80,21 @@ class CoinsPhWallet(BaseWallet):
     def __init__(self, user):
         super(CoinsPhWallet, self).__init__(user)
 
-    def get_history(self):
-        url = 'https://coins.ph/api/v3/transfers/'
-        data = make_oauth_request(url, self.user)['transfers']
-        return data
+    def get_history(self, kwargs):
+        url = 'https://coins.ph/api/v3/crypto-payments/'
+        data = make_oauth_request(url, self.user)
+        if data['success']:
+            return {
+                'transaction_count': data['meta']['total_count'],
+                'success': True,
+                'transactions': data['crypto-payments']
+            }
 
     def get_wallet_info(self, kwargs):
         url = 'https://coins.ph/api/v3/crypto-accounts/'
-        data = make_oauth_request(url, self.user)['crypto-accounts']
+        data = make_oauth_request(url, self.user)
+        if data['success']:
+            data = data['crypto-accounts']
         return data
 
     def get_pending_balance(self):
@@ -135,7 +143,7 @@ class CoinsPhWallet(BaseWallet):
         }
 
         _data = make_oauth_request(url, self.user, json.dumps(body))
-        if _data['success']:
+        if _data["crypto-payment"]['status'] == 'pending':
             _data = _data["crypto-payment"]
             data = {
                 "status": _data['status'],
@@ -147,7 +155,10 @@ class CoinsPhWallet(BaseWallet):
             }
             return data
         else:
-            return _data
+            return {
+                'success': False,
+                'error': _data['errors']
+            }
 
     def get_balance(self, **kwargs):
         # TODO:: fix hard code
@@ -188,23 +199,31 @@ class CoinsPhWallet(BaseWallet):
         data = make_oauth_request(url, self.user)
         return data
 
-    def get_exchange_types(self, user, data=''):
+    def get_exchange_types(self, data=''):
         url = 'https://coins.ph/d/api/payin-outlet-categories/'
-        try:
-            _data = make_oauth_request(url, user)['payin-outlet-categories']
-        except Exception as e:
-            return e.message
-        exchange_list = []
-        # data ={'type':'Bank Deposit'}
-        if data:
-            for i in _data:
-                if i['name'] == data['type']:
-                    return i
-        else:
-            for i in _data:
-                exchange_list.append(i['name'])
-            return exchange_list
+        _data = make_oauth_request(url, self.user)
+        if _data['success']:
+            _data = _data['payin-outlet-categories']
+            exchange_list = []
+            # data ={'type':'Bank Deposit'}
+            if data:
+                for i in _data:
+                    if i['name'] == data['type']:
+                        return {
+                            'exchange_list': i,
+                            'success': True
+                        }
+                return "Option {} not found".format(data['type'])
 
+            else:
+                for i in _data:
+                    exchange_list.append(i['name'])
+                return {
+                    'exchange_list': exchange_list,
+                    'success': True
+                }
+        else:
+            return _data
 
     def create_wallet(self, user, data):
 
@@ -217,22 +236,41 @@ class CoinsPhWallet(BaseWallet):
         }
 
         # TODO check for duplicte emails - roll back
-        data = make_hmac_request(url, body)
-        if data['success']:
-            access_token = data['user']['access_token']
-            refresh_token = data['user']['refresh_token']
-            expires_at = data['user']['expires_at']
+        _data = make_hmac_request(url, body)
+        if _data['success']:
+            access_token = _data['user']['access_token']
+            refresh_token = _data['user']['refresh_token']
+            expires_at = _data['user']['expires_at']
             wallet = Wallet.objects.get(user_id=user)
             wallet.access_token = access_token
             wallet.refresh_token = refresh_token
             wallet.expires_at = expires_at
-            wallet.save()
+            try:
+                wallet.save()
+            except Exception as e:
+                return {
+                    'error': e.message,
+                    'success': False
+                }
             # TODO:: Check for false on get address
             additional_params = get_extra_wallet_info(user)
             wallet.blockchain_address = additional_params['blockchain_address']
             wallet.provider_wallet_id = additional_params['provider_wallet_id']
-            wallet.save()
-        return data
+            try:
+                wallet.save()
+            except Exception as e:
+                return {
+                    'error': e.message,
+                    'success': False
+                }
+            return _data
+        else:
+            error_message = {'success': False}
+            if 'error' in _data:
+                error_message['error'] = _data['error']
+            else:
+                error_message['error'] = _data['errors']
+            return error_message
 
 
 currency = ["BTC", "CLP", "PBTC"]
@@ -327,8 +365,10 @@ def make_hmac_request(url, body=''):
     if result['success'] and response.status_code == 201:
         return result
     else:
-        result['success'] = False
-        return result
+        return {
+            'success': False,
+            'error': result['errors']
+        }
 
 
 def get_user_token(user):

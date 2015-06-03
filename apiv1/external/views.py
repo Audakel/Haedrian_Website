@@ -58,5 +58,3 @@ class CreateUser(APIView):
         match_users.delay({'external': user.external})
         # start a celery task to fetch the rest of the user's data from the external source
         return Response(status=201)
-
-

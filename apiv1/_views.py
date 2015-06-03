@@ -40,13 +40,20 @@ def _new_user(kwargs):
             "success": True,
             "token": token.key
         }
-        wallet = _create_wallet(user, kwargs)
-        if wallet['success']:
+        try:
+            my_wallet = _create_wallet(user, kwargs)
+        except Exception as e:
+            return {
+                'success': False,
+                'error': e.message
+            }
+        if my_wallet['success']:
             # All is good, no errors
             return _data
         else:
             get_user_model().objects.filter(username=kwargs['username']).delete()
-            return wallet
+            Token.objects.filter(user_id=user).delete()
+            return my_wallet
     else:
         return account
 
@@ -60,22 +67,21 @@ def _get_exchanges(user, **kwargs):
         return False
 
 
-def _get_exchange_fees(user, **kwargs):
+def _get_exchange_fees(user, kwargs):
     wallet = get_temp_wallet(user)
     try:
-        data = wallet.get_exchange_fees(**kwargs)
+        data = wallet.get_exchange_fees(kwargs)
         return data
     except:
         return False
 
 
-def _get_exchange_types(user, **kwargs):
+def _get_exchange_types(user, kwargs):
     wallet = get_temp_wallet(user)
-    try:
-        data = wallet.get_exchange_types(**kwargs)
+    data = wallet.get_exchange_types(kwargs)
+    if data['success']:
         return data
-    except:
-        return False
+    return False
 
 
 def _send_to_user_handle(user, **kwargs):
@@ -122,23 +128,23 @@ def _send(user, kwargs):
             except DatabaseError as e:
                 return {"success": False, "error": e.message}
 
-            ret_val = wallet.send(haedrian_account, round(amount_fee.amount, 8), send_data.data['target_address'])
-            if ret_val['success']:
-                fee = Transaction(sender=sender, receiver=haedrian_account,
-                                  amount_btc=amount_fee.amount, amount_btc_currency='BTC',
-                                  amount_local=fee_local.amount, amount_local_currency=fee_local.currency)
-                try:
-                    fee.save()
-                except DatabaseError as e:
-                    return {"success": False, "error": e.message}
+            # ret_val = wallet.send(haedrian_account, round(amount_fee.amount, 8), send_data.data['target_address'])
+            # if ret_val['success']:
+            #     fee = Transaction(sender=sender, receiver=haedrian_account,
+            #                       amount_btc=amount_fee.amount, amount_btc_currency='BTC',
+            #                       amount_local=fee_local.amount, amount_local_currency=fee_local.currency)
+            #     try:
+            #         fee.save()
+            #     except DatabaseError as e:
+            #         return {"success": False, "error": e.message}
         return data
     return send_data.errors
 
 
-def _get_pending_balance(user, **kwargs):
+def _get_pending_balance(user, kwargs):
     wallet = get_temp_wallet(user)
     try:
-        data = wallet.get_pending_balance(**kwargs)
+        data = wallet.get_pending_balance(kwargs)
         return data
     except:
         return False
@@ -190,22 +196,26 @@ def _get_wallet_info(user, kwargs):
         return False
 
 
-def _get_address(user, **kwargs):
+def _get_address(user, kwargs):
     wallet = get_temp_wallet(user)
     try:
-        data = wallet.get_address(**kwargs)
+        data = wallet.get_address(kwargs)
         return data
     except:
         return False
 
 
-def _get_history(user, **kwargs):
+def _get_history(user, kwargs):
     wallet = get_temp_wallet(user)
-    try:
-        data = wallet.get_history(**kwargs)
+    data = wallet.get_history(kwargs)
+    if data['success']:
+        return {
+            'transaction_count': data['transaction_count'],
+            'success': True,
+            'transactions': data['transactions']
+        }
+    else:
         return data
-    except:
-        return False
 
 
 def _buy(user, kwargs):

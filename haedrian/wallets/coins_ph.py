@@ -213,6 +213,7 @@ class CoinsPhWallet(BaseWallet):
                             'exchange_list': i,
                             'success': True
                         }
+                return "Option {} not found".format(data['type'])
 
             else:
                 for i in _data:

@@ -62,7 +62,6 @@ class CreateUser(APIView):
 
 @shared_task
 def match_users(new_user):
-    import pdb; pdb.set_trace()
     if isinstance(new_user, ExternalUser):
         try:
             user = UserData.objects.get(external=new_user.external)

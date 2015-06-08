@@ -182,13 +182,8 @@ STATICFILES_FINDERS = (
 
 # Common celery settings
 
-# List of modules to import when celery starts.
-CELERY_IMPORTS = ('myapp.tasks', )
-
-## Using the database to store task state and results.
-CELERY_RESULT_BACKEND = 'db+sqlite:///results.db'
-
-CELERY_ANNOTATIONS = {'tasks.add': {'rate_limit': '10/s'}}
+# CELERY_ANNOTATIONS = {'tasks.add': {'rate_limit': '10/s'}}
+CELERY_DISABLE_RATE_LIMITS = True
 
 #: Only add pickle to this list if your broker is secured
 #: from unwanted access (see userguide/security.html)

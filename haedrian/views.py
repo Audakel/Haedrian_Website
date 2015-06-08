@@ -26,7 +26,7 @@ import copy
 def create_account(request):
     if request.method == 'POST':
         # the forms seem to destructively remove the elements? deep copy until I find out why
-        if _create_account(copy.deepcopy(request.POST)):
+        if _create_account(copy.deepcopy(request.POST))['success']:
             return HttpResponseRedirect("/")
         else:
             data_form = NewUserForm(request.POST)
@@ -61,7 +61,7 @@ def _create_account(user_data):
         wallet.save()
         django_user.save()
         haedrian_user.save()
-        match_users(haedrian_user)
+        match_users.delay({'external': haedrian_user.external})
         # TODO: send verification email or something
         return {'success': True}
     else:

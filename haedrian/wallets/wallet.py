@@ -21,6 +21,17 @@ class BaseWallet(object):
     def __repr__(self):
         return "BaseWallet"
 
+
+    @abstractmethod
+    def verify_buy(self):
+        """Return a unique BTC address for this wallet"""
+        pass
+
+    @abstractmethod
+    def buy_history(self, kwargs):
+        """Return a unique BTC address for this wallet"""
+        pass
+
     @abstractmethod
     def get_address(self):
         """Return a unique BTC address for this wallet"""
@@ -53,7 +64,7 @@ class BaseWallet(object):
         pass
 
     @abstractmethod
-    def get_exchange_fees(self):
+    def get_exchange_fees(self, kwargs):
         """Fetch the latest and most updated pending balance information in BTC"""
         pass
 

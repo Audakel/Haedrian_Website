@@ -11,6 +11,7 @@ from apiv1.serializers import SendSerializer
 from haedrian.models import UserData, Transaction, Wallet
 from haedrian.views import _create_account
 from haedrian.wallets.coins_ph import CoinsPhWallet
+import requests
 
 __author__ = 'audakel'
 
@@ -58,13 +59,13 @@ def _new_user(kwargs):
         return account
 
 
-def _get_exchanges(user, **kwargs):
+def _get_exchanges(user, kwargs):
     wallet = get_temp_wallet(user)
     try:
-        data = wallet.get_exchanges(**kwargs)
+        data = wallet.get_exchanges(kwargs)
         return data
-    except:
-        return False
+    except Exception as e:
+        return e.message
 
 
 def _get_exchange_fees(user, kwargs):
@@ -72,16 +73,19 @@ def _get_exchange_fees(user, kwargs):
     try:
         data = wallet.get_exchange_fees(kwargs)
         return data
-    except:
-        return False
+    except Exception as e:
+        return "#fail " + e.message
 
 
 def _get_exchange_types(user, kwargs):
     wallet = get_temp_wallet(user)
     data = wallet.get_exchange_types(kwargs)
     if data['success']:
-        return data
-    return False
+        return {
+            'success': True,
+            'locations': data['locations']
+        }
+    return data
 
 
 def _send_to_user_handle(user, **kwargs):
@@ -209,10 +213,23 @@ def _get_history(user, kwargs):
     wallet = get_temp_wallet(user)
     data = wallet.get_history(kwargs)
     if data['success']:
+        currency = Wallet.objects.get(user=user).currency
+        transactions = []
+        for transaction in data['transactions']:
+            transactions.append(dict({
+                'status': transaction['status'],
+                'fee_amount': transaction['fee_amount'],
+                'entry_type': transaction['entry_type'],
+                'date': transaction['date'],
+                'amount': transaction['amount'],
+                'original_target': transaction['original_target'],
+                'original_sender': transaction['original_sender'],
+                'currency': currency
+            }))
         return {
             'transaction_count': data['transaction_count'],
             'success': True,
-            'transactions': data['transactions']
+            'transactions': transactions
         }
     else:
         return data
@@ -225,6 +242,45 @@ def _buy(user, kwargs):
         return data
     except:
         return False
+
+
+def _verify_buy(user, kwargs):
+    wallet = get_temp_wallet(user)
+    try:
+        data = wallet.verify_buy(kwargs)
+        return data
+    except:
+        return False
+
+
+def _get_buy_history(user, kwargs):
+    wallet = get_temp_wallet(user)
+    try:
+        data = wallet.buy_history(kwargs)
+        return data
+    except Exception as e:
+        return e.message
+
+
+def _get_id(user, kwargs):
+    data = {
+        'user': user.username,
+        'email': user.email,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+    }
+    return data
+
+
+def _get_exchange_rate(user, kwargs):
+    currency = "BTC-" + kwargs['currency']
+    url = 'https://quote.coins.ph/v1/markets/' + currency
+    try:
+        response = requests.get(url)
+    except Exception as e:
+        return {"success": False, "error": e.message}
+    return response.json()
+
 
 def get_temp_wallet(user):
     wallets = Wallet.objects.filter(user=user)

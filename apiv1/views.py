@@ -36,7 +36,7 @@ def new_user(request):
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def get_exchanges(request):
     try:
-        data = internal._get_exchanges(request.user, request.data)
+        data = internal._get_exchanges(request.user, request.query_params)
         return Response(data=data)
     except:
         return Response(status=400)
@@ -58,8 +58,8 @@ def get_exchange_types(request):
     try:
         data = internal._get_exchange_types(request.user, request.query_params)
         return Response(data)
-    except:
-        return Response(status=400)
+    except Exception as e:
+        return Response(e.message, status=400)
 
 @api_view(http_method_names=['GET'])
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
@@ -116,7 +116,6 @@ def send_to_address(request):
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def send_to_user_handle(request):
     try:
-        # data = _send_to_user_handle(global_user, request.data)
         data = internal._send_to_user_handle(request.user, request.data)
         return Response(default_response_200.update(data=data))
     except:
@@ -127,7 +126,6 @@ def send_to_user_handle(request):
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def create_wallet(request):
     try:
-        # data = _create_wallet(global_user, request.data)
         data = internal._create_wallet(request.user, request.data)
         return Response(data)
     except:
@@ -158,18 +156,36 @@ def get_locations(request):
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def get_history(request):
     try:
-        # data = _get_history(global_user, request.data)
         data = internal._get_history(request.user, request.data)
         return Response(data)
     except:
         return Response(status=400)
 
 
-@api_view(http_method_names=['POST'])
+@api_view(http_method_names=['POST', 'PUT'])
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def buy(request):
-    # data = _buy(global_user, request.data)
-    data = internal._buy(request.user, request.data)
-
+    if request.method == 'POST':
+        data = internal._buy(request.user, request.data)
+    else:
+        data = internal._verify_buy(request.user, request.query_params)
     return Response(data)
 
+@api_view(http_method_names=['GET'])
+@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+def get_buy_history(request):
+    data = internal._get_buy_history(request.user, request.data)
+    return Response(data)
+
+@api_view(http_method_names=['GET'])
+@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+def get_id(request):
+    data = internal._get_id(request.user, request.data)
+    return Response(data)
+
+
+@api_view(http_method_names=['GET'])
+@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+def get_exchange_rate(request):
+    data = internal._get_exchange_rate(request.user, request.query_params)
+    return Response(data)

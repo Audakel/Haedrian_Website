@@ -14,7 +14,10 @@ urlpatterns = [
     url(r'^create/', views.new_user),
     url(r'^locations/', views.get_locations),
     url(r'^history/', views.get_history),
+    url(r'^buy-history/', views.get_buy_history),
     url(r'^buy/', views.buy),
+    url(r'^id/', views.get_id),
+    url(r'^exchange-rate/', views.get_exchange_rate),
 
     # testing
     url(r'^create-wallet/', views.create_wallet),

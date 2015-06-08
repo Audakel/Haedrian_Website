@@ -65,7 +65,15 @@ class Wallet(models.Model):
         (SELF, 'I have my own wallet'),
         (TEST, 'Fake wallet for testing purposes'),
     )
-    user = models.ForeignKey(User, primary_key=True)
+
+    BITCOIN = 'BTC'
+    PHILIPPINE_PESO = 'PHP'
+    CURRENCY = (
+        (BITCOIN, 'Bitcoin'),
+        (PHILIPPINE_PESO, 'Philippine Peso'),
+    )
+
+    user = models.ForeignKey(User)
     type = models.CharField(max_length=2, choices=WALLET_TYPE, default=COINS_PH)
     api_client_id = models.CharField(max_length=60, default="")
     # token that each wallet provding company uses to id their wallets
@@ -74,6 +82,7 @@ class Wallet(models.Model):
     refresh_token = models.CharField(max_length=60, default="")
     expires_at = models.CharField(max_length=60, default="")
     blockchain_address = models.CharField(max_length=60, default="")
+    currency = models.CharField(max_length=6, choices=CURRENCY, default=BITCOIN)
 
 
 class Transaction(models.Model):

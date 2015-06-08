@@ -43,7 +43,7 @@ from wallet import BaseWallet
     "currency": "PHP",
     "currency_amount": 100,
     "payment_method": "bdo_deposit",
-    "target_account_id": "7049efadaf7e47d59f9b36729e2c217a"
+    "target_account_id": "9453c497127f4f089dfdb44a1bf20948"
 }
 
 {'username': u'bob5', 'password1': u'testestest', 'password2': u'testestest', 'country': u'US', 'phone': u'+18016905609', 'email': u'loganbentley22@gmail.com'}
@@ -51,21 +51,35 @@ from wallet import BaseWallet
 {
    "currency": "PHP",
    "currency_amount": 123,
-   "payment_method": "bdo_deposit",
+   "payment_method": "bdo_deposit"
 }
 """
 
 
 
 
-
 class CoinsPhWallet(BaseWallet):
+    def __str__(self):
+        return "{}'s CoinsPhWallet".format(self.user)
+    def __repr__(self):
+        return "{}'s CoinsPhWallet".format(self.user)
+    def __unicode__(self):
+        return "{}'s CoinsPhWallet".format(self.user)
+
+    def verify_buy(self, data):
+        url = 'https://sandbox.coins.ph/api/v2/buyorder/34069e71ce1246fea6a53c4e051e73b5'
+
+        data = make_oauth_request(url, self.user, put=True)
+        return data
+
+
     def buy(self, data):
-        url = 'https://coins.ph/api/v2/buyorder'
+
+        url = 'https://sandbox.coins.ph/api/v2/buyorder'
         # input_data = CoinsphBuySerializer(data=data)
         # if input_data.is_valid():
         #     data = make_oauth_request(url, self.user, input_data.validated_data)
-    #     return data
+        #     return data
 
         _data = {
             "currency": data["currency"],
@@ -73,32 +87,84 @@ class CoinsPhWallet(BaseWallet):
             "payment_method": data["payment_method"],
             "target_account_id": Wallet.objects.filter(user_id=self.user)[0].provider_wallet_id
         }
-        data = make_oauth_request(url, self.user, _data)
+        data = make_oauth_request(url, self.user, json.dumps(_data, separators=(',', ':'), skipkeys=True))
         return data
 
 
     def __init__(self, user):
         super(CoinsPhWallet, self).__init__(user)
 
+
+    def buy_history(self, kwargs):
+        url = 'https://sandbox.coins.ph/api/v2/buyorder'
+        data = make_oauth_request(url, self.user, content_type=False)
+        if data['success']:
+            transactions = []
+            data = data['orders']
+            count = 0
+
+            for transaction in data:
+                transactions.append(dict({
+                    'id': transaction['id'],
+                    'status': transaction['status'],
+                    'outlet_title': transaction['payment_outlet_title'],
+                    'created_at': transaction['created_at'],
+                    'marked_paid_time': transaction['marked_paid_time'],
+                    'expiration_time': transaction['expiration_time'],
+                    'instructions': transaction['instructions'],
+                    'wallet_address': transaction['wallet_address'],
+                    'btc_amount': transaction['btc_amount'],
+                    'currency_amount': transaction['currency_amount'],
+                    'exchange_rate': transaction['rate']
+                }))
+                count += 1
+
+            return {
+                'transaction_count': count,
+                'success': True,
+                'transactions': transactions
+            }
+        else:
+            return data
+
+
     def get_history(self, kwargs):
-        url = 'https://coins.ph/api/v3/crypto-payments/'
+        url = 'https://sandbox.coins.ph/api/v3/crypto-payments/'
         data = make_oauth_request(url, self.user)
         if data['success']:
+            transactions = []
+            data = data['crypto-payments']
+            count = 0
+
+            for transaction in data:
+                transactions.append(dict({
+                    'status': transaction['status'],
+                    'fee_amount': transaction['fee_amount'],
+                    'entry_type': transaction['entry_type'],
+                    'date': transaction['created_at'],
+                    'amount': transaction['amount'],
+                    'original_target': transaction['metadata']['original_target_address'],
+                    'original_sender': transaction['metadata']['original_sender_address'],
+                }))
+                count += 1
+
             return {
-                'transaction_count': data['meta']['total_count'],
+                'transaction_count': count,
                 'success': True,
-                'transactions': data['crypto-payments']
+                'transactions': transactions
             }
+        else:
+            return data
 
     def get_wallet_info(self, kwargs):
-        url = 'https://coins.ph/api/v3/crypto-accounts/'
+        url = 'https://sandbox.coins.ph/api/v3/crypto-accounts/'
         data = make_oauth_request(url, self.user)
         if data['success']:
             data = data['crypto-accounts']
         return data
 
     def get_pending_balance(self):
-        url = 'https://coins.ph/api/v3/crypto-accounts/'
+        url = 'https://sandbox.coins.ph/api/v3/crypto-accounts/'
         _data = make_oauth_request(url, self.user)['crypto-accounts'][0]
         data = {
             "pending": _data['pending_balance'],
@@ -109,7 +175,7 @@ class CoinsPhWallet(BaseWallet):
     def send_to_user(self, amount_btc, address):
 
         pass
-    #     url = 'https://coins.ph/api/v3/transfers/'
+    #     url = 'https://sandbox.coins.ph/api/v3/transfers/'
     #     body = {
     #         'amount': amount_btc,
     #         'account': user,
@@ -130,7 +196,7 @@ class CoinsPhWallet(BaseWallet):
     #     return data
 
     def send(self, receiver, amount_local, target_address):
-        url = 'https://coins.ph/api/v3/crypto-payments/'
+        url = 'https://sandbox.coins.ph/api/v3/crypto-payments/'
         user_wallet = Wallet.objects.filter(user_id=self.user)[0]
         sender_account = user_wallet.provider_wallet_id
         address = target_address
@@ -162,7 +228,7 @@ class CoinsPhWallet(BaseWallet):
 
     def get_balance(self, **kwargs):
         # TODO:: fix hard code
-        url = 'https://coins.ph/api/v3/crypto-accounts/'
+        url = 'https://sandbox.coins.ph/api/v3/crypto-accounts/'
         balance = make_oauth_request(url, self.user)
         if balance['success']:
             _data = balance['crypto-accounts'][0]
@@ -177,7 +243,7 @@ class CoinsPhWallet(BaseWallet):
             return balance
 
     def get_address(self):
-        url = 'https://coins.ph/api/v3/crypto-accounts/'
+        url = 'https://sandbox.coins.ph/api/v3/crypto-accounts/'
         _data = make_oauth_request(url, self.user)['crypto-accounts'][0]
         data = {
             "default_address": _data['default_address'],
@@ -185,8 +251,40 @@ class CoinsPhWallet(BaseWallet):
         }
         return data
 
-    def get_exchanges(self):
-        url = 'https://coins.ph/d/api/payin-outlets/'
+    def get_exchanges(self, kwargs):
+
+        # Get locations
+        locations = self.get_exchange_types()
+        if not locations:
+            return locations
+
+        fees = self.get_exchange_fees(kwargs)
+        if not fees:
+            return fees
+
+        fee_ids = {}
+        i = 0
+        for id in fees:
+            fee_ids[id['outlet']] = i
+            i+=1
+
+        for outlet in locations['locations']:
+            for name in outlet['outlets']:
+                if fee_ids.has_key(name['id']):
+                    name.update({
+                        'fee_info': fees[fee_ids[name['id']]]
+                    })
+        return locations
+
+
+
+        # Get fees
+
+
+
+
+
+        url = 'https://sandbox.coins.ph/d/api/payin-outlets/'
         _data = make_oauth_request(url, self.user)["payin-outlets"]
         data = []
         for i in _data:
@@ -194,40 +292,52 @@ class CoinsPhWallet(BaseWallet):
                 data.append(i)
         return data
 
-    def get_exchange_fees(self):
-        url = 'https://coins.ph/d/api/payin-outlet-fees/'
+    def get_exchange_fees(self, kwargs):
+        url = 'https://sandbox.coins.ph/d/api/payin-outlet-fees/'
         data = make_oauth_request(url, self.user)
+        if data['success']:
+            outlet_fees = []
+            for outlet in data["payin-outlet-fees"]:
+                if outlet['currency'] == "PHP":
+                    outlet_fees.append(outlet)
+            
+            return outlet_fees
         return data
 
     def get_exchange_types(self, data=''):
-        url = 'https://coins.ph/d/api/payin-outlet-categories/'
+        url = 'https://sandbox.coins.ph/d/api/payin-outlet-categories/'
         _data = make_oauth_request(url, self.user)
+        # Bank, gCash, online banking, pre paid load - just for PH
+        exclude_foreign = ['atm_transfer_deposit', 'online_bank_transfer_deposit', 'over_the_counter_deposit',
+                           'cash_deposit_machine_deposit', 'online_bank_transfer_deposit']
         if _data['success']:
             _data = _data['payin-outlet-categories']
-            exchange_list = []
-            # data ={'type':'Bank Deposit'}
-            if data:
-                for i in _data:
-                    if i['name'] == data['type']:
-                        return {
-                            'exchange_list': i,
-                            'success': True
-                        }
-                return "Option {} not found".format(data['type'])
 
-            else:
-                for i in _data:
-                    exchange_list.append(i['name'])
-                return {
-                    'exchange_list': exchange_list,
-                    'success': True
-                }
+            exchange_list = []
+            for i in _data:
+                if i['id'] not in exclude_foreign:
+                    outlet_name = (i['name'].replace("_", " ").replace('-', ' ').title())
+                    outlet_locations = []
+                    outlet_locations_id = []
+
+                    for outlet in i['outlets']:
+                        outlet_locations.append({
+                            'name': outlet.replace("_", " ").replace('-', ' ').title(),
+                            'id': outlet
+                        })
+
+
+                    exchange_list.append(dict({'name': outlet_name, 'outlets': outlet_locations}))
+            return {
+                'success': True,
+                'locations': exchange_list
+            }
         else:
             return _data
 
     def create_wallet(self, user, data):
 
-        url = 'https://coins.ph/api/v2/user'
+        url = 'https://sandbox.coins.ph/api/v2/user'
         # url = 'https://sandbox.coins.ph/api/v2/user'
         body = {
             'email': data['email'],
@@ -277,10 +387,13 @@ currency = ["BTC", "CLP", "PBTC"]
 
 API_KEY = settings.COINS_API_KEY  # Replace this with your API Key
 API_SECRET = settings.COINS_SECRET  # Replace this with your API secret
+# ==============================================================================================================================
+
+
 
 # TODO:: fix this internal rewrite
 def get_extra_wallet_info(user):
-    url = 'https://coins.ph/api/v3/crypto-accounts/'
+    url = 'https://sandbox.coins.ph/api/v3/crypto-accounts/'
     _data = make_oauth_request(url, user)['crypto-accounts'][0]
     data = {
         'blockchain_address': _data['default_address'],
@@ -289,41 +402,50 @@ def get_extra_wallet_info(user):
     return data
 
 
-def make_oauth_request(url, user, body={}):
+def make_oauth_request(url, user, body={}, put=False, headers="", content_type=True):
     user_token = get_user_token(user)
     if user_token['success']:
         TOKEN = user_token['token']
     else:
         return user_token
 
-    nonce = int(time.time() * 1e6)
-
-    # 'ACCESS_NONCE': nonce,
     headers = {
-       'Authorization': 'Bearer {}'.format(TOKEN),
-       'Content-Type': 'application/json;charset=UTF-8',
-       'Accept': 'application/json'
+        'Authorization': 'Bearer {}'.format(TOKEN),
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Accept': 'application/json'
     }
 
-    if body:
+    # Have to fix header issue with coins_ph - dif headers for dif calls
+    if not content_type:
+        del headers['Content-Type']
+
+    if put:
+        try:
+            response = requests.put(url, headers=headers)
+        except Exception as e:
+            return {"success": False, "error": e.message}
+    elif body:
         try:
             response = requests.post(url, headers=headers, data=body)
         except Exception as e:
             return {"success": False, "error": e.message}
     else:
         try:
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers, params='per_page=100')
         except Exception as e:
             return {"success": False, "error": e.message}
+
     result = response.json()
 
     if response.ok and response.status_code == 200:
         result['success'] = True
         return result
     else:
-        result['success'] = False
-        result['error'] = response.reason
-        return result
+        error_result = {}
+        error_result['success'] = False
+        error_result['error'] = result.get('errors', response.reason)
+
+        return error_result
 
     # Use requests.get instead of POST for GET requests, without the data kwarg
 
@@ -379,7 +501,7 @@ def get_user_token(user):
         return {'success': True, 'token': token}
 
     else:
-        url = 'https://coins.ph/user/oauthtoken'
+        url = 'https://sandbox.coins.ph/user/oauthtoken'
         data = {
             'client_id': settings.COINS_API_KEY,
             'client_secret': settings.COINS_SECRET,

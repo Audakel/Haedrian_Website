@@ -41,12 +41,14 @@ def create_account(request):
 
 @transaction.atomic
 def _create_account(user_data):
-    """API friendly INTERNAL USE ONLY account registration end point
+    """
+    API friendly INTERNAL USE ONLY account registration end point
     :param user_data - Dict that contains all the fields that are expected for the user to fill out.
     Required keys in the dict are
     ["username", "email", "password1", "password2", "phone", "country"]
 
-    :returns True if the account creation was successful"""
+    :returns True if the account creation was successful
+    """
     data_form = NewUserForm(user_data)
     user_form = EmailUserForm(user_data)
     if user_form.is_valid() and data_form.is_valid():

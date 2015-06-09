@@ -5,10 +5,10 @@ from django.conf import settings
 
 
 # TODO: get a new account to the API
-# mifosx_username = 'aquila'
-# mifosx_password = 'MifosxSaTeCoCeMuBu1'
-mifosx_username = 'mifos'
-mifosx_password = 'password'
+mifosx_username = 'aquila'
+mifosx_password = 'MifosxSaTeCoCeMuBu1'
+# mifosx_username = 'mifos'
+# mifosx_password = 'password'
 
 def mifosx_auth():
     headers ={

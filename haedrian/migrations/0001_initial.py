@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from decimal import Decimal
-
 from django.db import models, migrations
+from decimal import Decimal
 import django_countries.fields
 from django.conf import settings
 import djmoney.models.fields
@@ -44,15 +43,6 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='Organization',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-            ],
-            options={
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
             name='Transaction',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -73,9 +63,11 @@ class Migration(migrations.Migration):
                 ('user', models.OneToOneField(primary_key=True, serialize=False, to=settings.AUTH_USER_MODEL)),
                 ('phone', models.CharField(max_length=15)),
                 ('credit_score', models.IntegerField(default=0, max_length=4)),
-                ('sms_balance', models.DecimalField(default=0, max_digits=12, decimal_places=4)),
                 ('country', django_countries.fields.CountryField(max_length=2)),
                 ('default_currency', models.CharField(default=b'USD', max_length=4)),
+                ('app_internal_id', models.CharField(default=b'', max_length=50, blank=True)),
+                ('app_external_id', models.CharField(default=b'', max_length=50, blank=True)),
+                ('application', models.CharField(blank=True, max_length=7, choices=[(b'MENTORS', 'Mentors International')])),
             ],
             options={
             },
@@ -84,18 +76,23 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Wallet',
             fields=[
-                ('user', models.ForeignKey(primary_key=True, serialize=False, to=settings.AUTH_USER_MODEL)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('type', models.CharField(default=b'CH', max_length=2, choices=[(b'CH', b'Coins.ph'), (b'GM', b'Gem'), (b'SE', b'I have my own wallet'), (b'TS', b'Fake wallet for testing purposes')])),
                 ('api_client_id', models.CharField(default=b'', max_length=60)),
                 ('provider_wallet_id', models.CharField(default=b'', max_length=60)),
                 ('access_token', models.CharField(default=b'', max_length=60)),
                 ('refresh_token', models.CharField(default=b'', max_length=60)),
                 ('expires_at', models.CharField(default=b'', max_length=60)),
-                ('blockchain_address', models.CharField(default=b'', max_length=60)),
+                ('currency', models.CharField(default=b'BTC', max_length=6, choices=[(b'BTC', b'Bitcoin'), (b'PHP', b'Philippine Peso')])),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
             },
             bases=(models.Model,),
+        ),
+        migrations.AlterUniqueTogether(
+            name='userdata',
+            unique_together=set([('application', 'app_internal_id'), ('application', 'app_external_id')]),
         ),
         migrations.AddField(
             model_name='transaction',

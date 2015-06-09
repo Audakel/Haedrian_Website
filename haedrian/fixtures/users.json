@@ -15,6 +15,7 @@
             "password": "pbkdf2_sha256$15000$uc4mu4Xw8KbO$MzijkpMzFlXDzniLjFzKbu9H1VJHLJMkSvgmme7rFyk=",
             "email": "haedrian@example.com",
             "date_joined": "2015-05-07T16:56:46.588Z"
+
         }
     },
     {
@@ -61,8 +62,10 @@
             "credit_score": 800,
             "phone": "+12345551212",
             "default_currency": "USD",
-            "external": "",
-            "country": "US"
+            "country": "US",
+            "application": "MENTORS",
+            "app_internal_id": "12",
+            "app_external_id": "jack"
         }
     },
     {
@@ -73,8 +76,10 @@
             "credit_score": 800,
             "phone": "+12345559898",
             "default_currency": "USD",
-            "external": "",
-            "country": "US"
+            "country": "US",
+            "application": "MENTORS",
+            "app_internal_id": "1211",
+            "app_external_id": "jack11"
 
         }
     },
@@ -86,8 +91,10 @@
             "credit_score": 800,
             "phone": "+18016905609",
             "default_currency": "USD",
-            "external": "",
-            "country": "US"
+            "country": "US",
+            "application": "MENTORS",
+            "app_internal_id": "121",
+            "app_external_id": "jack1"
 
         }
     },

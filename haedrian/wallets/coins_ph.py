@@ -50,7 +50,7 @@ from wallet import BaseWallet
 
 {
    "currency": "PHP",
-   "currency_amount": 123,
+   "amount_local": 123,
    "payment_method": "bdo_deposit"
 }
 """

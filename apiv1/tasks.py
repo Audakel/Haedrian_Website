@@ -12,11 +12,13 @@ def fetch_mfi_client(new_user):
     :return: {'success': True|False, 'message': message}
     """
     if new_user['app'] == UserData.MENTORS:
-        res = mifosx_api("clients/?externalId={}".format(new_user['external']))
+        res = mifosx_api("clients/?externalId={}".format(new_user['id']))
         if res['success']:
             userdata = UserData.objects.get(pk=new_user['pk'])
-            userdata.user.first_name = res['response']['firstname']
-            userdata.user.last_name = res['response']['lastname']
+            r = res['response']['pageItems'][0]
+            userdata.user.first_name = r['firstname']
+            userdata.user.last_name = r['lastname']
+            userdata.app_internal_id = res['response']['id']
             userdata.user.save()
             # TODO text the user to let them know they are successfully connected to Mifosx
             return {'success': True, 'message': 'User updated'}

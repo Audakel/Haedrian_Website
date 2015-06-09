@@ -12,7 +12,7 @@ from haedrian.models import UserData, Transaction, Wallet
 from haedrian.views import _create_account
 from haedrian.wallets.coins_ph import CoinsPhWallet
 import requests
-
+from tasks import repay_outstanding_loan
 __author__ = 'audakel'
 
 
@@ -31,7 +31,9 @@ def _new_user(kwargs):
         "password1": kwargs['password'],
         "password2": kwargs['password'],
         "phone": kwargs['phone'],
-        "country": kwargs['country']
+        "country": kwargs['country'],
+        "application": kwargs.get("application", ""),
+        "app_external_id": kwargs.get("app_external_id", "")
     }
     account = _create_account(new_data)
     if account['success']:
@@ -100,6 +102,7 @@ def _send_to_user_handle(user, **kwargs):
 
 def _send(user, kwargs):
     """ Internal API for the SMS app to call as well """
+
     wallet = get_temp_wallet(user)
     UserModel = get_user_model()
     haedrian_account = UserModel.objects.get(username='haedrian')
@@ -141,6 +144,10 @@ def _send(user, kwargs):
             #         fee.save()
             #     except DatabaseError as e:
             #         return {"success": False, "error": e.message}
+        repay_outstanding_loan({
+            'clientId': sender.userdata.app_internal_id,
+            'transactionId': transaction.id
+        })
         return data
     return send_data.errors
 

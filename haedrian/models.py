@@ -2,10 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django_countries.fields import CountryField
 from djmoney.models.fields import MoneyField
-
-
-
-# from mptt.models import MPTTModel, TreeForeignKey
+from django.utils.translation import ugettext as _
 
 class BetaApplicant(models.Model):
     name = models.CharField(max_length=255)
@@ -18,34 +15,20 @@ class UserData(models.Model):
     user = models.OneToOneField(User, primary_key=True)
     phone = models.CharField(max_length=15)
     credit_score = models.IntegerField(max_length=4, default=0)
-
-    sms_balance = models.DecimalField(max_digits=12, decimal_places=4, default=0)
-    # handle is the same thing as username
-    # handle = models.CharField(max_length=50)
     country = CountryField(blank_label='(Country)')
     default_currency = models.CharField(max_length=4, default='USD')
-    external = models.CharField(max_length=50, blank=True, default='')
-#
-# class Node(MPTTModel):
-#     name = models.CharField(max_length=50, unique=True)
-#     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
-#     def __str__(self):
-#         return self.name
-#     def __repr__(self):
-#         return self.name
-#     def __unicode__(self):
-#         return self.name
-#     class Meta:
-#         verbose_name = "Organization"
-#     class MPTTMeta:
-#         order_insertion_by = ['name']
-
-
-# TODO hook into the new backend
-class Organization(models.Model):
-    pass
-
-
+    app_internal_id = models.CharField(max_length=50, blank=True, default='')
+    app_external_id = models.CharField(max_length=50, blank=True, default='')
+    MENTORS = 'MENTORS'
+    APPLICATIONS = (
+        (MENTORS, _('Mentors International'),),
+    )
+    application = models.CharField(max_length=7, blank=True, choices=APPLICATIONS)
+    class Meta:
+        unique_together = (
+            ("application", "app_internal_id"),
+            ("application", "app_external_id"),
+        )
 
 
 class Wallet(models.Model):
@@ -81,9 +64,7 @@ class Wallet(models.Model):
     access_token = models.CharField(max_length=60, default="")
     refresh_token = models.CharField(max_length=60, default="")
     expires_at = models.CharField(max_length=60, default="")
-    blockchain_address = models.CharField(max_length=60, default="")
     currency = models.CharField(max_length=6, choices=CURRENCY, default=BITCOIN)
-
 
 class Transaction(models.Model):
     sender = models.ForeignKey(User, related_name="sent")
@@ -99,8 +80,8 @@ class Transaction(models.Model):
         (SEND, 'Send'),
     )
     type = models.CharField(max_length=2,
-                                      choices=TRANSACTION_TYPE,
-                                      default=SEND)
+                            choices=TRANSACTION_TYPE,
+                            default=SEND)
 
 class BitcoinRates(models.Model):
     code = models.CharField(max_length=4)

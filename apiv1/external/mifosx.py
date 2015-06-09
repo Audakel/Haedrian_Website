@@ -27,7 +27,7 @@ def mifosx_auth():
     else:
         return False, response
 
-def mifosx_api(endpoint, method='GET', params={}):
+def mifosx_api(endpoint, method='GET', params={}, body=None):
     """Make a request to the Mifosx API to get the rest of the client info that we need"""
     # TODO: add the ability for multiple tenants
     token, err = mifosx_auth()

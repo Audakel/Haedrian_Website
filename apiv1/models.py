@@ -1,14 +1,3 @@
-from django.db import models
-from django.conf import settings
-
-class ExternalUser(models.Model):
-    MENTORS = 'MENTORS'
-    APPLICATIONS = (
-        (MENTORS, 'Mentors International',),
-    )
-    application = models.CharField(max_length=7, blank=False, choices=APPLICATIONS)
-    external    = models.CharField(max_length=50, blank=False)
-    user        = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='external', blank=True, null=True)
 
 # class MifosxData(models.Model):
 #     user = models.ForeignKey(ExternalUser, unique=True, related_name='mifosx_data')

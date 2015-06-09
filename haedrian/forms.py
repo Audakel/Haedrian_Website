@@ -29,7 +29,12 @@ class EmailUserForm(UserCreationForm):
 class NewUserForm(ModelForm):
     class Meta:
         model = UserData
-        exclude = ['user', 'credit_score', 'default_currency', 'sms_balance']
+        fields = ("phone", "country", "application", "app_external_id")
+        # exclude = ['user', 'credit_score', 'default_currency', 'app_internal_id',]
+        labels = {
+            "application": _("Select the institution you are connected to"),
+            "app_external_id": _("ID number"),
+        }
 
     def clean_phone(self):
         data = self.cleaned_data['phone']
@@ -46,3 +51,8 @@ class NewUserForm(ModelForm):
                 raise ValidationError(_("Enter a valid phone number."))
             else:
                 cleaned_data['phone'] = phonenumbers.format_number(pn, phonenumbers.PhoneNumberFormat.E164)
+
+        app = cleaned_data.get('application')
+        id = cleaned_data.get('app_external_id')
+        if app and not id or id and not app:
+            raise ValidationError(_("If a microfinance institution is selected, then you must enter an ID as well"))

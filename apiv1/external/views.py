@@ -1,12 +1,16 @@
 from __future__ import absolute_import
+import random
+import string
+from phonenumbers import geocoder
+import pycountry
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions
-from django.db import IntegrityError
+from apiv1.external.mifosx import mifosx_api
 
-from apiv1.models import ExternalUser
-from apiv1.tasks import match_users
+from haedrian.models import UserData
+from haedrian.views import _create_account
 
 
 class WhitelistPermission(permissions.BasePermission):
@@ -37,24 +41,52 @@ class CreateUser(APIView):
 
     def post(self, request):
         if 'HTTP_X_MIFOS_PLATFORM_TENANTID' in request.META.keys():
-            app = ExternalUser.MENTORS
+            app = UserData.MENTORS
         else:
             # TODO: lol. security by obscurity. pls fix
             return Response(status=404)
-        # This would enable us to fetch the ExternalID field from Mifos...
-        # but it doesn't look thats what we want since the API calls want ClientId
-        # res = mifosx_api('client/' + request.data['clientId'], None)
-        # if res['success']:
-        #     external = res['response']['externalId']
-        # else:
-        external = request.data['clientId']
-        user = ExternalUser(application=app, user=None, external=external)
-        try:
-            user.save()
-        except IntegrityError as e:
-            # duplicate user so return 409 saying there is a conflict in data? maybe use 412 precodition failed?
-            return Response("User already exists", status=409)
-        # someday in the future... this should be a task
-        match_users.delay({'external': user.external})
-        # start a celery task to fetch the rest of the user's data from the external source
+        exists = UserData.objects.filter(application=app, app_internal_id=request.data['clientId'])
+        if len(exists) == 1:
+            # user has an account already so nothing to do?
+            pass
+        elif len(exists) == 0:
+            # user doesn't have an account so lets make them a temp account
+            name = "placeholder" + ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(10))
+            password = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(30))
+            external = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(10))
+            phone = '+17068019809'
+            country = 'US'
+            # fetch the rest of the client's info from Mifosx
+            res = mifosx_api("clients/{}".format(request.data['clientId']))
+            if res['success']:
+                external = res['response'].get('externalId', external)
+                # can't get their phone number properly from Mifosx it seems
+                # if 'mobileNo' in res['response']:
+                #     phone = res['response']['mobileNo']
+                #     country_name = geocoder.country_name_for_number(phone, 'en')
+                #     country = pycountry.countries.get(common_name=country_name).alpha2
+                first_name = res['response']['firstname']
+                last_name = res['response']['lastname']
+            else:
+                first_name = ''
+                last_name = ''
+            account = {
+                'username': name,
+                'email': name + '@example.com',
+                'first_name': first_name,
+                'last_name': last_name,
+                'password1': password,
+                'password2': password,
+                'phone': phone,
+                'country': country,
+                'application': UserData.MENTORS,
+                'app_internal_id': request.data['clientId'],
+                'app_external_id': external,
+            }
+            ret_val = _create_account(account)
+            if not ret_val['success']:
+                return Response(status=400, data=ret_val['error'])
+        else:
+            # something is really wonky here
+            pass
         return Response(status=201)

@@ -1,13 +1,17 @@
+import copy
 import importlib
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import DatabaseError
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from money import Money
 from rest_framework.authtoken.models import Token
 
 from apiv1.serializers import SendSerializer
+from haedrian.forms import NewUserForm, EmailUserForm
 from haedrian.models import UserData, Transaction, Wallet
 from haedrian.views import _create_account
 from haedrian.wallets.coins_ph import CoinsPhWallet
@@ -28,8 +32,8 @@ def _new_user(kwargs):
     new_data = {
         "username": kwargs['username'],
         "email": kwargs['email'],
-        "password1": kwargs['password'],
-        "password2": kwargs['password'],
+        "password1": kwargs['password1'],
+        "password2": kwargs['password1'],
         "phone": kwargs['phone'],
         "country": kwargs['country'],
         "application": kwargs.get("application", ""),
@@ -46,6 +50,7 @@ def _new_user(kwargs):
         try:
             my_wallet = _create_wallet(user, kwargs)
         except Exception as e:
+            get_user_model().objects.get(username=kwargs['username']).delete()
             return {
                 'success': False,
                 'error': e.message
@@ -301,8 +306,18 @@ def get_temp_wallet(user):
     return met(user)
 
 
-
-
-
-
-
+def create_account(request):
+    if request.method == 'POST':
+        # the forms seem to destructively remove the elements? deep copy until I find out why
+        if _new_user(copy.deepcopy(request.POST))['success']:
+            return HttpResponseRedirect("/")
+        else:
+            data_form = NewUserForm(request.POST)
+            user_form = EmailUserForm(request.POST)
+    else:
+        data_form = NewUserForm()
+        user_form = EmailUserForm()
+    return render(request, "registration/register.html", {
+        'user_form': user_form,
+        'data_form': data_form,
+    })

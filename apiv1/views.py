@@ -7,7 +7,7 @@ from rest_framework.decorators import api_view, authentication_classes
 from django.conf import settings
 from money import xrates
 
-import apiv1._views as internal
+import apiv1.views_internal as internal
 from apiv1.serializers import PlacesSerializer
 from haedrian.google.places import GooglePlaces
 from haedrian.google.lang import *

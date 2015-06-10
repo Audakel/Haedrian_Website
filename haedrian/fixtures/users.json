@@ -103,7 +103,11 @@
         "pk": 1,
         "fields": {
             "user": 1,
-            "type": "CH"
+            "type": "CH",
+            "provider_wallet_id": "c48f463fd52247d3b60b837c5d6a032c",
+            "access_token": "sufQ4P328EuTPBOfIZuZQYXHvR2IO6",
+            "refresh_token": "rWYZFKAarRmsOIc7OhLF6rNrNqVtqx",
+            "expires_at": "1433968411"
         }
 
     },
@@ -112,7 +116,11 @@
         "pk": 2,
         "fields": {
             "user": 2,
-            "type": "TS"
+            "type": "TS",
+            "provider_wallet_id": "abeca034ad434629afcbcb609694bccd",
+            "access_token": "LdbsltND9ylWXxF9DWcdgPTiBIxtpJ",
+            "refresh_token": "MckVuq1nLAiNZugX1Q7c9sRx0sAQpf",
+            "expires_at": "1433968825"
         }
 
     },
@@ -121,7 +129,11 @@
         "pk": 3,
         "fields": {
             "user": 3,
-            "type": "TS"
+            "type": "TS",
+            "provider_wallet_id": "001e495212ec447a8a2bd942e402ffcd",
+            "access_token": "w83Y79qGKyg3MTmqcFGSOirqasTLre",
+            "refresh_token": "oHcEVbi98H3jwm8r3RKTK4BQrjdIdC",
+            "expires_at": "1433980403"
         }
 
     }

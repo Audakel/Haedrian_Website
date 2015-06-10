@@ -33,7 +33,7 @@ from wallet import BaseWallet
 {
         "username": "jmonkey1",
         "email": "jmonkey1@mailinator.com",
-        "password": "password123",
+        "password1": "password123",
         "phone": "+14105521258",
         "country": "US"
 }
@@ -341,7 +341,7 @@ class CoinsPhWallet(BaseWallet):
         # url = 'https://sandbox.coins.ph/api/v2/user'
         body = {
             'email': data['email'],
-            'password': data['password'],
+            'password': data['password1'],
             'api_key': settings.COINS_API_KEY
         }
 

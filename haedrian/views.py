@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
 from django.db import transaction, IntegrityError
 import pycountry
 
@@ -22,22 +21,6 @@ def index(request):
     # context["count"] = BetaApplicant.objects.count()
     return render(request, 'index.html', context)
 
-import copy
-def create_account(request):
-    if request.method == 'POST':
-        # the forms seem to destructively remove the elements? deep copy until I find out why
-        if _create_account(copy.deepcopy(request.POST))['success']:
-            return HttpResponseRedirect("/")
-        else:
-            data_form = NewUserForm(request.POST)
-            user_form = EmailUserForm(request.POST)
-    else:
-        data_form = NewUserForm()
-        user_form = EmailUserForm()
-    return render(request, "registration/register.html", {
-        'user_form': user_form,
-        'data_form': data_form,
-    })
 
 @transaction.atomic
 def _create_account(user_data):
@@ -94,6 +77,7 @@ def _create_account(user_data):
                     u.country = data_form.cleaned_data['country']
                     u.save()
                     return {'success': True }
+        # TODO:: JAMES - rollback delete and remove internal id from mifos on fail?
         return {
             'error':{
                 'user': user_form.error_messages,

@@ -8,7 +8,7 @@ from django.db.models import F
 from phonenumbers import geocoder
 import pycountry
 
-from apiv1._views import _get_exchange_types
+from apiv1.views_internal import _get_exchange_types
 from haedrian.models import UserData
 from models import Message
 from sms_verify import verify_sender, str_usage_commands

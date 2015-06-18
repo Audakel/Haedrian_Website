@@ -1,0 +1,3606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="robots" content="NONE,NOARCHIVE">
+  <title>KeyError at /sms/telerivet/</title>
+  <style type="text/css">
+    html * { padding:0; margin:0; }
+    body * { padding:10px 20px; }
+    body * * { padding:0; }
+    body { font:small sans-serif; }
+    body>div { border-bottom:1px solid #ddd; }
+    h1 { font-weight:normal; }
+    h2 { margin-bottom:.8em; }
+    h2 span { font-size:80%; color:#666; font-weight:normal; }
+    h3 { margin:1em 0 .5em 0; }
+    h4 { margin:0 0 .5em 0; font-weight: normal; }
+    code, pre { font-size: 100%; white-space: pre-wrap; }
+    table { border:1px solid #ccc; border-collapse: collapse; width:100%; background:white; }
+    tbody td, tbody th { vertical-align:top; padding:2px 3px; }
+    thead th { padding:1px 6px 1px 3px; background:#fefefe; text-align:left; font-weight:normal; font-size:11px; border:1px solid #ddd; }
+    tbody th { width:12em; text-align:right; color:#666; padding-right:.5em; }
+    table.vars { margin:5px 0 2px 40px; }
+    table.vars td, table.req td { font-family:monospace; }
+    table td.code { width:100%; }
+    table td.code pre { overflow:hidden; }
+    table.source th { color:#666; }
+    table.source td { font-family:monospace; white-space:pre; border-bottom:1px solid #eee; }
+    ul.traceback { list-style-type:none; color: #222; }
+    ul.traceback li.frame { padding-bottom:1em; color:#666; }
+    ul.traceback li.user { background-color:#e0e0e0; color:#000 }
+    div.context { padding:10px 0; overflow:hidden; }
+    div.context ol { padding-left:30px; margin:0 10px; list-style-position: inside; }
+    div.context ol li { font-family:monospace; white-space:pre; color:#777; cursor:pointer; }
+    div.context ol li pre { display:inline; }
+    div.context ol.context-line li { color:#505050; background-color:#dfdfdf; }
+    div.context ol.context-line li span { position:absolute; right:32px; }
+    .user div.context ol.context-line li { background-color:#bbb; color:#000; }
+    .user div.context ol li { color:#666; }
+    div.commands { margin-left: 40px; }
+    div.commands a { color:#555; text-decoration:none; }
+    .user div.commands a { color: black; }
+    #summary { background: #ffc; }
+    #summary h2 { font-weight: normal; color: #666; }
+    #explanation { background:#eee; }
+    #template, #template-not-exist { background:#f6f6f6; }
+    #template-not-exist ul { margin: 0 0 0 20px; }
+    #unicode-hint { background:#eee; }
+    #traceback { background:#eee; }
+    #requestinfo { background:#f6f6f6; padding-left:120px; }
+    #summary table { border:none; background:transparent; }
+    #requestinfo h2, #requestinfo h3 { position:relative; margin-left:-100px; }
+    #requestinfo h3 { margin-bottom:-1em; }
+    .error { background: #ffc; }
+    .specific { color:#cc3300; font-weight:bold; }
+    h2 span.commands { font-size:.7em;}
+    span.commands a:link {color:#5E5694;}
+    pre.exception_value { font-family: sans-serif; color: #666; font-size: 1.5em; margin: 10px 0 10px 0; }
+  </style>
+  
+  <script type="text/javascript">
+  //<!--
+    function getElementsByClassName(oElm, strTagName, strClassName){
+        // Written by Jonathan Snook, http://www.snook.ca/jon; Add-ons by Robert Nyman, http://www.robertnyman.com
+        var arrElements = (strTagName == "*" && document.all)? document.all :
+        oElm.getElementsByTagName(strTagName);
+        var arrReturnElements = new Array();
+        strClassName = strClassName.replace(/\-/g, "\-");
+        var oRegExp = new RegExp("(^|\s)" + strClassName + "(\s|$)");
+        var oElement;
+        for(var i=0; i<arrElements.length; i++){
+            oElement = arrElements[i];
+            if(oRegExp.test(oElement.className)){
+                arrReturnElements.push(oElement);
+            }
+        }
+        return (arrReturnElements)
+    }
+    function hideAll(elems) {
+      for (var e = 0; e < elems.length; e++) {
+        elems[e].style.display = 'none';
+      }
+    }
+    window.onload = function() {
+      hideAll(getElementsByClassName(document, 'table', 'vars'));
+      hideAll(getElementsByClassName(document, 'ol', 'pre-context'));
+      hideAll(getElementsByClassName(document, 'ol', 'post-context'));
+      hideAll(getElementsByClassName(document, 'div', 'pastebin'));
+    }
+    function toggle() {
+      for (var i = 0; i < arguments.length; i++) {
+        var e = document.getElementById(arguments[i]);
+        if (e) {
+          e.style.display = e.style.display == 'none' ? 'block': 'none';
+        }
+      }
+      return false;
+    }
+    function varToggle(link, id) {
+      toggle('v' + id);
+      var s = link.getElementsByTagName('span')[0];
+      var uarr = String.fromCharCode(0x25b6);
+      var darr = String.fromCharCode(0x25bc);
+      s.innerHTML = s.innerHTML == uarr ? darr : uarr;
+      return false;
+    }
+    function switchPastebinFriendly(link) {
+      s1 = "Switch to copy-and-paste view";
+      s2 = "Switch back to interactive view";
+      link.innerHTML = link.innerHTML == s1 ? s2: s1;
+      toggle('browserTraceback', 'pastebinTraceback');
+      return false;
+    }
+    //-->
+  </script>
+  
+</head>
+<body>
+<div id="summary">
+  <h1>KeyError at /sms/telerivet/</h1>
+  <pre class="exception_value">&#39;config&#39;</pre>
+  <table class="meta">
+
+    <tr>
+      <th>Request Method:</th>
+      <td>POST</td>
+    </tr>
+    <tr>
+      <th>Request URL:</th>
+      <td>http://243debac.ngrok.com/sms/telerivet/</td>
+    </tr>
+
+    <tr>
+      <th>Django Version:</th>
+      <td>1.7.8</td>
+    </tr>
+
+    <tr>
+      <th>Exception Type:</th>
+      <td>KeyError</td>
+    </tr>
+
+
+    <tr>
+      <th>Exception Value:</th>
+      <td><pre>&#39;config&#39;</pre></td>
+    </tr>
+
+
+    <tr>
+      <th>Exception Location:</th>
+      <td>/usr/local/lib/python2.7/dist-packages/rapidsms_telerivet/forms.py in clean_secret, line 23</td>
+    </tr>
+
+    <tr>
+      <th>Python Executable:</th>
+      <td>/usr/bin/python</td>
+    </tr>
+    <tr>
+      <th>Python Version:</th>
+      <td>2.7.6</td>
+    </tr>
+    <tr>
+      <th>Python Path:</th>
+      <td><pre>[&#39;/home/audakel/cs/haedrian/Haedrian_Website&#39;,
+ &#39;/usr/lib/python2.7&#39;,
+ &#39;/usr/lib/python2.7/plat-x86_64-linux-gnu&#39;,
+ &#39;/usr/lib/python2.7/lib-tk&#39;,
+ &#39;/usr/lib/python2.7/lib-old&#39;,
+ &#39;/usr/lib/python2.7/lib-dynload&#39;,
+ &#39;/usr/local/lib/python2.7/dist-packages&#39;,
+ &#39;/usr/lib/python2.7/dist-packages&#39;,
+ &#39;/usr/lib/python2.7/dist-packages/PILcompat&#39;,
+ &#39;/usr/lib/python2.7/dist-packages/gtk-2.0&#39;,
+ &#39;/usr/lib/python2.7/dist-packages/ubuntu-sso-client&#39;,
+ &#39;/home/audakel/cs/haedrian/Haedrian_Website&#39;]</pre></td>
+    </tr>
+    <tr>
+      <th>Server time:</th>
+      <td>Wed, 10 Jun 2015 17:16:59 -0600</td>
+    </tr>
+  </table>
+</div>
+
+
+
+
+<div id="traceback">
+  <h2>Traceback <span class="commands"><a href="#" onclick="return switchPastebinFriendly(this);">Switch to copy-and-paste view</a></span></h2>
+  
+  <div id="browserTraceback">
+    <ul class="traceback">
+      
+        <li class="frame django">
+          <code>/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py</code> in <code>get_response</code>
+
+          
+            <div class="context" id="c139910492619696">
+              
+                <ol start="104" class="pre-context" id="pre139910492619696"><li onclick="toggle('pre139910492619696', 'post139910492619696')"><pre>                    response = middleware_method(request, callback, callback_args, callback_kwargs)</pre></li><li onclick="toggle('pre139910492619696', 'post139910492619696')"><pre>                    if response:</pre></li><li onclick="toggle('pre139910492619696', 'post139910492619696')"><pre>                        break</pre></li><li onclick="toggle('pre139910492619696', 'post139910492619696')"><pre></pre></li><li onclick="toggle('pre139910492619696', 'post139910492619696')"><pre>            if response is None:</pre></li><li onclick="toggle('pre139910492619696', 'post139910492619696')"><pre>                wrapped_callback = self.make_view_atomic(callback)</pre></li><li onclick="toggle('pre139910492619696', 'post139910492619696')"><pre>                try:</pre></li></ol>
+              
+              <ol start="111" class="context-line"><li onclick="toggle('pre139910492619696', 'post139910492619696')"><pre>                    response = wrapped_callback(request, *callback_args, **callback_kwargs)</pre> <span>...</span></li></ol>
+              
+                <ol start='112' class="post-context" id="post139910492619696"><li onclick="toggle('pre139910492619696', 'post139910492619696')"><pre>                except Exception as e:</pre></li><li onclick="toggle('pre139910492619696', 'post139910492619696')"><pre>                    # If the view raised an exception, run it through exception</pre></li><li onclick="toggle('pre139910492619696', 'post139910492619696')"><pre>                    # middleware, and if the exception middleware returns a</pre></li><li onclick="toggle('pre139910492619696', 'post139910492619696')"><pre>                    # response, use that. Otherwise, reraise the exception.</pre></li><li onclick="toggle('pre139910492619696', 'post139910492619696')"><pre>                    for middleware_method in self._exception_middleware:</pre></li><li onclick="toggle('pre139910492619696', 'post139910492619696')"><pre>                        response = middleware_method(request, e)</pre></li></ol>
+              
+            </div>
+          
+
+          
+            <div class="commands">
+                
+                    <a href="#" onclick="return varToggle(this, '139910492619696')"><span>&#x25b6;</span> Local vars</a>
+                
+            </div>
+            <table class="vars" id="v139910492619696">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>e</td>
+                    <td class="code"><pre>KeyError(&#39;config&#39;,)</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>callback_args</td>
+                    <td class="code"><pre>()</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>resolver_match</td>
+                    <td class="code"><pre>ResolverMatch(func=&lt;function TelerivetBackendView at 0x7f3f6d2ab0c8&gt;, args=(), kwargs={}, url_name=&#39;rapidsms_telerivet.views.TelerivetBackendView&#39;, app_name=&#39;None&#39;, namespace=&#39;&#39;)</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>middleware_method</td>
+                    <td class="code"><pre>&lt;bound method CsrfViewMiddleware.process_view of &lt;django.middleware.csrf.CsrfViewMiddleware object at 0x7f3f6c70dbd0&gt;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;django.core.handlers.wsgi.WSGIHandler object at 0x7f3f75c31690&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&quot;&lt;WSGIRequest\npath:/sms/telerivet/,\nGET:&lt;QueryDict: {}&gt;,\nPOST:&lt;QueryDict: {u&#39;event&#39;: [u&#39;incoming_message&#39;], u&#39;phone[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;from_number_e164&#39;: [u&#39;+16503089117&#39;], u&#39;phone[id]&#39;: [u&#39;PN50774ea8fb7cf4ca&#39;], u&#39;to_number&#39;: [u&#39;4803591947&#39;], u&#39;contact_id&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;phone[send_limit]&#39;: [u&#39;60&#39;], u&#39;from_number&#39;: [u&#39;6503089117&#39;], u&#39;contact[last_message_time]&#39;: [u&#39;1433978213&#39;], u&#39;state[time_updated]&#39;: [u&#39;0&#39;], u&#39;contact[last_message_id]&#39;: [u&#39;SM93ec2f3e5861a709&#39;], u&#39;state[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[phone_number]&#39;: [u&#39;4803591947&#39;], u&#39;phone[name]&#39;: [u&#39;4803591947&#39;], u&#39;content&#39;: [u&#39;No&#39;], u&#39;state[contact_id]&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;contact[id]&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;state[service_id]&#39;: [u&#39;SV1f9984f7a7a2bfe7&#39;], u&#39;phone_id&#39;: [u&#39;PN50774ea8fb7cf4ca&#39;], u&#39;id&#39;: [u&#39;SM93ec2f3e5861a709&#39;], u&#39;contact[send_blocked]&#39;: [u&#39;0&#39;], u&#39;source&#39;: [u&#39;phone&#39;], u&#39;secret&#39;: [u&#39;AUH4PZMMLHN3XPHHHDW6MM3HURZ923XD&#39;], u&#39;phone[phone_type]&#39;: [u&#39;android&#39;], u&#39;contact[time_created]&#39;: [u&#39;1433959592&#39;], u&#39;state[time_created]&#39;: [u&#39;0&#39;], u&#39;project_id&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[battery]&#39;: [u&#39;73&#39;], u&#39;status&#39;: [u&#39;processing&#39;], u&#39;phone[charging]&#39;: [u&#39;0&#39;], u&#39;direction&#39;: [u&#39;incoming&#39;], u&#39;phone[mccmnc]&#39;: [u&#39;311480&#39;], u&#39;contact[name]&#39;: [u&#39;6503089117&#39;], u&#39;time_sent&#39;: [u&#39;1433974610&#39;], u&#39;phone[time_created]&#39;: [u&#39;1433958131&#39;], u&#39;time_created&#39;: [u&#39;1433978213&#39;], u&#39;service_id&#39;: [u&#39;SV1f9984f7a7a2bfe7&#39;], u&#39;phone[model]&#39;: [u&#39;SM-G900V&#39;], u&#39;phone[app_version]&#39;: [u&#39;3.9.1&#39;], u&#39;phone[send_paused]&#39;: [u&#39;0&#39;], u&#39;phone[manufacturer]&#39;: [u&#39;samsung&#39;], u&#39;phone[android_sdk]&#39;: [u&#39;21&#39;], u&#39;contact[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[last_active_time]&#39;: [u&#39;1433978213&#39;], u&#39;phone[country]&#39;: [u&#39;US&#39;], u&#39;contact[message_count]&#39;: [u&#39;28&#39;], u&#39;context&#39;: [u&#39;message&#39;], u&#39;simulated&#39;: [u&#39;0&#39;], u&#39;contact[phone_number]&#39;: [u&#39;6503089117&#39;], u&#39;starred&#39;: [u&#39;0&#39;], u&#39;message_type&#39;: [u&#39;sms&#39;]}&gt;,\nCOOKIES:{},\nMETA:{&#39;CLUTTER_IM_MODULE&#39;: &#39;xim&#39;,\n &#39;COLORTERM&#39;: &#39;gnome-terminal&#39;,\n &#39;COMPIZ_CONFIG_PROFILE&#39;: &#39;ubuntu&#39;,\n &#39;CONTENT_LENGTH&#39;: &#39;1437&#39;,\n &#39;CONTENT_TYPE&#39;: &#39;application/x-www-form-urlencoded&#39;,\n u&#39;CSRF_COOKIE&#39;: u&#39;tsEo6odUA8uL3uTge5OLGkGbtTXTjtpO&#39;,\n &#39;DBUS_SESSION_BUS_ADDRESS&#39;: &#39;unix:abstract=/tmp/dbus-DrkPMVq1cI&#39;,\n &#39;DEFAULTS_PATH&#39;: &#39;/usr/share/gconf/ubuntu.default.path&#39;,\n &#39;DESKTOP_SESSION&#39;: &#39;ubuntu&#39;,\n &#39;DISPLAY&#39;: &#39;:1&#39;,\n &#39;DJANGO_SETTINGS_MODULE&#39;: &#39;Haedrian_Website.settings.development&#39;,\n &#39;EDITOR&#39;: &#39;emacs -nw&#39;,\n &#39;GATEWAY_INTERFACE&#39;: &#39;CGI/1.1&#39;,\n &#39;GDMSESSION&#39;: &#39;ubuntu&#39;,\n &#39;GDM_LANG&#39;: &#39;en_US&#39;,\n &#39;GNOME_DESKTOP_SESSION_ID&#39;: &#39;this-is-deprecated&#39;,\n &#39;GNOME_KEYRING_CONTROL&#39;: &#39;/run/user/1000/keyring-koueHm&#39;,\n &#39;GNOME_KEYRING_PID&#39;: &#39;24742&#39;,\n &#39;GPG_AGENT_INFO&#39;: &#39;/run/user/1000/keyring-koueHm/gpg:0:1&#39;,\n &#39;GREP_COLOR&#39;: &#39;1;31&#39;,\n &#39;GREP_OPTIONS&#39;: &#39;--color=auto&#39;,\n &#39;GTK_IM_MODULE&#39;: &#39;ibus&#39;,\n &#39;GTK_MODULES&#39;: &#39;overlay-scrollbar:unity-gtk-module&#39;,\n &#39;HOME&#39;: &#39;/home/audakel&#39;,\n &#39;HTTP_ACCEPT&#39;: &#39;*/*&#39;,\n &#39;HTTP_AUTHORIZATION&#39;: &#39;Basic dGVsZXJpdmV0OkFVSDRQWk1NTEhOM1hQSEhIRFc2TU0zSFVSWjkyM1hE&#39;,\n &#39;HTTP_CONNECTION&#39;: &#39;close&#39;,\n &#39;HTTP_HOST&#39;: &#39;243debac.ngrok.com&#39;,\n &#39;HTTP_REFERER&#39;: &#39;http://telerivet.com/&#39;,\n &#39;HTTP_USER_AGENT&#39;: &#39;Telerivet/0.1&#39;,\n &#39;HTTP_X_FORWARDED_PROTO&#39;: &#39;https&#39;,\n &#39;HTTP_X_REAL_IP&#39;: &#39;178.79.191.37&#39;,\n &#39;IM_CONFIG_PHASE&#39;: &#39;1&#39;,\n &#39;INSTANCE&#39;: &#39;Unity&#39;,\n &#39;JOB&#39;: &#39;gnome-session&#39;,\n &#39;LANGUAGE&#39;: &#39;en_US&#39;,\n &#39;LC_ALL&#39;: &#39;POSIX&#39;,\n &#39;LOGNAME&#39;: &#39;audakel&#39;,\n &#39;MANDATORY_PATH&#39;: &#39;/usr/share/gconf/ubuntu.mandatory.path&#39;,\n &#39;NODE_DISABLE_COLORS&#39;: &#39;1&#39;,\n &#39;NODE_PATH&#39;: &#39;/usr/lib/nodejs:/usr/lib/node_modules:/usr/share/javascript&#39;,\n &#39;PATH&#39;: &#39;/home/audakel/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games&#39;,\n &#39;PATH_INFO&#39;: u&#39;/sms/telerivet/&#39;,\n &#39;PWD&#39;: &#39;/home/audakel/cs/haedrian/Haedrian_Website&#39;,\n &#39;QT4_IM_MODULE&#39;: &#39;xim&#39;,\n &#39;QT_IM_MODULE&#39;: &#39;ibus&#39;,\n &#39;QT_QPA_PLATFORMTHEME&#39;: &#39;appmenu-qt5&#39;,\n &#39;QUERY_STRING&#39;: &#39;&#39;,\n &#39;REMOTE_ADDR&#39;: &#39;127.0.0.1&#39;,\n &#39;REMOTE_HOST&#39;: &#39;&#39;,\n &#39;REQUEST_METHOD&#39;: &#39;POST&#39;,\n &#39;RUN_MAIN&#39;: &#39;true&#39;,\n &#39;SCRIPT_NAME&#39;: u&#39;&#39;,\n &#39;SELINUX_INIT&#39;: &#39;YES&#39;,\n &#39;SERVER_NAME&#39;: &#39;localhost&#39;,\n &#39;SERVER_PORT&#39;: &#39;8008&#39;,\n &#39;SERVER_PROTOCOL&#39;: &#39;HTTP/1.1&#39;,\n &#39;SERVER_SOFTWARE&#39;: &#39;WSGIServer/0.1 Python/2.7.6&#39;,\n &#39;SESSIONTYPE&#39;: &#39;gnome-session&#39;,\n &#39;SHELL&#39;: &#39;/bin/bash&#39;,\n &#39;SHLVL&#39;: &#39;1&#39;,\n &#39;SSH_AGENT_LAUNCHER&#39;: &#39;upstart&#39;,\n &#39;SSH_AGENT_PID&#39;: &#39;24824&#39;,\n &#39;SSH_AUTH_SOCK&#39;: &#39;/run/user/1000/keyring-koueHm/ssh&#39;,\n &#39;TERM&#39;: &#39;xterm&#39;,\n &#39;TEXTDOMAIN&#39;: &#39;im-config&#39;,\n &#39;TEXTDOMAINDIR&#39;: &#39;/usr/share/locale/&#39;,\n &#39;TZ&#39;: &#39;America/Denver&#39;,\n &#39;UBUNTU_MENUPROXY&#39;: &#39;1&#39;,\n &#39;UPSTART_EVENTS&#39;: &#39;started starting&#39;,\n &#39;UPSTART_INSTANCE&#39;: &#39;&#39;,\n &#39;UPSTART_JOB&#39;: &#39;unity-settings-daemon&#39;,\n &#39;UPSTART_SESSION&#39;: &#39;unix:abstract=/com/ubuntu/upstart-session/1000/24745&#39;,\n &#39;USER&#39;: &#39;audakel&#39;,\n &#39;VISUAL&#39;: &#39;emacs -nw&#39;,\n &#39;VTE_VERSION&#39;: &#39;3409&#39;,\n &#39;WINDOWID&#39;: &#39;27262988&#39;,\n &#39;XAUTHORITY&#39;: &#39;/home/audakel/.Xauthority&#39;,\n &#39;XDG_CONFIG_DIRS&#39;: &#39;/etc/xdg/xdg-ubuntu:/usr/share/upstart/xdg:/etc/xdg&#39;,\n &#39;XDG_CURRENT_DESKTOP&#39;: &#39;Unity&#39;,\n &#39;XDG_DATA_DIRS&#39;: &#39;/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/&#39;,\n &#39;XDG_GREETER_DATA_DIR&#39;: &#39;/var/lib/lightdm-data/audakel&#39;,\n &#39;XDG_RUNTIME_DIR&#39;: &#39;/run/user/1000&#39;,\n &#39;XDG_SEAT&#39;: &#39;seat0&#39;,\n &#39;XDG_SEAT_PATH&#39;: &#39;/org/freedesktop/DisplayManager/Seat0&#39;,\n &#39;XDG_SESSION_ID&#39;: &#39;c5&#39;,\n &#39;XDG_SESSION_PATH&#39;: &#39;/org/freedesktop/DisplayManager/Session0&#39;,\n &#39;XDG_VTNR&#39;: &#39;7&#39;,\n &#39;XMODIFIERS&#39;: &#39;@im=ibus&#39;,\n &#39;_&#39;: &#39;/usr/bin/python&#39;,\n &#39;wsgi.errors&#39;: &lt;open file &#39;&lt;stderr&gt;&#39;, mode &#39;w&#39; at 0x7f3f794851e0&gt;,\n &#39;wsgi.file_wrapper&#39;: &lt;class wsgiref.util.FileWrapper at 0x7f3f75a63bb0&gt;,\n &#39;wsgi.input&#39;: &lt;socket._fileobject object at 0x7f3f6c4d80d0&gt;,\n &#39;wsgi.multiprocess&#39;: False,\n &#39;wsgi.multithread&#39;: True,\n &#39;wsgi.run_once&#39;: False,\n &#39;wsgi.url_scheme&#39;: &#39;http&#39;,\n &#39;wsgi.version&#39;: (1, 0)}&gt;&quot;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>callback</td>
+                    <td class="code"><pre>&lt;function TelerivetBackendView at 0x7f3f6d2ab0c8&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>wrapped_callback</td>
+                    <td class="code"><pre>&lt;function TelerivetBackendView at 0x7f3f6d2ab0c8&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>resolver</td>
+                    <td class="code"><pre>&lt;RegexURLResolver &#39;Haedrian_Website.urls&#39; (None:None) ^/&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>callback_kwargs</td>
+                    <td class="code"><pre>{}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>response</td>
+                    <td class="code"><pre>None</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>urlconf</td>
+                    <td class="code"><pre>&#39;Haedrian_Website.urls&#39;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+          
+        </li>
+      
+        <li class="frame django">
+          <code>/usr/local/lib/python2.7/dist-packages/django/views/generic/base.py</code> in <code>view</code>
+
+          
+            <div class="context" id="c139910492618904">
+              
+                <ol start="62" class="pre-context" id="pre139910492618904"><li onclick="toggle('pre139910492618904', 'post139910492618904')"><pre>        def view(request, *args, **kwargs):</pre></li><li onclick="toggle('pre139910492618904', 'post139910492618904')"><pre>            self = cls(**initkwargs)</pre></li><li onclick="toggle('pre139910492618904', 'post139910492618904')"><pre>            if hasattr(self, &#39;get&#39;) and not hasattr(self, &#39;head&#39;):</pre></li><li onclick="toggle('pre139910492618904', 'post139910492618904')"><pre>                self.head = self.get</pre></li><li onclick="toggle('pre139910492618904', 'post139910492618904')"><pre>            self.request = request</pre></li><li onclick="toggle('pre139910492618904', 'post139910492618904')"><pre>            self.args = args</pre></li><li onclick="toggle('pre139910492618904', 'post139910492618904')"><pre>            self.kwargs = kwargs</pre></li></ol>
+              
+              <ol start="69" class="context-line"><li onclick="toggle('pre139910492618904', 'post139910492618904')"><pre>            return self.dispatch(request, *args, **kwargs)</pre> <span>...</span></li></ol>
+              
+                <ol start='70' class="post-context" id="post139910492618904"><li onclick="toggle('pre139910492618904', 'post139910492618904')"><pre></pre></li><li onclick="toggle('pre139910492618904', 'post139910492618904')"><pre>        # take name and docstring from class</pre></li><li onclick="toggle('pre139910492618904', 'post139910492618904')"><pre>        update_wrapper(view, cls, updated=())</pre></li><li onclick="toggle('pre139910492618904', 'post139910492618904')"><pre></pre></li><li onclick="toggle('pre139910492618904', 'post139910492618904')"><pre>        # and possible attributes set by decorators</pre></li><li onclick="toggle('pre139910492618904', 'post139910492618904')"><pre>        # like csrf_exempt from dispatch</pre></li></ol>
+              
+            </div>
+          
+
+          
+            <div class="commands">
+                
+                    <a href="#" onclick="return varToggle(this, '139910492618904')"><span>&#x25b6;</span> Local vars</a>
+                
+            </div>
+            <table class="vars" id="v139910492618904">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>initkwargs</td>
+                    <td class="code"><pre>{&#39;backend_name&#39;: &#39;telerivet&#39;}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;rapidsms_telerivet.views.TelerivetBackendView object at 0x7f3f6c4790d0&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>args</td>
+                    <td class="code"><pre>()</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&quot;&lt;WSGIRequest\npath:/sms/telerivet/,\nGET:&lt;QueryDict: {}&gt;,\nPOST:&lt;QueryDict: {u&#39;event&#39;: [u&#39;incoming_message&#39;], u&#39;phone[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;from_number_e164&#39;: [u&#39;+16503089117&#39;], u&#39;phone[id]&#39;: [u&#39;PN50774ea8fb7cf4ca&#39;], u&#39;to_number&#39;: [u&#39;4803591947&#39;], u&#39;contact_id&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;phone[send_limit]&#39;: [u&#39;60&#39;], u&#39;from_number&#39;: [u&#39;6503089117&#39;], u&#39;contact[last_message_time]&#39;: [u&#39;1433978213&#39;], u&#39;state[time_updated]&#39;: [u&#39;0&#39;], u&#39;contact[last_message_id]&#39;: [u&#39;SM93ec2f3e5861a709&#39;], u&#39;state[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[phone_number]&#39;: [u&#39;4803591947&#39;], u&#39;phone[name]&#39;: [u&#39;4803591947&#39;], u&#39;content&#39;: [u&#39;No&#39;], u&#39;state[contact_id]&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;contact[id]&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;state[service_id]&#39;: [u&#39;SV1f9984f7a7a2bfe7&#39;], u&#39;phone_id&#39;: [u&#39;PN50774ea8fb7cf4ca&#39;], u&#39;id&#39;: [u&#39;SM93ec2f3e5861a709&#39;], u&#39;contact[send_blocked]&#39;: [u&#39;0&#39;], u&#39;source&#39;: [u&#39;phone&#39;], u&#39;secret&#39;: [u&#39;AUH4PZMMLHN3XPHHHDW6MM3HURZ923XD&#39;], u&#39;phone[phone_type]&#39;: [u&#39;android&#39;], u&#39;contact[time_created]&#39;: [u&#39;1433959592&#39;], u&#39;state[time_created]&#39;: [u&#39;0&#39;], u&#39;project_id&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[battery]&#39;: [u&#39;73&#39;], u&#39;status&#39;: [u&#39;processing&#39;], u&#39;phone[charging]&#39;: [u&#39;0&#39;], u&#39;direction&#39;: [u&#39;incoming&#39;], u&#39;phone[mccmnc]&#39;: [u&#39;311480&#39;], u&#39;contact[name]&#39;: [u&#39;6503089117&#39;], u&#39;time_sent&#39;: [u&#39;1433974610&#39;], u&#39;phone[time_created]&#39;: [u&#39;1433958131&#39;], u&#39;time_created&#39;: [u&#39;1433978213&#39;], u&#39;service_id&#39;: [u&#39;SV1f9984f7a7a2bfe7&#39;], u&#39;phone[model]&#39;: [u&#39;SM-G900V&#39;], u&#39;phone[app_version]&#39;: [u&#39;3.9.1&#39;], u&#39;phone[send_paused]&#39;: [u&#39;0&#39;], u&#39;phone[manufacturer]&#39;: [u&#39;samsung&#39;], u&#39;phone[android_sdk]&#39;: [u&#39;21&#39;], u&#39;contact[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[last_active_time]&#39;: [u&#39;1433978213&#39;], u&#39;phone[country]&#39;: [u&#39;US&#39;], u&#39;contact[message_count]&#39;: [u&#39;28&#39;], u&#39;context&#39;: [u&#39;message&#39;], u&#39;simulated&#39;: [u&#39;0&#39;], u&#39;contact[phone_number]&#39;: [u&#39;6503089117&#39;], u&#39;starred&#39;: [u&#39;0&#39;], u&#39;message_type&#39;: [u&#39;sms&#39;]}&gt;,\nCOOKIES:{},\nMETA:{&#39;CLUTTER_IM_MODULE&#39;: &#39;xim&#39;,\n &#39;COLORTERM&#39;: &#39;gnome-terminal&#39;,\n &#39;COMPIZ_CONFIG_PROFILE&#39;: &#39;ubuntu&#39;,\n &#39;CONTENT_LENGTH&#39;: &#39;1437&#39;,\n &#39;CONTENT_TYPE&#39;: &#39;application/x-www-form-urlencoded&#39;,\n u&#39;CSRF_COOKIE&#39;: u&#39;tsEo6odUA8uL3uTge5OLGkGbtTXTjtpO&#39;,\n &#39;DBUS_SESSION_BUS_ADDRESS&#39;: &#39;unix:abstract=/tmp/dbus-DrkPMVq1cI&#39;,\n &#39;DEFAULTS_PATH&#39;: &#39;/usr/share/gconf/ubuntu.default.path&#39;,\n &#39;DESKTOP_SESSION&#39;: &#39;ubuntu&#39;,\n &#39;DISPLAY&#39;: &#39;:1&#39;,\n &#39;DJANGO_SETTINGS_MODULE&#39;: &#39;Haedrian_Website.settings.development&#39;,\n &#39;EDITOR&#39;: &#39;emacs -nw&#39;,\n &#39;GATEWAY_INTERFACE&#39;: &#39;CGI/1.1&#39;,\n &#39;GDMSESSION&#39;: &#39;ubuntu&#39;,\n &#39;GDM_LANG&#39;: &#39;en_US&#39;,\n &#39;GNOME_DESKTOP_SESSION_ID&#39;: &#39;this-is-deprecated&#39;,\n &#39;GNOME_KEYRING_CONTROL&#39;: &#39;/run/user/1000/keyring-koueHm&#39;,\n &#39;GNOME_KEYRING_PID&#39;: &#39;24742&#39;,\n &#39;GPG_AGENT_INFO&#39;: &#39;/run/user/1000/keyring-koueHm/gpg:0:1&#39;,\n &#39;GREP_COLOR&#39;: &#39;1;31&#39;,\n &#39;GREP_OPTIONS&#39;: &#39;--color=auto&#39;,\n &#39;GTK_IM_MODULE&#39;: &#39;ibus&#39;,\n &#39;GTK_MODULES&#39;: &#39;overlay-scrollbar:unity-gtk-module&#39;,\n &#39;HOME&#39;: &#39;/home/audakel&#39;,\n &#39;HTTP_ACCEPT&#39;: &#39;*/*&#39;,\n &#39;HTTP_AUTHORIZATION&#39;: &#39;Basic dGVsZXJpdmV0OkFVSDRQWk1NTEhOM1hQSEhIRFc2TU0zSFVSWjkyM1hE&#39;,\n &#39;HTTP_CONNECTION&#39;: &#39;close&#39;,\n &#39;HTTP_HOST&#39;: &#39;243debac.ngrok.com&#39;,\n &#39;HTTP_REFERER&#39;: &#39;http://telerivet.com/&#39;,\n &#39;HTTP_USER_AGENT&#39;: &#39;Telerivet/0.1&#39;,\n &#39;HTTP_X_FORWARDED_PROTO&#39;: &#39;https&#39;,\n &#39;HTTP_X_REAL_IP&#39;: &#39;178.79.191.37&#39;,\n &#39;IM_CONFIG_PHASE&#39;: &#39;1&#39;,\n &#39;INSTANCE&#39;: &#39;Unity&#39;,\n &#39;JOB&#39;: &#39;gnome-session&#39;,\n &#39;LANGUAGE&#39;: &#39;en_US&#39;,\n &#39;LC_ALL&#39;: &#39;POSIX&#39;,\n &#39;LOGNAME&#39;: &#39;audakel&#39;,\n &#39;MANDATORY_PATH&#39;: &#39;/usr/share/gconf/ubuntu.mandatory.path&#39;,\n &#39;NODE_DISABLE_COLORS&#39;: &#39;1&#39;,\n &#39;NODE_PATH&#39;: &#39;/usr/lib/nodejs:/usr/lib/node_modules:/usr/share/javascript&#39;,\n &#39;PATH&#39;: &#39;/home/audakel/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games&#39;,\n &#39;PATH_INFO&#39;: u&#39;/sms/telerivet/&#39;,\n &#39;PWD&#39;: &#39;/home/audakel/cs/haedrian/Haedrian_Website&#39;,\n &#39;QT4_IM_MODULE&#39;: &#39;xim&#39;,\n &#39;QT_IM_MODULE&#39;: &#39;ibus&#39;,\n &#39;QT_QPA_PLATFORMTHEME&#39;: &#39;appmenu-qt5&#39;,\n &#39;QUERY_STRING&#39;: &#39;&#39;,\n &#39;REMOTE_ADDR&#39;: &#39;127.0.0.1&#39;,\n &#39;REMOTE_HOST&#39;: &#39;&#39;,\n &#39;REQUEST_METHOD&#39;: &#39;POST&#39;,\n &#39;RUN_MAIN&#39;: &#39;true&#39;,\n &#39;SCRIPT_NAME&#39;: u&#39;&#39;,\n &#39;SELINUX_INIT&#39;: &#39;YES&#39;,\n &#39;SERVER_NAME&#39;: &#39;localhost&#39;,\n &#39;SERVER_PORT&#39;: &#39;8008&#39;,\n &#39;SERVER_PROTOCOL&#39;: &#39;HTTP/1.1&#39;,\n &#39;SERVER_SOFTWARE&#39;: &#39;WSGIServer/0.1 Python/2.7.6&#39;,\n &#39;SESSIONTYPE&#39;: &#39;gnome-session&#39;,\n &#39;SHELL&#39;: &#39;/bin/bash&#39;,\n &#39;SHLVL&#39;: &#39;1&#39;,\n &#39;SSH_AGENT_LAUNCHER&#39;: &#39;upstart&#39;,\n &#39;SSH_AGENT_PID&#39;: &#39;24824&#39;,\n &#39;SSH_AUTH_SOCK&#39;: &#39;/run/user/1000/keyring-koueHm/ssh&#39;,\n &#39;TERM&#39;: &#39;xterm&#39;,\n &#39;TEXTDOMAIN&#39;: &#39;im-config&#39;,\n &#39;TEXTDOMAINDIR&#39;: &#39;/usr/share/locale/&#39;,\n &#39;TZ&#39;: &#39;America/Denver&#39;,\n &#39;UBUNTU_MENUPROXY&#39;: &#39;1&#39;,\n &#39;UPSTART_EVENTS&#39;: &#39;started starting&#39;,\n &#39;UPSTART_INSTANCE&#39;: &#39;&#39;,\n &#39;UPSTART_JOB&#39;: &#39;unity-settings-daemon&#39;,\n &#39;UPSTART_SESSION&#39;: &#39;unix:abstract=/com/ubuntu/upstart-session/1000/24745&#39;,\n &#39;USER&#39;: &#39;audakel&#39;,\n &#39;VISUAL&#39;: &#39;emacs -nw&#39;,\n &#39;VTE_VERSION&#39;: &#39;3409&#39;,\n &#39;WINDOWID&#39;: &#39;27262988&#39;,\n &#39;XAUTHORITY&#39;: &#39;/home/audakel/.Xauthority&#39;,\n &#39;XDG_CONFIG_DIRS&#39;: &#39;/etc/xdg/xdg-ubuntu:/usr/share/upstart/xdg:/etc/xdg&#39;,\n &#39;XDG_CURRENT_DESKTOP&#39;: &#39;Unity&#39;,\n &#39;XDG_DATA_DIRS&#39;: &#39;/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/&#39;,\n &#39;XDG_GREETER_DATA_DIR&#39;: &#39;/var/lib/lightdm-data/audakel&#39;,\n &#39;XDG_RUNTIME_DIR&#39;: &#39;/run/user/1000&#39;,\n &#39;XDG_SEAT&#39;: &#39;seat0&#39;,\n &#39;XDG_SEAT_PATH&#39;: &#39;/org/freedesktop/DisplayManager/Seat0&#39;,\n &#39;XDG_SESSION_ID&#39;: &#39;c5&#39;,\n &#39;XDG_SESSION_PATH&#39;: &#39;/org/freedesktop/DisplayManager/Session0&#39;,\n &#39;XDG_VTNR&#39;: &#39;7&#39;,\n &#39;XMODIFIERS&#39;: &#39;@im=ibus&#39;,\n &#39;_&#39;: &#39;/usr/bin/python&#39;,\n &#39;wsgi.errors&#39;: &lt;open file &#39;&lt;stderr&gt;&#39;, mode &#39;w&#39; at 0x7f3f794851e0&gt;,\n &#39;wsgi.file_wrapper&#39;: &lt;class wsgiref.util.FileWrapper at 0x7f3f75a63bb0&gt;,\n &#39;wsgi.input&#39;: &lt;socket._fileobject object at 0x7f3f6c4d80d0&gt;,\n &#39;wsgi.multiprocess&#39;: False,\n &#39;wsgi.multithread&#39;: True,\n &#39;wsgi.run_once&#39;: False,\n &#39;wsgi.url_scheme&#39;: &#39;http&#39;,\n &#39;wsgi.version&#39;: (1, 0)}&gt;&quot;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>kwargs</td>
+                    <td class="code"><pre>{}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>cls</td>
+                    <td class="code"><pre>&lt;class &#39;rapidsms_telerivet.views.TelerivetBackendView&#39;&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+          
+        </li>
+      
+        <li class="frame django">
+          <code>/usr/local/lib/python2.7/dist-packages/django/utils/decorators.py</code> in <code>_wrapper</code>
+
+          
+            <div class="context" id="c139910492635576">
+              
+                <ol start="22" class="pre-context" id="pre139910492635576"><li onclick="toggle('pre139910492635576', 'post139910492635576')"><pre>        def _wrapper(self, *args, **kwargs):</pre></li><li onclick="toggle('pre139910492635576', 'post139910492635576')"><pre>            @decorator</pre></li><li onclick="toggle('pre139910492635576', 'post139910492635576')"><pre>            def bound_func(*args2, **kwargs2):</pre></li><li onclick="toggle('pre139910492635576', 'post139910492635576')"><pre>                return func.__get__(self, type(self))(*args2, **kwargs2)</pre></li><li onclick="toggle('pre139910492635576', 'post139910492635576')"><pre>            # bound_func has the signature that &#39;decorator&#39; expects i.e.  no</pre></li><li onclick="toggle('pre139910492635576', 'post139910492635576')"><pre>            # &#39;self&#39; argument, but it is a closure over self so it can call</pre></li><li onclick="toggle('pre139910492635576', 'post139910492635576')"><pre>            # &#39;func&#39; correctly.</pre></li></ol>
+              
+              <ol start="29" class="context-line"><li onclick="toggle('pre139910492635576', 'post139910492635576')"><pre>            return bound_func(*args, **kwargs)</pre> <span>...</span></li></ol>
+              
+                <ol start='30' class="post-context" id="post139910492635576"><li onclick="toggle('pre139910492635576', 'post139910492635576')"><pre>        # In case &#39;decorator&#39; adds attributes to the function it decorates, we</pre></li><li onclick="toggle('pre139910492635576', 'post139910492635576')"><pre>        # want to copy those. We don&#39;t have access to bound_func in this scope,</pre></li><li onclick="toggle('pre139910492635576', 'post139910492635576')"><pre>        # but we can cheat by using it on a dummy function.</pre></li><li onclick="toggle('pre139910492635576', 'post139910492635576')"><pre></pre></li><li onclick="toggle('pre139910492635576', 'post139910492635576')"><pre>        @decorator</pre></li><li onclick="toggle('pre139910492635576', 'post139910492635576')"><pre>        def dummy(*args, **kwargs):</pre></li></ol>
+              
+            </div>
+          
+
+          
+            <div class="commands">
+                
+                    <a href="#" onclick="return varToggle(this, '139910492635576')"><span>&#x25b6;</span> Local vars</a>
+                
+            </div>
+            <table class="vars" id="v139910492635576">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;rapidsms_telerivet.views.TelerivetBackendView object at 0x7f3f6c4790d0&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>args</td>
+                    <td class="code"><pre>(&lt;WSGIRequest
+path:/sms/telerivet/,
+GET:&lt;QueryDict: {}&gt;,
+POST:&lt;QueryDict: {u&#39;event&#39;: [u&#39;incoming_message&#39;], u&#39;phone[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;from_number_e164&#39;: [u&#39;+16503089117&#39;], u&#39;phone[id]&#39;: [u&#39;PN50774ea8fb7cf4ca&#39;], u&#39;to_number&#39;: [u&#39;4803591947&#39;], u&#39;contact_id&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;phone[send_limit]&#39;: [u&#39;60&#39;], u&#39;from_number&#39;: [u&#39;6503089117&#39;], u&#39;contact[last_message_time]&#39;: [u&#39;1433978213&#39;], u&#39;state[time_updated]&#39;: [u&#39;0&#39;], u&#39;contact[last_message_id]&#39;: [u&#39;SM93ec2f3e5861a709&#39;], u&#39;state[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[phone_number]&#39;: [u&#39;4803591947&#39;], u&#39;phone[name]&#39;: [u&#39;4803591947&#39;], u&#39;content&#39;: [u&#39;No&#39;], u&#39;state[contact_id]&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;contact[id]&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;state[service_id]&#39;: [u&#39;SV1f9984f7a7a2bfe7&#39;], u&#39;phone_id&#39;: [u&#39;PN50774ea8fb7cf4ca&#39;], u&#39;id&#39;: [u&#39;SM93ec2f3e5861a709&#39;], u&#39;contact[send_blocked]&#39;: [u&#39;0&#39;], u&#39;source&#39;: [u&#39;phone&#39;], u&#39;secret&#39;: [u&#39;AUH4PZMMLHN3XPHHHDW6MM3HURZ923XD&#39;], u&#39;phone[phone_type]&#39;: [u&#39;android&#39;], u&#39;contact[time_created]&#39;: [u&#39;1433959592&#39;], u&#39;state[time_created]&#39;: [u&#39;0&#39;], u&#39;project_id&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[battery]&#39;: [u&#39;73&#39;], u&#39;status&#39;: [u&#39;processing&#39;], u&#39;phone[charging]&#39;: [u&#39;0&#39;], u&#39;direction&#39;: [u&#39;incoming&#39;], u&#39;phone[mccmnc]&#39;: [u&#39;311480&#39;], u&#39;contact[name]&#39;: [u&#39;6503089117&#39;], u&#39;time_sent&#39;: [u&#39;1433974610&#39;], u&#39;phone[time_created]&#39;: [u&#39;1433958131&#39;], u&#39;time_created&#39;: [u&#39;1433978213&#39;], u&#39;service_id&#39;: [u&#39;SV1f9984f7a7a2bfe7&#39;], u&#39;phone[model]&#39;: [u&#39;SM-G900V&#39;], u&#39;phone[app_version]&#39;: [u&#39;3.9.1&#39;], u&#39;phone[send_paused]&#39;: [u&#39;0&#39;], u&#39;phone[manufacturer]&#39;: [u&#39;samsung&#39;], u&#39;phone[android_sdk]&#39;: [u&#39;21&#39;], u&#39;contact[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[last_active_time]&#39;: [u&#39;1433978213&#39;], u&#39;phone[country]&#39;: [u&#39;US&#39;], u&#39;contact[message_count]&#39;: [u&#39;28&#39;], u&#39;context&#39;: [u&#39;message&#39;], u&#39;simulated&#39;: [u&#39;0&#39;], u&#39;contact[phone_number]&#39;: [u&#39;6503089117&#39;], u&#39;starred&#39;: [u&#39;0&#39;], u&#39;message_type&#39;: [u&#39;sms&#39;]}&gt;,
+COOKIES:{},
+META:{&#39;CLUTTER_IM_MODULE&#39;: &#39;xim&#39;,
+ &#39;COLORTERM&#39;: &#39;gnome-terminal&#39;,
+ &#39;COMPIZ_CONFIG_PROFILE&#39;: &#39;ubuntu&#39;,
+ &#39;CONTENT_LENGTH&#39;: &#39;1437&#39;,
+ &#39;CONTENT_TYPE&#39;: &#39;application/x-www-form-urlencoded&#39;,
+ u&#39;CSRF_COOKIE&#39;: u&#39;tsEo6odUA8uL3uTge5OLGkGbtTXTjtpO&#39;,
+ &#39;DBUS_SESSION_BUS_ADDRESS&#39;: &#39;unix:abstract=/tmp/dbus-DrkPMVq1cI&#39;,
+ &#39;DEFAULTS_PATH&#39;: &#39;/usr/share/gconf/ubuntu.default.path&#39;,
+ &#39;DESKTOP_SESSION&#39;: &#39;ubuntu&#39;,
+ &#39;DISPLAY&#39;: &#39;:1&#39;,
+ &#39;DJANGO_SETTINGS_MODULE&#39;: &#39;Haedrian_Website.settings.development&#39;,
+ &#39;EDITOR&#39;: &#39;emacs -nw&#39;,
+ &#39;GATEWAY_INTERFACE&#39;: &#39;CGI/1.1&#39;,
+ &#39;GDMSESSION&#39;: &#39;ubuntu&#39;,
+ &#39;GDM_LANG&#39;: &#39;en_US&#39;,
+ &#39;GNOME_DESKTOP_SESSION_ID&#39;: &#39;this-is-deprecated&#39;,
+ &#39;GNOME_KEYRING_CONTROL&#39;: &#39;/run/user/1000/keyring-koueHm&#39;,
+ &#39;GNOME_KEYRING_PID&#39;: &#39;24742&#39;,
+ &#39;GPG_AGENT_INFO&#39;: &#39;/run/user/1000/keyring-koueHm/gpg:0:1&#39;,
+ &#39;GREP_COLOR&#39;: &#39;1;31&#39;,
+ &#39;GREP_OPTIONS&#39;: &#39;--color=auto&#39;,
+ &#39;GTK_IM_MODULE&#39;: &#39;ibus&#39;,
+ &#39;GTK_MODULES&#39;: &#39;overlay-scrollbar:unity-gtk-module&#39;,
+ &#39;HOME&#39;: &#39;/home/audakel&#39;,
+ &#39;HTTP_ACCEPT&#39;: &#39;*/*&#39;,
+ &#39;HTTP_AUTHORIZATION&#39;: &#39;Basic dGVsZXJpdmV0OkFVSDRQWk1NTEhOM1hQSEhIRFc2TU0zSFVSWjkyM1hE&#39;,
+ &#39;HTTP_CONNECTION&#39;: &#39;close&#39;,
+ &#39;HTTP_HOST&#39;: &#39;243debac.ngrok.com&#39;,
+ &#39;HTTP_REFERER&#39;: &#39;http://telerivet.com/&#39;,
+ &#39;HTTP_USER_AGENT&#39;: &#39;Telerivet/0.1&#39;,
+ &#39;HTTP_X_FORWARDED_PROTO&#39;: &#39;https&#39;,
+ &#39;HTTP_X_REAL_IP&#39;: &#39;178.79.191.37&#39;,
+ &#39;IM_CONFIG_PHASE&#39;: &#39;1&#39;,
+ &#39;INSTANCE&#39;: &#39;Unity&#39;,
+ &#39;JOB&#39;: &#39;gnome-session&#39;,
+ &#39;LANGUAGE&#39;: &#39;en_US&#39;,
+ &#39;LC_ALL&#39;: &#39;POSIX&#39;,
+ &#39;LOGNAME&#39;: &#39;audakel&#39;,
+ &#39;MANDATORY_PATH&#39;: &#39;/usr/share/gconf/ubuntu.mandatory.path&#39;,
+ &#39;NODE_DISABLE_COLORS&#39;: &#39;1&#39;,
+ &#39;NODE_PATH&#39;: &#39;/usr/lib/nodejs:/usr/lib/node_modules:/usr/share/javascript&#39;,
+ &#39;PATH&#39;: &#39;/home/audakel/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games&#39;,
+ &#39;PATH_INFO&#39;: u&#39;/sms/telerivet/&#39;,
+ &#39;PWD&#39;: &#39;/home/audakel/cs/haedrian/Haedrian_Website&#39;,
+ &#39;QT4_IM_MODULE&#39;: &#39;xim&#39;,
+ &#39;QT_IM_MODULE&#39;: &#39;ibus&#39;,
+ &#39;QT_QPA_PLATFORMTHEME&#39;: &#39;appmenu-qt5&#39;,
+ &#39;QUERY_STRING&#39;: &#39;&#39;,
+ &#39;REMOTE_ADDR&#39;: &#39;127.0.0.1&#39;,
+ &#39;REMOTE_HOST&#39;: &#39;&#39;,
+ &#39;REQUEST_METHOD&#39;: &#39;POST&#39;,
+ &#39;RUN_MAIN&#39;: &#39;true&#39;,
+ &#39;SCRIPT_NAME&#39;: u&#39;&#39;,
+ &#39;SELINUX_INIT&#39;: &#39;YES&#39;,
+ &#39;SERVER_NAME&#39;: &#39;localhost&#39;,
+ &#39;SERVER_PORT&#39;: &#39;8008&#39;,
+ &#39;SERVER_PROTOCOL&#39;: &#39;HTTP/1.1&#39;,
+ &#39;SERVER_SOFTWARE&#39;: &#39;WSGIServer/0.1 Python/2.7.6&#39;,
+ &#39;SESSIONTYPE&#39;: &#39;gnome-session&#39;,
+ &#39;SHELL&#39;: &#39;/bin/bash&#39;,
+ &#39;SHLVL&#39;: &#39;1&#39;,
+ &#39;SSH_AGENT_LAUNCHER&#39;: &#39;upstart&#39;,
+ &#39;SSH_AGENT_PID&#39;: &#39;24824&#39;,
+ &#39;SSH_AUTH_SOCK&#39;: &#39;/run/user/1000/keyring-koueHm/ssh&#39;,
+ &#39;TERM&#39;: &#39;xterm&#39;,
+ &#39;TEXTDOMAIN&#39;: &#39;im-config&#39;,
+ &#39;TEXTDOMAINDIR&#39;: &#39;/usr/share/locale/&#39;,
+ &#39;TZ&#39;: &#39;America/Denver&#39;,
+ &#39;UBUNTU_MENUPROXY&#39;: &#39;1&#39;,
+ &#39;UPSTART_EVENTS&#39;: &#39;started starting&#39;,
+ &#39;UPSTART_INSTANCE&#39;: &#39;&#39;,
+ &#39;UPSTART_JOB&#39;: &#39;unity-settings-daemon&#39;,
+ &#39;UPSTART_SESSION&#39;: &#39;unix:abstract=/com/ubuntu/upstart-session/1000/24745&#39;,
+ &#39;USER&#39;: &#39;audakel&#39;,
+ &#39;VISUAL&#39;: &#39;emacs -nw&#39;,
+ &#39;VTE_VERSION&#39;: &#39;3409&#39;,
+ &#39;WINDOWID&#39;: &#39;27262988&#39;,
+ &#39;XAUTHORITY&#39;: &#39;/home/audakel/.Xauthority&#39;,
+ &#39;XDG_CONFIG_DIRS&#39;: &#39;/etc/xdg/xdg-ubuntu:/usr/share/upstart/xdg:/etc/xdg&#39;,
+ &#39;XDG_CURRENT_DESKTOP&#39;: &#39;Unity&#39;,
+ &#39;XDG_DATA_DIRS&#39;: &#39;/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/&#39;,
+ &#39;XDG_GREETER_DATA_DIR&#39;: &#39;/var/lib/lightdm-data/audakel&#39;,
+ &#39;XDG_RUNTIME_DIR&#39;: &#39;/run/user/1000&#39;,
+ &#39;XDG_SEAT&#39;: &#39;seat0&#39;,
+ &#39;XDG_SEAT_PATH&#39;: &#39;/org/freedesktop/DisplayManager/Seat0&#39;,
+ &#39;XDG_SESSION_ID&#39;: &#39;c5&#39;,
+ &#39;XDG_SESSION_PATH&#39;: &#39;/org/freedesktop/DisplayManager/Session0&#39;,
+ &#39;XDG_VTNR&#39;: &#39;7&#39;,
+ &#39;XMODIFIERS&#39;: &#39;@im=ibus&#39;,
+ &#39;_&#39;: &#39;/usr/bin/python&#39;,
+ &#39;wsgi.errors&#39;: &lt;open file &#39;&lt;stderr&gt;&#39;, mode &#39;w&#39; at 0x7f3f794851e0&gt;,
+ &#39;wsgi.file_wrapper&#39;: &lt;class wsgiref.util.FileWrapper at 0x7f3f75a63bb0&gt;,
+ &#39;wsgi.input&#39;: &lt;socket._fileobject object at 0x7f3f6c4d80d0&gt;,
+ &#39;wsgi.multiprocess&#39;: False,
+ &#39;wsgi.multithread&#39;: True,
+ &#39;wsgi.run_once&#39;: False,
+ &#39;wsgi.url_scheme&#39;: &#39;http&#39;,
+ &#39;wsgi.version&#39;: (1, 0)}&gt;,)</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>bound_func</td>
+                    <td class="code"><pre>&lt;function bound_func at 0x7f3f6c475938&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>func</td>
+                    <td class="code"><pre>&lt;function dispatch at 0x7f3f6d35b2a8&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>kwargs</td>
+                    <td class="code"><pre>{}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>decorator</td>
+                    <td class="code"><pre>&lt;function csrf_exempt at 0x7f3f75bd1398&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+          
+        </li>
+      
+        <li class="frame django">
+          <code>/usr/local/lib/python2.7/dist-packages/django/views/decorators/csrf.py</code> in <code>wrapped_view</code>
+
+          
+            <div class="context" id="c139910492635648">
+              
+                <ol start="50" class="pre-context" id="pre139910492635648"><li onclick="toggle('pre139910492635648', 'post139910492635648')"><pre>    &quot;&quot;&quot;</pre></li><li onclick="toggle('pre139910492635648', 'post139910492635648')"><pre>    Marks a view function as being exempt from the CSRF view protection.</pre></li><li onclick="toggle('pre139910492635648', 'post139910492635648')"><pre>    &quot;&quot;&quot;</pre></li><li onclick="toggle('pre139910492635648', 'post139910492635648')"><pre>    # We could just do view_func.csrf_exempt = True, but decorators</pre></li><li onclick="toggle('pre139910492635648', 'post139910492635648')"><pre>    # are nicer if they don&#39;t have side-effects, so we return a new</pre></li><li onclick="toggle('pre139910492635648', 'post139910492635648')"><pre>    # function.</pre></li><li onclick="toggle('pre139910492635648', 'post139910492635648')"><pre>    def wrapped_view(*args, **kwargs):</pre></li></ol>
+              
+              <ol start="57" class="context-line"><li onclick="toggle('pre139910492635648', 'post139910492635648')"><pre>        return view_func(*args, **kwargs)</pre> <span>...</span></li></ol>
+              
+                <ol start='58' class="post-context" id="post139910492635648"><li onclick="toggle('pre139910492635648', 'post139910492635648')"><pre>    wrapped_view.csrf_exempt = True</pre></li><li onclick="toggle('pre139910492635648', 'post139910492635648')"><pre>    return wraps(view_func, assigned=available_attrs(view_func))(wrapped_view)</pre></li></ol>
+              
+            </div>
+          
+
+          
+            <div class="commands">
+                
+                    <a href="#" onclick="return varToggle(this, '139910492635648')"><span>&#x25b6;</span> Local vars</a>
+                
+            </div>
+            <table class="vars" id="v139910492635648">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>args</td>
+                    <td class="code"><pre>(&lt;WSGIRequest
+path:/sms/telerivet/,
+GET:&lt;QueryDict: {}&gt;,
+POST:&lt;QueryDict: {u&#39;event&#39;: [u&#39;incoming_message&#39;], u&#39;phone[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;from_number_e164&#39;: [u&#39;+16503089117&#39;], u&#39;phone[id]&#39;: [u&#39;PN50774ea8fb7cf4ca&#39;], u&#39;to_number&#39;: [u&#39;4803591947&#39;], u&#39;contact_id&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;phone[send_limit]&#39;: [u&#39;60&#39;], u&#39;from_number&#39;: [u&#39;6503089117&#39;], u&#39;contact[last_message_time]&#39;: [u&#39;1433978213&#39;], u&#39;state[time_updated]&#39;: [u&#39;0&#39;], u&#39;contact[last_message_id]&#39;: [u&#39;SM93ec2f3e5861a709&#39;], u&#39;state[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[phone_number]&#39;: [u&#39;4803591947&#39;], u&#39;phone[name]&#39;: [u&#39;4803591947&#39;], u&#39;content&#39;: [u&#39;No&#39;], u&#39;state[contact_id]&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;contact[id]&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;state[service_id]&#39;: [u&#39;SV1f9984f7a7a2bfe7&#39;], u&#39;phone_id&#39;: [u&#39;PN50774ea8fb7cf4ca&#39;], u&#39;id&#39;: [u&#39;SM93ec2f3e5861a709&#39;], u&#39;contact[send_blocked]&#39;: [u&#39;0&#39;], u&#39;source&#39;: [u&#39;phone&#39;], u&#39;secret&#39;: [u&#39;AUH4PZMMLHN3XPHHHDW6MM3HURZ923XD&#39;], u&#39;phone[phone_type]&#39;: [u&#39;android&#39;], u&#39;contact[time_created]&#39;: [u&#39;1433959592&#39;], u&#39;state[time_created]&#39;: [u&#39;0&#39;], u&#39;project_id&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[battery]&#39;: [u&#39;73&#39;], u&#39;status&#39;: [u&#39;processing&#39;], u&#39;phone[charging]&#39;: [u&#39;0&#39;], u&#39;direction&#39;: [u&#39;incoming&#39;], u&#39;phone[mccmnc]&#39;: [u&#39;311480&#39;], u&#39;contact[name]&#39;: [u&#39;6503089117&#39;], u&#39;time_sent&#39;: [u&#39;1433974610&#39;], u&#39;phone[time_created]&#39;: [u&#39;1433958131&#39;], u&#39;time_created&#39;: [u&#39;1433978213&#39;], u&#39;service_id&#39;: [u&#39;SV1f9984f7a7a2bfe7&#39;], u&#39;phone[model]&#39;: [u&#39;SM-G900V&#39;], u&#39;phone[app_version]&#39;: [u&#39;3.9.1&#39;], u&#39;phone[send_paused]&#39;: [u&#39;0&#39;], u&#39;phone[manufacturer]&#39;: [u&#39;samsung&#39;], u&#39;phone[android_sdk]&#39;: [u&#39;21&#39;], u&#39;contact[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[last_active_time]&#39;: [u&#39;1433978213&#39;], u&#39;phone[country]&#39;: [u&#39;US&#39;], u&#39;contact[message_count]&#39;: [u&#39;28&#39;], u&#39;context&#39;: [u&#39;message&#39;], u&#39;simulated&#39;: [u&#39;0&#39;], u&#39;contact[phone_number]&#39;: [u&#39;6503089117&#39;], u&#39;starred&#39;: [u&#39;0&#39;], u&#39;message_type&#39;: [u&#39;sms&#39;]}&gt;,
+COOKIES:{},
+META:{&#39;CLUTTER_IM_MODULE&#39;: &#39;xim&#39;,
+ &#39;COLORTERM&#39;: &#39;gnome-terminal&#39;,
+ &#39;COMPIZ_CONFIG_PROFILE&#39;: &#39;ubuntu&#39;,
+ &#39;CONTENT_LENGTH&#39;: &#39;1437&#39;,
+ &#39;CONTENT_TYPE&#39;: &#39;application/x-www-form-urlencoded&#39;,
+ u&#39;CSRF_COOKIE&#39;: u&#39;tsEo6odUA8uL3uTge5OLGkGbtTXTjtpO&#39;,
+ &#39;DBUS_SESSION_BUS_ADDRESS&#39;: &#39;unix:abstract=/tmp/dbus-DrkPMVq1cI&#39;,
+ &#39;DEFAULTS_PATH&#39;: &#39;/usr/share/gconf/ubuntu.default.path&#39;,
+ &#39;DESKTOP_SESSION&#39;: &#39;ubuntu&#39;,
+ &#39;DISPLAY&#39;: &#39;:1&#39;,
+ &#39;DJANGO_SETTINGS_MODULE&#39;: &#39;Haedrian_Website.settings.development&#39;,
+ &#39;EDITOR&#39;: &#39;emacs -nw&#39;,
+ &#39;GATEWAY_INTERFACE&#39;: &#39;CGI/1.1&#39;,
+ &#39;GDMSESSION&#39;: &#39;ubuntu&#39;,
+ &#39;GDM_LANG&#39;: &#39;en_US&#39;,
+ &#39;GNOME_DESKTOP_SESSION_ID&#39;: &#39;this-is-deprecated&#39;,
+ &#39;GNOME_KEYRING_CONTROL&#39;: &#39;/run/user/1000/keyring-koueHm&#39;,
+ &#39;GNOME_KEYRING_PID&#39;: &#39;24742&#39;,
+ &#39;GPG_AGENT_INFO&#39;: &#39;/run/user/1000/keyring-koueHm/gpg:0:1&#39;,
+ &#39;GREP_COLOR&#39;: &#39;1;31&#39;,
+ &#39;GREP_OPTIONS&#39;: &#39;--color=auto&#39;,
+ &#39;GTK_IM_MODULE&#39;: &#39;ibus&#39;,
+ &#39;GTK_MODULES&#39;: &#39;overlay-scrollbar:unity-gtk-module&#39;,
+ &#39;HOME&#39;: &#39;/home/audakel&#39;,
+ &#39;HTTP_ACCEPT&#39;: &#39;*/*&#39;,
+ &#39;HTTP_AUTHORIZATION&#39;: &#39;Basic dGVsZXJpdmV0OkFVSDRQWk1NTEhOM1hQSEhIRFc2TU0zSFVSWjkyM1hE&#39;,
+ &#39;HTTP_CONNECTION&#39;: &#39;close&#39;,
+ &#39;HTTP_HOST&#39;: &#39;243debac.ngrok.com&#39;,
+ &#39;HTTP_REFERER&#39;: &#39;http://telerivet.com/&#39;,
+ &#39;HTTP_USER_AGENT&#39;: &#39;Telerivet/0.1&#39;,
+ &#39;HTTP_X_FORWARDED_PROTO&#39;: &#39;https&#39;,
+ &#39;HTTP_X_REAL_IP&#39;: &#39;178.79.191.37&#39;,
+ &#39;IM_CONFIG_PHASE&#39;: &#39;1&#39;,
+ &#39;INSTANCE&#39;: &#39;Unity&#39;,
+ &#39;JOB&#39;: &#39;gnome-session&#39;,
+ &#39;LANGUAGE&#39;: &#39;en_US&#39;,
+ &#39;LC_ALL&#39;: &#39;POSIX&#39;,
+ &#39;LOGNAME&#39;: &#39;audakel&#39;,
+ &#39;MANDATORY_PATH&#39;: &#39;/usr/share/gconf/ubuntu.mandatory.path&#39;,
+ &#39;NODE_DISABLE_COLORS&#39;: &#39;1&#39;,
+ &#39;NODE_PATH&#39;: &#39;/usr/lib/nodejs:/usr/lib/node_modules:/usr/share/javascript&#39;,
+ &#39;PATH&#39;: &#39;/home/audakel/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games&#39;,
+ &#39;PATH_INFO&#39;: u&#39;/sms/telerivet/&#39;,
+ &#39;PWD&#39;: &#39;/home/audakel/cs/haedrian/Haedrian_Website&#39;,
+ &#39;QT4_IM_MODULE&#39;: &#39;xim&#39;,
+ &#39;QT_IM_MODULE&#39;: &#39;ibus&#39;,
+ &#39;QT_QPA_PLATFORMTHEME&#39;: &#39;appmenu-qt5&#39;,
+ &#39;QUERY_STRING&#39;: &#39;&#39;,
+ &#39;REMOTE_ADDR&#39;: &#39;127.0.0.1&#39;,
+ &#39;REMOTE_HOST&#39;: &#39;&#39;,
+ &#39;REQUEST_METHOD&#39;: &#39;POST&#39;,
+ &#39;RUN_MAIN&#39;: &#39;true&#39;,
+ &#39;SCRIPT_NAME&#39;: u&#39;&#39;,
+ &#39;SELINUX_INIT&#39;: &#39;YES&#39;,
+ &#39;SERVER_NAME&#39;: &#39;localhost&#39;,
+ &#39;SERVER_PORT&#39;: &#39;8008&#39;,
+ &#39;SERVER_PROTOCOL&#39;: &#39;HTTP/1.1&#39;,
+ &#39;SERVER_SOFTWARE&#39;: &#39;WSGIServer/0.1 Python/2.7.6&#39;,
+ &#39;SESSIONTYPE&#39;: &#39;gnome-session&#39;,
+ &#39;SHELL&#39;: &#39;/bin/bash&#39;,
+ &#39;SHLVL&#39;: &#39;1&#39;,
+ &#39;SSH_AGENT_LAUNCHER&#39;: &#39;upstart&#39;,
+ &#39;SSH_AGENT_PID&#39;: &#39;24824&#39;,
+ &#39;SSH_AUTH_SOCK&#39;: &#39;/run/user/1000/keyring-koueHm/ssh&#39;,
+ &#39;TERM&#39;: &#39;xterm&#39;,
+ &#39;TEXTDOMAIN&#39;: &#39;im-config&#39;,
+ &#39;TEXTDOMAINDIR&#39;: &#39;/usr/share/locale/&#39;,
+ &#39;TZ&#39;: &#39;America/Denver&#39;,
+ &#39;UBUNTU_MENUPROXY&#39;: &#39;1&#39;,
+ &#39;UPSTART_EVENTS&#39;: &#39;started starting&#39;,
+ &#39;UPSTART_INSTANCE&#39;: &#39;&#39;,
+ &#39;UPSTART_JOB&#39;: &#39;unity-settings-daemon&#39;,
+ &#39;UPSTART_SESSION&#39;: &#39;unix:abstract=/com/ubuntu/upstart-session/1000/24745&#39;,
+ &#39;USER&#39;: &#39;audakel&#39;,
+ &#39;VISUAL&#39;: &#39;emacs -nw&#39;,
+ &#39;VTE_VERSION&#39;: &#39;3409&#39;,
+ &#39;WINDOWID&#39;: &#39;27262988&#39;,
+ &#39;XAUTHORITY&#39;: &#39;/home/audakel/.Xauthority&#39;,
+ &#39;XDG_CONFIG_DIRS&#39;: &#39;/etc/xdg/xdg-ubuntu:/usr/share/upstart/xdg:/etc/xdg&#39;,
+ &#39;XDG_CURRENT_DESKTOP&#39;: &#39;Unity&#39;,
+ &#39;XDG_DATA_DIRS&#39;: &#39;/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/&#39;,
+ &#39;XDG_GREETER_DATA_DIR&#39;: &#39;/var/lib/lightdm-data/audakel&#39;,
+ &#39;XDG_RUNTIME_DIR&#39;: &#39;/run/user/1000&#39;,
+ &#39;XDG_SEAT&#39;: &#39;seat0&#39;,
+ &#39;XDG_SEAT_PATH&#39;: &#39;/org/freedesktop/DisplayManager/Seat0&#39;,
+ &#39;XDG_SESSION_ID&#39;: &#39;c5&#39;,
+ &#39;XDG_SESSION_PATH&#39;: &#39;/org/freedesktop/DisplayManager/Session0&#39;,
+ &#39;XDG_VTNR&#39;: &#39;7&#39;,
+ &#39;XMODIFIERS&#39;: &#39;@im=ibus&#39;,
+ &#39;_&#39;: &#39;/usr/bin/python&#39;,
+ &#39;wsgi.errors&#39;: &lt;open file &#39;&lt;stderr&gt;&#39;, mode &#39;w&#39; at 0x7f3f794851e0&gt;,
+ &#39;wsgi.file_wrapper&#39;: &lt;class wsgiref.util.FileWrapper at 0x7f3f75a63bb0&gt;,
+ &#39;wsgi.input&#39;: &lt;socket._fileobject object at 0x7f3f6c4d80d0&gt;,
+ &#39;wsgi.multiprocess&#39;: False,
+ &#39;wsgi.multithread&#39;: True,
+ &#39;wsgi.run_once&#39;: False,
+ &#39;wsgi.url_scheme&#39;: &#39;http&#39;,
+ &#39;wsgi.version&#39;: (1, 0)}&gt;,)</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>view_func</td>
+                    <td class="code"><pre>&lt;function bound_func at 0x7f3f6c475500&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>kwargs</td>
+                    <td class="code"><pre>{}</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+          
+        </li>
+      
+        <li class="frame django">
+          <code>/usr/local/lib/python2.7/dist-packages/django/utils/decorators.py</code> in <code>bound_func</code>
+
+          
+            <div class="context" id="c139910492635864">
+              
+                <ol start="18" class="pre-context" id="pre139910492635864"><li onclick="toggle('pre139910492635864', 'post139910492635864')"><pre>    &quot;&quot;&quot;</pre></li><li onclick="toggle('pre139910492635864', 'post139910492635864')"><pre>    # &#39;func&#39; is a function at the time it is passed to _dec, but will eventually</pre></li><li onclick="toggle('pre139910492635864', 'post139910492635864')"><pre>    # be a method of the class it is defined on.</pre></li><li onclick="toggle('pre139910492635864', 'post139910492635864')"><pre>    def _dec(func):</pre></li><li onclick="toggle('pre139910492635864', 'post139910492635864')"><pre>        def _wrapper(self, *args, **kwargs):</pre></li><li onclick="toggle('pre139910492635864', 'post139910492635864')"><pre>            @decorator</pre></li><li onclick="toggle('pre139910492635864', 'post139910492635864')"><pre>            def bound_func(*args2, **kwargs2):</pre></li></ol>
+              
+              <ol start="25" class="context-line"><li onclick="toggle('pre139910492635864', 'post139910492635864')"><pre>                return func.__get__(self, type(self))(*args2, **kwargs2)</pre> <span>...</span></li></ol>
+              
+                <ol start='26' class="post-context" id="post139910492635864"><li onclick="toggle('pre139910492635864', 'post139910492635864')"><pre>            # bound_func has the signature that &#39;decorator&#39; expects i.e.  no</pre></li><li onclick="toggle('pre139910492635864', 'post139910492635864')"><pre>            # &#39;self&#39; argument, but it is a closure over self so it can call</pre></li><li onclick="toggle('pre139910492635864', 'post139910492635864')"><pre>            # &#39;func&#39; correctly.</pre></li><li onclick="toggle('pre139910492635864', 'post139910492635864')"><pre>            return bound_func(*args, **kwargs)</pre></li><li onclick="toggle('pre139910492635864', 'post139910492635864')"><pre>        # In case &#39;decorator&#39; adds attributes to the function it decorates, we</pre></li><li onclick="toggle('pre139910492635864', 'post139910492635864')"><pre>        # want to copy those. We don&#39;t have access to bound_func in this scope,</pre></li></ol>
+              
+            </div>
+          
+
+          
+            <div class="commands">
+                
+                    <a href="#" onclick="return varToggle(this, '139910492635864')"><span>&#x25b6;</span> Local vars</a>
+                
+            </div>
+            <table class="vars" id="v139910492635864">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>kwargs2</td>
+                    <td class="code"><pre>{}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>args2</td>
+                    <td class="code"><pre>(&lt;WSGIRequest
+path:/sms/telerivet/,
+GET:&lt;QueryDict: {}&gt;,
+POST:&lt;QueryDict: {u&#39;event&#39;: [u&#39;incoming_message&#39;], u&#39;phone[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;from_number_e164&#39;: [u&#39;+16503089117&#39;], u&#39;phone[id]&#39;: [u&#39;PN50774ea8fb7cf4ca&#39;], u&#39;to_number&#39;: [u&#39;4803591947&#39;], u&#39;contact_id&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;phone[send_limit]&#39;: [u&#39;60&#39;], u&#39;from_number&#39;: [u&#39;6503089117&#39;], u&#39;contact[last_message_time]&#39;: [u&#39;1433978213&#39;], u&#39;state[time_updated]&#39;: [u&#39;0&#39;], u&#39;contact[last_message_id]&#39;: [u&#39;SM93ec2f3e5861a709&#39;], u&#39;state[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[phone_number]&#39;: [u&#39;4803591947&#39;], u&#39;phone[name]&#39;: [u&#39;4803591947&#39;], u&#39;content&#39;: [u&#39;No&#39;], u&#39;state[contact_id]&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;contact[id]&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;state[service_id]&#39;: [u&#39;SV1f9984f7a7a2bfe7&#39;], u&#39;phone_id&#39;: [u&#39;PN50774ea8fb7cf4ca&#39;], u&#39;id&#39;: [u&#39;SM93ec2f3e5861a709&#39;], u&#39;contact[send_blocked]&#39;: [u&#39;0&#39;], u&#39;source&#39;: [u&#39;phone&#39;], u&#39;secret&#39;: [u&#39;AUH4PZMMLHN3XPHHHDW6MM3HURZ923XD&#39;], u&#39;phone[phone_type]&#39;: [u&#39;android&#39;], u&#39;contact[time_created]&#39;: [u&#39;1433959592&#39;], u&#39;state[time_created]&#39;: [u&#39;0&#39;], u&#39;project_id&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[battery]&#39;: [u&#39;73&#39;], u&#39;status&#39;: [u&#39;processing&#39;], u&#39;phone[charging]&#39;: [u&#39;0&#39;], u&#39;direction&#39;: [u&#39;incoming&#39;], u&#39;phone[mccmnc]&#39;: [u&#39;311480&#39;], u&#39;contact[name]&#39;: [u&#39;6503089117&#39;], u&#39;time_sent&#39;: [u&#39;1433974610&#39;], u&#39;phone[time_created]&#39;: [u&#39;1433958131&#39;], u&#39;time_created&#39;: [u&#39;1433978213&#39;], u&#39;service_id&#39;: [u&#39;SV1f9984f7a7a2bfe7&#39;], u&#39;phone[model]&#39;: [u&#39;SM-G900V&#39;], u&#39;phone[app_version]&#39;: [u&#39;3.9.1&#39;], u&#39;phone[send_paused]&#39;: [u&#39;0&#39;], u&#39;phone[manufacturer]&#39;: [u&#39;samsung&#39;], u&#39;phone[android_sdk]&#39;: [u&#39;21&#39;], u&#39;contact[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[last_active_time]&#39;: [u&#39;1433978213&#39;], u&#39;phone[country]&#39;: [u&#39;US&#39;], u&#39;contact[message_count]&#39;: [u&#39;28&#39;], u&#39;context&#39;: [u&#39;message&#39;], u&#39;simulated&#39;: [u&#39;0&#39;], u&#39;contact[phone_number]&#39;: [u&#39;6503089117&#39;], u&#39;starred&#39;: [u&#39;0&#39;], u&#39;message_type&#39;: [u&#39;sms&#39;]}&gt;,
+COOKIES:{},
+META:{&#39;CLUTTER_IM_MODULE&#39;: &#39;xim&#39;,
+ &#39;COLORTERM&#39;: &#39;gnome-terminal&#39;,
+ &#39;COMPIZ_CONFIG_PROFILE&#39;: &#39;ubuntu&#39;,
+ &#39;CONTENT_LENGTH&#39;: &#39;1437&#39;,
+ &#39;CONTENT_TYPE&#39;: &#39;application/x-www-form-urlencoded&#39;,
+ u&#39;CSRF_COOKIE&#39;: u&#39;tsEo6odUA8uL3uTge5OLGkGbtTXTjtpO&#39;,
+ &#39;DBUS_SESSION_BUS_ADDRESS&#39;: &#39;unix:abstract=/tmp/dbus-DrkPMVq1cI&#39;,
+ &#39;DEFAULTS_PATH&#39;: &#39;/usr/share/gconf/ubuntu.default.path&#39;,
+ &#39;DESKTOP_SESSION&#39;: &#39;ubuntu&#39;,
+ &#39;DISPLAY&#39;: &#39;:1&#39;,
+ &#39;DJANGO_SETTINGS_MODULE&#39;: &#39;Haedrian_Website.settings.development&#39;,
+ &#39;EDITOR&#39;: &#39;emacs -nw&#39;,
+ &#39;GATEWAY_INTERFACE&#39;: &#39;CGI/1.1&#39;,
+ &#39;GDMSESSION&#39;: &#39;ubuntu&#39;,
+ &#39;GDM_LANG&#39;: &#39;en_US&#39;,
+ &#39;GNOME_DESKTOP_SESSION_ID&#39;: &#39;this-is-deprecated&#39;,
+ &#39;GNOME_KEYRING_CONTROL&#39;: &#39;/run/user/1000/keyring-koueHm&#39;,
+ &#39;GNOME_KEYRING_PID&#39;: &#39;24742&#39;,
+ &#39;GPG_AGENT_INFO&#39;: &#39;/run/user/1000/keyring-koueHm/gpg:0:1&#39;,
+ &#39;GREP_COLOR&#39;: &#39;1;31&#39;,
+ &#39;GREP_OPTIONS&#39;: &#39;--color=auto&#39;,
+ &#39;GTK_IM_MODULE&#39;: &#39;ibus&#39;,
+ &#39;GTK_MODULES&#39;: &#39;overlay-scrollbar:unity-gtk-module&#39;,
+ &#39;HOME&#39;: &#39;/home/audakel&#39;,
+ &#39;HTTP_ACCEPT&#39;: &#39;*/*&#39;,
+ &#39;HTTP_AUTHORIZATION&#39;: &#39;Basic dGVsZXJpdmV0OkFVSDRQWk1NTEhOM1hQSEhIRFc2TU0zSFVSWjkyM1hE&#39;,
+ &#39;HTTP_CONNECTION&#39;: &#39;close&#39;,
+ &#39;HTTP_HOST&#39;: &#39;243debac.ngrok.com&#39;,
+ &#39;HTTP_REFERER&#39;: &#39;http://telerivet.com/&#39;,
+ &#39;HTTP_USER_AGENT&#39;: &#39;Telerivet/0.1&#39;,
+ &#39;HTTP_X_FORWARDED_PROTO&#39;: &#39;https&#39;,
+ &#39;HTTP_X_REAL_IP&#39;: &#39;178.79.191.37&#39;,
+ &#39;IM_CONFIG_PHASE&#39;: &#39;1&#39;,
+ &#39;INSTANCE&#39;: &#39;Unity&#39;,
+ &#39;JOB&#39;: &#39;gnome-session&#39;,
+ &#39;LANGUAGE&#39;: &#39;en_US&#39;,
+ &#39;LC_ALL&#39;: &#39;POSIX&#39;,
+ &#39;LOGNAME&#39;: &#39;audakel&#39;,
+ &#39;MANDATORY_PATH&#39;: &#39;/usr/share/gconf/ubuntu.mandatory.path&#39;,
+ &#39;NODE_DISABLE_COLORS&#39;: &#39;1&#39;,
+ &#39;NODE_PATH&#39;: &#39;/usr/lib/nodejs:/usr/lib/node_modules:/usr/share/javascript&#39;,
+ &#39;PATH&#39;: &#39;/home/audakel/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games&#39;,
+ &#39;PATH_INFO&#39;: u&#39;/sms/telerivet/&#39;,
+ &#39;PWD&#39;: &#39;/home/audakel/cs/haedrian/Haedrian_Website&#39;,
+ &#39;QT4_IM_MODULE&#39;: &#39;xim&#39;,
+ &#39;QT_IM_MODULE&#39;: &#39;ibus&#39;,
+ &#39;QT_QPA_PLATFORMTHEME&#39;: &#39;appmenu-qt5&#39;,
+ &#39;QUERY_STRING&#39;: &#39;&#39;,
+ &#39;REMOTE_ADDR&#39;: &#39;127.0.0.1&#39;,
+ &#39;REMOTE_HOST&#39;: &#39;&#39;,
+ &#39;REQUEST_METHOD&#39;: &#39;POST&#39;,
+ &#39;RUN_MAIN&#39;: &#39;true&#39;,
+ &#39;SCRIPT_NAME&#39;: u&#39;&#39;,
+ &#39;SELINUX_INIT&#39;: &#39;YES&#39;,
+ &#39;SERVER_NAME&#39;: &#39;localhost&#39;,
+ &#39;SERVER_PORT&#39;: &#39;8008&#39;,
+ &#39;SERVER_PROTOCOL&#39;: &#39;HTTP/1.1&#39;,
+ &#39;SERVER_SOFTWARE&#39;: &#39;WSGIServer/0.1 Python/2.7.6&#39;,
+ &#39;SESSIONTYPE&#39;: &#39;gnome-session&#39;,
+ &#39;SHELL&#39;: &#39;/bin/bash&#39;,
+ &#39;SHLVL&#39;: &#39;1&#39;,
+ &#39;SSH_AGENT_LAUNCHER&#39;: &#39;upstart&#39;,
+ &#39;SSH_AGENT_PID&#39;: &#39;24824&#39;,
+ &#39;SSH_AUTH_SOCK&#39;: &#39;/run/user/1000/keyring-koueHm/ssh&#39;,
+ &#39;TERM&#39;: &#39;xterm&#39;,
+ &#39;TEXTDOMAIN&#39;: &#39;im-config&#39;,
+ &#39;TEXTDOMAINDIR&#39;: &#39;/usr/share/locale/&#39;,
+ &#39;TZ&#39;: &#39;America/Denver&#39;,
+ &#39;UBUNTU_MENUPROXY&#39;: &#39;1&#39;,
+ &#39;UPSTART_EVENTS&#39;: &#39;started starting&#39;,
+ &#39;UPSTART_INSTANCE&#39;: &#39;&#39;,
+ &#39;UPSTART_JOB&#39;: &#39;unity-settings-daemon&#39;,
+ &#39;UPSTART_SESSION&#39;: &#39;unix:abstract=/com/ubuntu/upstart-session/1000/24745&#39;,
+ &#39;USER&#39;: &#39;audakel&#39;,
+ &#39;VISUAL&#39;: &#39;emacs -nw&#39;,
+ &#39;VTE_VERSION&#39;: &#39;3409&#39;,
+ &#39;WINDOWID&#39;: &#39;27262988&#39;,
+ &#39;XAUTHORITY&#39;: &#39;/home/audakel/.Xauthority&#39;,
+ &#39;XDG_CONFIG_DIRS&#39;: &#39;/etc/xdg/xdg-ubuntu:/usr/share/upstart/xdg:/etc/xdg&#39;,
+ &#39;XDG_CURRENT_DESKTOP&#39;: &#39;Unity&#39;,
+ &#39;XDG_DATA_DIRS&#39;: &#39;/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/&#39;,
+ &#39;XDG_GREETER_DATA_DIR&#39;: &#39;/var/lib/lightdm-data/audakel&#39;,
+ &#39;XDG_RUNTIME_DIR&#39;: &#39;/run/user/1000&#39;,
+ &#39;XDG_SEAT&#39;: &#39;seat0&#39;,
+ &#39;XDG_SEAT_PATH&#39;: &#39;/org/freedesktop/DisplayManager/Seat0&#39;,
+ &#39;XDG_SESSION_ID&#39;: &#39;c5&#39;,
+ &#39;XDG_SESSION_PATH&#39;: &#39;/org/freedesktop/DisplayManager/Session0&#39;,
+ &#39;XDG_VTNR&#39;: &#39;7&#39;,
+ &#39;XMODIFIERS&#39;: &#39;@im=ibus&#39;,
+ &#39;_&#39;: &#39;/usr/bin/python&#39;,
+ &#39;wsgi.errors&#39;: &lt;open file &#39;&lt;stderr&gt;&#39;, mode &#39;w&#39; at 0x7f3f794851e0&gt;,
+ &#39;wsgi.file_wrapper&#39;: &lt;class wsgiref.util.FileWrapper at 0x7f3f75a63bb0&gt;,
+ &#39;wsgi.input&#39;: &lt;socket._fileobject object at 0x7f3f6c4d80d0&gt;,
+ &#39;wsgi.multiprocess&#39;: False,
+ &#39;wsgi.multithread&#39;: True,
+ &#39;wsgi.run_once&#39;: False,
+ &#39;wsgi.url_scheme&#39;: &#39;http&#39;,
+ &#39;wsgi.version&#39;: (1, 0)}&gt;,)</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;rapidsms_telerivet.views.TelerivetBackendView object at 0x7f3f6c4790d0&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>func</td>
+                    <td class="code"><pre>&lt;function dispatch at 0x7f3f6d35b2a8&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+          
+        </li>
+      
+        <li class="frame user">
+          <code>/usr/local/lib/python2.7/dist-packages/rapidsms/backends/http/views.py</code> in <code>dispatch</code>
+
+          
+            <div class="context" id="c139910492635504">
+              
+                <ol start="24" class="pre-context" id="pre139910492635504"><li onclick="toggle('pre139910492635504', 'post139910492635504')"><pre>        &quot;&quot;&quot;</pre></li><li onclick="toggle('pre139910492635504', 'post139910492635504')"><pre>        Wraps the main entry point into the view with the csrf_exempt</pre></li><li onclick="toggle('pre139910492635504', 'post139910492635504')"><pre>        decorator, which most (if not all) clients using this view will not</pre></li><li onclick="toggle('pre139910492635504', 'post139910492635504')"><pre>        know about.</pre></li><li onclick="toggle('pre139910492635504', 'post139910492635504')"><pre>        &quot;&quot;&quot;</pre></li><li onclick="toggle('pre139910492635504', 'post139910492635504')"><pre>        if &#39;backend_name&#39; in kwargs:</pre></li><li onclick="toggle('pre139910492635504', 'post139910492635504')"><pre>            self.backend_name = kwargs[&#39;backend_name&#39;]</pre></li></ol>
+              
+              <ol start="31" class="context-line"><li onclick="toggle('pre139910492635504', 'post139910492635504')"><pre>        return super(BaseHttpBackendView, self).dispatch(*args, **kwargs)</pre> <span>...</span></li></ol>
+              
+                <ol start='32' class="post-context" id="post139910492635504"><li onclick="toggle('pre139910492635504', 'post139910492635504')"><pre></pre></li><li onclick="toggle('pre139910492635504', 'post139910492635504')"><pre>    def get_form_kwargs(self):</pre></li><li onclick="toggle('pre139910492635504', 'post139910492635504')"><pre>        &quot;&quot;&quot;Always pass backend_name into __init__&quot;&quot;&quot;</pre></li><li onclick="toggle('pre139910492635504', 'post139910492635504')"><pre>        kwargs = super(BaseHttpBackendView, self).get_form_kwargs()</pre></li><li onclick="toggle('pre139910492635504', 'post139910492635504')"><pre>        kwargs[&#39;backend_name&#39;] = self.backend_name</pre></li><li onclick="toggle('pre139910492635504', 'post139910492635504')"><pre>        return kwargs</pre></li></ol>
+              
+            </div>
+          
+
+          
+            <div class="commands">
+                
+                    <a href="#" onclick="return varToggle(this, '139910492635504')"><span>&#x25b6;</span> Local vars</a>
+                
+            </div>
+            <table class="vars" id="v139910492635504">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;rapidsms_telerivet.views.TelerivetBackendView object at 0x7f3f6c4790d0&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>args</td>
+                    <td class="code"><pre>(&lt;WSGIRequest
+path:/sms/telerivet/,
+GET:&lt;QueryDict: {}&gt;,
+POST:&lt;QueryDict: {u&#39;event&#39;: [u&#39;incoming_message&#39;], u&#39;phone[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;from_number_e164&#39;: [u&#39;+16503089117&#39;], u&#39;phone[id]&#39;: [u&#39;PN50774ea8fb7cf4ca&#39;], u&#39;to_number&#39;: [u&#39;4803591947&#39;], u&#39;contact_id&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;phone[send_limit]&#39;: [u&#39;60&#39;], u&#39;from_number&#39;: [u&#39;6503089117&#39;], u&#39;contact[last_message_time]&#39;: [u&#39;1433978213&#39;], u&#39;state[time_updated]&#39;: [u&#39;0&#39;], u&#39;contact[last_message_id]&#39;: [u&#39;SM93ec2f3e5861a709&#39;], u&#39;state[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[phone_number]&#39;: [u&#39;4803591947&#39;], u&#39;phone[name]&#39;: [u&#39;4803591947&#39;], u&#39;content&#39;: [u&#39;No&#39;], u&#39;state[contact_id]&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;contact[id]&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;state[service_id]&#39;: [u&#39;SV1f9984f7a7a2bfe7&#39;], u&#39;phone_id&#39;: [u&#39;PN50774ea8fb7cf4ca&#39;], u&#39;id&#39;: [u&#39;SM93ec2f3e5861a709&#39;], u&#39;contact[send_blocked]&#39;: [u&#39;0&#39;], u&#39;source&#39;: [u&#39;phone&#39;], u&#39;secret&#39;: [u&#39;AUH4PZMMLHN3XPHHHDW6MM3HURZ923XD&#39;], u&#39;phone[phone_type]&#39;: [u&#39;android&#39;], u&#39;contact[time_created]&#39;: [u&#39;1433959592&#39;], u&#39;state[time_created]&#39;: [u&#39;0&#39;], u&#39;project_id&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[battery]&#39;: [u&#39;73&#39;], u&#39;status&#39;: [u&#39;processing&#39;], u&#39;phone[charging]&#39;: [u&#39;0&#39;], u&#39;direction&#39;: [u&#39;incoming&#39;], u&#39;phone[mccmnc]&#39;: [u&#39;311480&#39;], u&#39;contact[name]&#39;: [u&#39;6503089117&#39;], u&#39;time_sent&#39;: [u&#39;1433974610&#39;], u&#39;phone[time_created]&#39;: [u&#39;1433958131&#39;], u&#39;time_created&#39;: [u&#39;1433978213&#39;], u&#39;service_id&#39;: [u&#39;SV1f9984f7a7a2bfe7&#39;], u&#39;phone[model]&#39;: [u&#39;SM-G900V&#39;], u&#39;phone[app_version]&#39;: [u&#39;3.9.1&#39;], u&#39;phone[send_paused]&#39;: [u&#39;0&#39;], u&#39;phone[manufacturer]&#39;: [u&#39;samsung&#39;], u&#39;phone[android_sdk]&#39;: [u&#39;21&#39;], u&#39;contact[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[last_active_time]&#39;: [u&#39;1433978213&#39;], u&#39;phone[country]&#39;: [u&#39;US&#39;], u&#39;contact[message_count]&#39;: [u&#39;28&#39;], u&#39;context&#39;: [u&#39;message&#39;], u&#39;simulated&#39;: [u&#39;0&#39;], u&#39;contact[phone_number]&#39;: [u&#39;6503089117&#39;], u&#39;starred&#39;: [u&#39;0&#39;], u&#39;message_type&#39;: [u&#39;sms&#39;]}&gt;,
+COOKIES:{},
+META:{&#39;CLUTTER_IM_MODULE&#39;: &#39;xim&#39;,
+ &#39;COLORTERM&#39;: &#39;gnome-terminal&#39;,
+ &#39;COMPIZ_CONFIG_PROFILE&#39;: &#39;ubuntu&#39;,
+ &#39;CONTENT_LENGTH&#39;: &#39;1437&#39;,
+ &#39;CONTENT_TYPE&#39;: &#39;application/x-www-form-urlencoded&#39;,
+ u&#39;CSRF_COOKIE&#39;: u&#39;tsEo6odUA8uL3uTge5OLGkGbtTXTjtpO&#39;,
+ &#39;DBUS_SESSION_BUS_ADDRESS&#39;: &#39;unix:abstract=/tmp/dbus-DrkPMVq1cI&#39;,
+ &#39;DEFAULTS_PATH&#39;: &#39;/usr/share/gconf/ubuntu.default.path&#39;,
+ &#39;DESKTOP_SESSION&#39;: &#39;ubuntu&#39;,
+ &#39;DISPLAY&#39;: &#39;:1&#39;,
+ &#39;DJANGO_SETTINGS_MODULE&#39;: &#39;Haedrian_Website.settings.development&#39;,
+ &#39;EDITOR&#39;: &#39;emacs -nw&#39;,
+ &#39;GATEWAY_INTERFACE&#39;: &#39;CGI/1.1&#39;,
+ &#39;GDMSESSION&#39;: &#39;ubuntu&#39;,
+ &#39;GDM_LANG&#39;: &#39;en_US&#39;,
+ &#39;GNOME_DESKTOP_SESSION_ID&#39;: &#39;this-is-deprecated&#39;,
+ &#39;GNOME_KEYRING_CONTROL&#39;: &#39;/run/user/1000/keyring-koueHm&#39;,
+ &#39;GNOME_KEYRING_PID&#39;: &#39;24742&#39;,
+ &#39;GPG_AGENT_INFO&#39;: &#39;/run/user/1000/keyring-koueHm/gpg:0:1&#39;,
+ &#39;GREP_COLOR&#39;: &#39;1;31&#39;,
+ &#39;GREP_OPTIONS&#39;: &#39;--color=auto&#39;,
+ &#39;GTK_IM_MODULE&#39;: &#39;ibus&#39;,
+ &#39;GTK_MODULES&#39;: &#39;overlay-scrollbar:unity-gtk-module&#39;,
+ &#39;HOME&#39;: &#39;/home/audakel&#39;,
+ &#39;HTTP_ACCEPT&#39;: &#39;*/*&#39;,
+ &#39;HTTP_AUTHORIZATION&#39;: &#39;Basic dGVsZXJpdmV0OkFVSDRQWk1NTEhOM1hQSEhIRFc2TU0zSFVSWjkyM1hE&#39;,
+ &#39;HTTP_CONNECTION&#39;: &#39;close&#39;,
+ &#39;HTTP_HOST&#39;: &#39;243debac.ngrok.com&#39;,
+ &#39;HTTP_REFERER&#39;: &#39;http://telerivet.com/&#39;,
+ &#39;HTTP_USER_AGENT&#39;: &#39;Telerivet/0.1&#39;,
+ &#39;HTTP_X_FORWARDED_PROTO&#39;: &#39;https&#39;,
+ &#39;HTTP_X_REAL_IP&#39;: &#39;178.79.191.37&#39;,
+ &#39;IM_CONFIG_PHASE&#39;: &#39;1&#39;,
+ &#39;INSTANCE&#39;: &#39;Unity&#39;,
+ &#39;JOB&#39;: &#39;gnome-session&#39;,
+ &#39;LANGUAGE&#39;: &#39;en_US&#39;,
+ &#39;LC_ALL&#39;: &#39;POSIX&#39;,
+ &#39;LOGNAME&#39;: &#39;audakel&#39;,
+ &#39;MANDATORY_PATH&#39;: &#39;/usr/share/gconf/ubuntu.mandatory.path&#39;,
+ &#39;NODE_DISABLE_COLORS&#39;: &#39;1&#39;,
+ &#39;NODE_PATH&#39;: &#39;/usr/lib/nodejs:/usr/lib/node_modules:/usr/share/javascript&#39;,
+ &#39;PATH&#39;: &#39;/home/audakel/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games&#39;,
+ &#39;PATH_INFO&#39;: u&#39;/sms/telerivet/&#39;,
+ &#39;PWD&#39;: &#39;/home/audakel/cs/haedrian/Haedrian_Website&#39;,
+ &#39;QT4_IM_MODULE&#39;: &#39;xim&#39;,
+ &#39;QT_IM_MODULE&#39;: &#39;ibus&#39;,
+ &#39;QT_QPA_PLATFORMTHEME&#39;: &#39;appmenu-qt5&#39;,
+ &#39;QUERY_STRING&#39;: &#39;&#39;,
+ &#39;REMOTE_ADDR&#39;: &#39;127.0.0.1&#39;,
+ &#39;REMOTE_HOST&#39;: &#39;&#39;,
+ &#39;REQUEST_METHOD&#39;: &#39;POST&#39;,
+ &#39;RUN_MAIN&#39;: &#39;true&#39;,
+ &#39;SCRIPT_NAME&#39;: u&#39;&#39;,
+ &#39;SELINUX_INIT&#39;: &#39;YES&#39;,
+ &#39;SERVER_NAME&#39;: &#39;localhost&#39;,
+ &#39;SERVER_PORT&#39;: &#39;8008&#39;,
+ &#39;SERVER_PROTOCOL&#39;: &#39;HTTP/1.1&#39;,
+ &#39;SERVER_SOFTWARE&#39;: &#39;WSGIServer/0.1 Python/2.7.6&#39;,
+ &#39;SESSIONTYPE&#39;: &#39;gnome-session&#39;,
+ &#39;SHELL&#39;: &#39;/bin/bash&#39;,
+ &#39;SHLVL&#39;: &#39;1&#39;,
+ &#39;SSH_AGENT_LAUNCHER&#39;: &#39;upstart&#39;,
+ &#39;SSH_AGENT_PID&#39;: &#39;24824&#39;,
+ &#39;SSH_AUTH_SOCK&#39;: &#39;/run/user/1000/keyring-koueHm/ssh&#39;,
+ &#39;TERM&#39;: &#39;xterm&#39;,
+ &#39;TEXTDOMAIN&#39;: &#39;im-config&#39;,
+ &#39;TEXTDOMAINDIR&#39;: &#39;/usr/share/locale/&#39;,
+ &#39;TZ&#39;: &#39;America/Denver&#39;,
+ &#39;UBUNTU_MENUPROXY&#39;: &#39;1&#39;,
+ &#39;UPSTART_EVENTS&#39;: &#39;started starting&#39;,
+ &#39;UPSTART_INSTANCE&#39;: &#39;&#39;,
+ &#39;UPSTART_JOB&#39;: &#39;unity-settings-daemon&#39;,
+ &#39;UPSTART_SESSION&#39;: &#39;unix:abstract=/com/ubuntu/upstart-session/1000/24745&#39;,
+ &#39;USER&#39;: &#39;audakel&#39;,
+ &#39;VISUAL&#39;: &#39;emacs -nw&#39;,
+ &#39;VTE_VERSION&#39;: &#39;3409&#39;,
+ &#39;WINDOWID&#39;: &#39;27262988&#39;,
+ &#39;XAUTHORITY&#39;: &#39;/home/audakel/.Xauthority&#39;,
+ &#39;XDG_CONFIG_DIRS&#39;: &#39;/etc/xdg/xdg-ubuntu:/usr/share/upstart/xdg:/etc/xdg&#39;,
+ &#39;XDG_CURRENT_DESKTOP&#39;: &#39;Unity&#39;,
+ &#39;XDG_DATA_DIRS&#39;: &#39;/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/&#39;,
+ &#39;XDG_GREETER_DATA_DIR&#39;: &#39;/var/lib/lightdm-data/audakel&#39;,
+ &#39;XDG_RUNTIME_DIR&#39;: &#39;/run/user/1000&#39;,
+ &#39;XDG_SEAT&#39;: &#39;seat0&#39;,
+ &#39;XDG_SEAT_PATH&#39;: &#39;/org/freedesktop/DisplayManager/Seat0&#39;,
+ &#39;XDG_SESSION_ID&#39;: &#39;c5&#39;,
+ &#39;XDG_SESSION_PATH&#39;: &#39;/org/freedesktop/DisplayManager/Session0&#39;,
+ &#39;XDG_VTNR&#39;: &#39;7&#39;,
+ &#39;XMODIFIERS&#39;: &#39;@im=ibus&#39;,
+ &#39;_&#39;: &#39;/usr/bin/python&#39;,
+ &#39;wsgi.errors&#39;: &lt;open file &#39;&lt;stderr&gt;&#39;, mode &#39;w&#39; at 0x7f3f794851e0&gt;,
+ &#39;wsgi.file_wrapper&#39;: &lt;class wsgiref.util.FileWrapper at 0x7f3f75a63bb0&gt;,
+ &#39;wsgi.input&#39;: &lt;socket._fileobject object at 0x7f3f6c4d80d0&gt;,
+ &#39;wsgi.multiprocess&#39;: False,
+ &#39;wsgi.multithread&#39;: True,
+ &#39;wsgi.run_once&#39;: False,
+ &#39;wsgi.url_scheme&#39;: &#39;http&#39;,
+ &#39;wsgi.version&#39;: (1, 0)}&gt;,)</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>kwargs</td>
+                    <td class="code"><pre>{}</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+          
+        </li>
+      
+        <li class="frame django">
+          <code>/usr/local/lib/python2.7/dist-packages/django/views/generic/base.py</code> in <code>dispatch</code>
+
+          
+            <div class="context" id="c139910492635432">
+              
+                <ol start="80" class="pre-context" id="pre139910492635432"><li onclick="toggle('pre139910492635432', 'post139910492635432')"><pre>        # Try to dispatch to the right method; if a method doesn&#39;t exist,</pre></li><li onclick="toggle('pre139910492635432', 'post139910492635432')"><pre>        # defer to the error handler. Also defer to the error handler if the</pre></li><li onclick="toggle('pre139910492635432', 'post139910492635432')"><pre>        # request method isn&#39;t on the approved list.</pre></li><li onclick="toggle('pre139910492635432', 'post139910492635432')"><pre>        if request.method.lower() in self.http_method_names:</pre></li><li onclick="toggle('pre139910492635432', 'post139910492635432')"><pre>            handler = getattr(self, request.method.lower(), self.http_method_not_allowed)</pre></li><li onclick="toggle('pre139910492635432', 'post139910492635432')"><pre>        else:</pre></li><li onclick="toggle('pre139910492635432', 'post139910492635432')"><pre>            handler = self.http_method_not_allowed</pre></li></ol>
+              
+              <ol start="87" class="context-line"><li onclick="toggle('pre139910492635432', 'post139910492635432')"><pre>        return handler(request, *args, **kwargs)</pre> <span>...</span></li></ol>
+              
+                <ol start='88' class="post-context" id="post139910492635432"><li onclick="toggle('pre139910492635432', 'post139910492635432')"><pre></pre></li><li onclick="toggle('pre139910492635432', 'post139910492635432')"><pre>    def http_method_not_allowed(self, request, *args, **kwargs):</pre></li><li onclick="toggle('pre139910492635432', 'post139910492635432')"><pre>        logger.warning(&#39;Method Not Allowed (%s): %s&#39;, request.method, request.path,</pre></li><li onclick="toggle('pre139910492635432', 'post139910492635432')"><pre>            extra={</pre></li><li onclick="toggle('pre139910492635432', 'post139910492635432')"><pre>                &#39;status_code&#39;: 405,</pre></li><li onclick="toggle('pre139910492635432', 'post139910492635432')"><pre>                &#39;request&#39;: request</pre></li></ol>
+              
+            </div>
+          
+
+          
+            <div class="commands">
+                
+                    <a href="#" onclick="return varToggle(this, '139910492635432')"><span>&#x25b6;</span> Local vars</a>
+                
+            </div>
+            <table class="vars" id="v139910492635432">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;rapidsms_telerivet.views.TelerivetBackendView object at 0x7f3f6c4790d0&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>handler</td>
+                    <td class="code"><pre>&lt;bound method TelerivetBackendView.post of &lt;rapidsms_telerivet.views.TelerivetBackendView object at 0x7f3f6c4790d0&gt;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&quot;&lt;WSGIRequest\npath:/sms/telerivet/,\nGET:&lt;QueryDict: {}&gt;,\nPOST:&lt;QueryDict: {u&#39;event&#39;: [u&#39;incoming_message&#39;], u&#39;phone[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;from_number_e164&#39;: [u&#39;+16503089117&#39;], u&#39;phone[id]&#39;: [u&#39;PN50774ea8fb7cf4ca&#39;], u&#39;to_number&#39;: [u&#39;4803591947&#39;], u&#39;contact_id&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;phone[send_limit]&#39;: [u&#39;60&#39;], u&#39;from_number&#39;: [u&#39;6503089117&#39;], u&#39;contact[last_message_time]&#39;: [u&#39;1433978213&#39;], u&#39;state[time_updated]&#39;: [u&#39;0&#39;], u&#39;contact[last_message_id]&#39;: [u&#39;SM93ec2f3e5861a709&#39;], u&#39;state[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[phone_number]&#39;: [u&#39;4803591947&#39;], u&#39;phone[name]&#39;: [u&#39;4803591947&#39;], u&#39;content&#39;: [u&#39;No&#39;], u&#39;state[contact_id]&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;contact[id]&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;state[service_id]&#39;: [u&#39;SV1f9984f7a7a2bfe7&#39;], u&#39;phone_id&#39;: [u&#39;PN50774ea8fb7cf4ca&#39;], u&#39;id&#39;: [u&#39;SM93ec2f3e5861a709&#39;], u&#39;contact[send_blocked]&#39;: [u&#39;0&#39;], u&#39;source&#39;: [u&#39;phone&#39;], u&#39;secret&#39;: [u&#39;AUH4PZMMLHN3XPHHHDW6MM3HURZ923XD&#39;], u&#39;phone[phone_type]&#39;: [u&#39;android&#39;], u&#39;contact[time_created]&#39;: [u&#39;1433959592&#39;], u&#39;state[time_created]&#39;: [u&#39;0&#39;], u&#39;project_id&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[battery]&#39;: [u&#39;73&#39;], u&#39;status&#39;: [u&#39;processing&#39;], u&#39;phone[charging]&#39;: [u&#39;0&#39;], u&#39;direction&#39;: [u&#39;incoming&#39;], u&#39;phone[mccmnc]&#39;: [u&#39;311480&#39;], u&#39;contact[name]&#39;: [u&#39;6503089117&#39;], u&#39;time_sent&#39;: [u&#39;1433974610&#39;], u&#39;phone[time_created]&#39;: [u&#39;1433958131&#39;], u&#39;time_created&#39;: [u&#39;1433978213&#39;], u&#39;service_id&#39;: [u&#39;SV1f9984f7a7a2bfe7&#39;], u&#39;phone[model]&#39;: [u&#39;SM-G900V&#39;], u&#39;phone[app_version]&#39;: [u&#39;3.9.1&#39;], u&#39;phone[send_paused]&#39;: [u&#39;0&#39;], u&#39;phone[manufacturer]&#39;: [u&#39;samsung&#39;], u&#39;phone[android_sdk]&#39;: [u&#39;21&#39;], u&#39;contact[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[last_active_time]&#39;: [u&#39;1433978213&#39;], u&#39;phone[country]&#39;: [u&#39;US&#39;], u&#39;contact[message_count]&#39;: [u&#39;28&#39;], u&#39;context&#39;: [u&#39;message&#39;], u&#39;simulated&#39;: [u&#39;0&#39;], u&#39;contact[phone_number]&#39;: [u&#39;6503089117&#39;], u&#39;starred&#39;: [u&#39;0&#39;], u&#39;message_type&#39;: [u&#39;sms&#39;]}&gt;,\nCOOKIES:{},\nMETA:{&#39;CLUTTER_IM_MODULE&#39;: &#39;xim&#39;,\n &#39;COLORTERM&#39;: &#39;gnome-terminal&#39;,\n &#39;COMPIZ_CONFIG_PROFILE&#39;: &#39;ubuntu&#39;,\n &#39;CONTENT_LENGTH&#39;: &#39;1437&#39;,\n &#39;CONTENT_TYPE&#39;: &#39;application/x-www-form-urlencoded&#39;,\n u&#39;CSRF_COOKIE&#39;: u&#39;tsEo6odUA8uL3uTge5OLGkGbtTXTjtpO&#39;,\n &#39;DBUS_SESSION_BUS_ADDRESS&#39;: &#39;unix:abstract=/tmp/dbus-DrkPMVq1cI&#39;,\n &#39;DEFAULTS_PATH&#39;: &#39;/usr/share/gconf/ubuntu.default.path&#39;,\n &#39;DESKTOP_SESSION&#39;: &#39;ubuntu&#39;,\n &#39;DISPLAY&#39;: &#39;:1&#39;,\n &#39;DJANGO_SETTINGS_MODULE&#39;: &#39;Haedrian_Website.settings.development&#39;,\n &#39;EDITOR&#39;: &#39;emacs -nw&#39;,\n &#39;GATEWAY_INTERFACE&#39;: &#39;CGI/1.1&#39;,\n &#39;GDMSESSION&#39;: &#39;ubuntu&#39;,\n &#39;GDM_LANG&#39;: &#39;en_US&#39;,\n &#39;GNOME_DESKTOP_SESSION_ID&#39;: &#39;this-is-deprecated&#39;,\n &#39;GNOME_KEYRING_CONTROL&#39;: &#39;/run/user/1000/keyring-koueHm&#39;,\n &#39;GNOME_KEYRING_PID&#39;: &#39;24742&#39;,\n &#39;GPG_AGENT_INFO&#39;: &#39;/run/user/1000/keyring-koueHm/gpg:0:1&#39;,\n &#39;GREP_COLOR&#39;: &#39;1;31&#39;,\n &#39;GREP_OPTIONS&#39;: &#39;--color=auto&#39;,\n &#39;GTK_IM_MODULE&#39;: &#39;ibus&#39;,\n &#39;GTK_MODULES&#39;: &#39;overlay-scrollbar:unity-gtk-module&#39;,\n &#39;HOME&#39;: &#39;/home/audakel&#39;,\n &#39;HTTP_ACCEPT&#39;: &#39;*/*&#39;,\n &#39;HTTP_AUTHORIZATION&#39;: &#39;Basic dGVsZXJpdmV0OkFVSDRQWk1NTEhOM1hQSEhIRFc2TU0zSFVSWjkyM1hE&#39;,\n &#39;HTTP_CONNECTION&#39;: &#39;close&#39;,\n &#39;HTTP_HOST&#39;: &#39;243debac.ngrok.com&#39;,\n &#39;HTTP_REFERER&#39;: &#39;http://telerivet.com/&#39;,\n &#39;HTTP_USER_AGENT&#39;: &#39;Telerivet/0.1&#39;,\n &#39;HTTP_X_FORWARDED_PROTO&#39;: &#39;https&#39;,\n &#39;HTTP_X_REAL_IP&#39;: &#39;178.79.191.37&#39;,\n &#39;IM_CONFIG_PHASE&#39;: &#39;1&#39;,\n &#39;INSTANCE&#39;: &#39;Unity&#39;,\n &#39;JOB&#39;: &#39;gnome-session&#39;,\n &#39;LANGUAGE&#39;: &#39;en_US&#39;,\n &#39;LC_ALL&#39;: &#39;POSIX&#39;,\n &#39;LOGNAME&#39;: &#39;audakel&#39;,\n &#39;MANDATORY_PATH&#39;: &#39;/usr/share/gconf/ubuntu.mandatory.path&#39;,\n &#39;NODE_DISABLE_COLORS&#39;: &#39;1&#39;,\n &#39;NODE_PATH&#39;: &#39;/usr/lib/nodejs:/usr/lib/node_modules:/usr/share/javascript&#39;,\n &#39;PATH&#39;: &#39;/home/audakel/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games&#39;,\n &#39;PATH_INFO&#39;: u&#39;/sms/telerivet/&#39;,\n &#39;PWD&#39;: &#39;/home/audakel/cs/haedrian/Haedrian_Website&#39;,\n &#39;QT4_IM_MODULE&#39;: &#39;xim&#39;,\n &#39;QT_IM_MODULE&#39;: &#39;ibus&#39;,\n &#39;QT_QPA_PLATFORMTHEME&#39;: &#39;appmenu-qt5&#39;,\n &#39;QUERY_STRING&#39;: &#39;&#39;,\n &#39;REMOTE_ADDR&#39;: &#39;127.0.0.1&#39;,\n &#39;REMOTE_HOST&#39;: &#39;&#39;,\n &#39;REQUEST_METHOD&#39;: &#39;POST&#39;,\n &#39;RUN_MAIN&#39;: &#39;true&#39;,\n &#39;SCRIPT_NAME&#39;: u&#39;&#39;,\n &#39;SELINUX_INIT&#39;: &#39;YES&#39;,\n &#39;SERVER_NAME&#39;: &#39;localhost&#39;,\n &#39;SERVER_PORT&#39;: &#39;8008&#39;,\n &#39;SERVER_PROTOCOL&#39;: &#39;HTTP/1.1&#39;,\n &#39;SERVER_SOFTWARE&#39;: &#39;WSGIServer/0.1 Python/2.7.6&#39;,\n &#39;SESSIONTYPE&#39;: &#39;gnome-session&#39;,\n &#39;SHELL&#39;: &#39;/bin/bash&#39;,\n &#39;SHLVL&#39;: &#39;1&#39;,\n &#39;SSH_AGENT_LAUNCHER&#39;: &#39;upstart&#39;,\n &#39;SSH_AGENT_PID&#39;: &#39;24824&#39;,\n &#39;SSH_AUTH_SOCK&#39;: &#39;/run/user/1000/keyring-koueHm/ssh&#39;,\n &#39;TERM&#39;: &#39;xterm&#39;,\n &#39;TEXTDOMAIN&#39;: &#39;im-config&#39;,\n &#39;TEXTDOMAINDIR&#39;: &#39;/usr/share/locale/&#39;,\n &#39;TZ&#39;: &#39;America/Denver&#39;,\n &#39;UBUNTU_MENUPROXY&#39;: &#39;1&#39;,\n &#39;UPSTART_EVENTS&#39;: &#39;started starting&#39;,\n &#39;UPSTART_INSTANCE&#39;: &#39;&#39;,\n &#39;UPSTART_JOB&#39;: &#39;unity-settings-daemon&#39;,\n &#39;UPSTART_SESSION&#39;: &#39;unix:abstract=/com/ubuntu/upstart-session/1000/24745&#39;,\n &#39;USER&#39;: &#39;audakel&#39;,\n &#39;VISUAL&#39;: &#39;emacs -nw&#39;,\n &#39;VTE_VERSION&#39;: &#39;3409&#39;,\n &#39;WINDOWID&#39;: &#39;27262988&#39;,\n &#39;XAUTHORITY&#39;: &#39;/home/audakel/.Xauthority&#39;,\n &#39;XDG_CONFIG_DIRS&#39;: &#39;/etc/xdg/xdg-ubuntu:/usr/share/upstart/xdg:/etc/xdg&#39;,\n &#39;XDG_CURRENT_DESKTOP&#39;: &#39;Unity&#39;,\n &#39;XDG_DATA_DIRS&#39;: &#39;/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/&#39;,\n &#39;XDG_GREETER_DATA_DIR&#39;: &#39;/var/lib/lightdm-data/audakel&#39;,\n &#39;XDG_RUNTIME_DIR&#39;: &#39;/run/user/1000&#39;,\n &#39;XDG_SEAT&#39;: &#39;seat0&#39;,\n &#39;XDG_SEAT_PATH&#39;: &#39;/org/freedesktop/DisplayManager/Seat0&#39;,\n &#39;XDG_SESSION_ID&#39;: &#39;c5&#39;,\n &#39;XDG_SESSION_PATH&#39;: &#39;/org/freedesktop/DisplayManager/Session0&#39;,\n &#39;XDG_VTNR&#39;: &#39;7&#39;,\n &#39;XMODIFIERS&#39;: &#39;@im=ibus&#39;,\n &#39;_&#39;: &#39;/usr/bin/python&#39;,\n &#39;wsgi.errors&#39;: &lt;open file &#39;&lt;stderr&gt;&#39;, mode &#39;w&#39; at 0x7f3f794851e0&gt;,\n &#39;wsgi.file_wrapper&#39;: &lt;class wsgiref.util.FileWrapper at 0x7f3f75a63bb0&gt;,\n &#39;wsgi.input&#39;: &lt;socket._fileobject object at 0x7f3f6c4d80d0&gt;,\n &#39;wsgi.multiprocess&#39;: False,\n &#39;wsgi.multithread&#39;: True,\n &#39;wsgi.run_once&#39;: False,\n &#39;wsgi.url_scheme&#39;: &#39;http&#39;,\n &#39;wsgi.version&#39;: (1, 0)}&gt;&quot;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>args</td>
+                    <td class="code"><pre>()</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>kwargs</td>
+                    <td class="code"><pre>{}</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+          
+        </li>
+      
+        <li class="frame django">
+          <code>/usr/local/lib/python2.7/dist-packages/django/views/generic/edit.py</code> in <code>post</code>
+
+          
+            <div class="context" id="c139910492635792">
+              
+                <ol start="165" class="pre-context" id="pre139910492635792"><li onclick="toggle('pre139910492635792', 'post139910492635792')"><pre>    def post(self, request, *args, **kwargs):</pre></li><li onclick="toggle('pre139910492635792', 'post139910492635792')"><pre>        &quot;&quot;&quot;</pre></li><li onclick="toggle('pre139910492635792', 'post139910492635792')"><pre>        Handles POST requests, instantiating a form instance with the passed</pre></li><li onclick="toggle('pre139910492635792', 'post139910492635792')"><pre>        POST variables and then checked for validity.</pre></li><li onclick="toggle('pre139910492635792', 'post139910492635792')"><pre>        &quot;&quot;&quot;</pre></li><li onclick="toggle('pre139910492635792', 'post139910492635792')"><pre>        form_class = self.get_form_class()</pre></li><li onclick="toggle('pre139910492635792', 'post139910492635792')"><pre>        form = self.get_form(form_class)</pre></li></ol>
+              
+              <ol start="172" class="context-line"><li onclick="toggle('pre139910492635792', 'post139910492635792')"><pre>        if form.is_valid():</pre> <span>...</span></li></ol>
+              
+                <ol start='173' class="post-context" id="post139910492635792"><li onclick="toggle('pre139910492635792', 'post139910492635792')"><pre>            return self.form_valid(form)</pre></li><li onclick="toggle('pre139910492635792', 'post139910492635792')"><pre>        else:</pre></li><li onclick="toggle('pre139910492635792', 'post139910492635792')"><pre>            return self.form_invalid(form)</pre></li><li onclick="toggle('pre139910492635792', 'post139910492635792')"><pre></pre></li><li onclick="toggle('pre139910492635792', 'post139910492635792')"><pre>    # PUT is a valid HTTP verb for creating (with a known URL) or editing an</pre></li><li onclick="toggle('pre139910492635792', 'post139910492635792')"><pre>    # object, note that browsers only support POST for now.</pre></li></ol>
+              
+            </div>
+          
+
+          
+            <div class="commands">
+                
+                    <a href="#" onclick="return varToggle(this, '139910492635792')"><span>&#x25b6;</span> Local vars</a>
+                
+            </div>
+            <table class="vars" id="v139910492635792">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>form</td>
+                    <td class="code"><pre>&lt;rapidsms_telerivet.forms.TelerivetForm object at 0x7f3f6c755610&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;rapidsms_telerivet.views.TelerivetBackendView object at 0x7f3f6c4790d0&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>args</td>
+                    <td class="code"><pre>()</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&quot;&lt;WSGIRequest\npath:/sms/telerivet/,\nGET:&lt;QueryDict: {}&gt;,\nPOST:&lt;QueryDict: {u&#39;event&#39;: [u&#39;incoming_message&#39;], u&#39;phone[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;from_number_e164&#39;: [u&#39;+16503089117&#39;], u&#39;phone[id]&#39;: [u&#39;PN50774ea8fb7cf4ca&#39;], u&#39;to_number&#39;: [u&#39;4803591947&#39;], u&#39;contact_id&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;phone[send_limit]&#39;: [u&#39;60&#39;], u&#39;from_number&#39;: [u&#39;6503089117&#39;], u&#39;contact[last_message_time]&#39;: [u&#39;1433978213&#39;], u&#39;state[time_updated]&#39;: [u&#39;0&#39;], u&#39;contact[last_message_id]&#39;: [u&#39;SM93ec2f3e5861a709&#39;], u&#39;state[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[phone_number]&#39;: [u&#39;4803591947&#39;], u&#39;phone[name]&#39;: [u&#39;4803591947&#39;], u&#39;content&#39;: [u&#39;No&#39;], u&#39;state[contact_id]&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;contact[id]&#39;: [u&#39;CTcdd221576dd433a0&#39;], u&#39;state[service_id]&#39;: [u&#39;SV1f9984f7a7a2bfe7&#39;], u&#39;phone_id&#39;: [u&#39;PN50774ea8fb7cf4ca&#39;], u&#39;id&#39;: [u&#39;SM93ec2f3e5861a709&#39;], u&#39;contact[send_blocked]&#39;: [u&#39;0&#39;], u&#39;source&#39;: [u&#39;phone&#39;], u&#39;secret&#39;: [u&#39;AUH4PZMMLHN3XPHHHDW6MM3HURZ923XD&#39;], u&#39;phone[phone_type]&#39;: [u&#39;android&#39;], u&#39;contact[time_created]&#39;: [u&#39;1433959592&#39;], u&#39;state[time_created]&#39;: [u&#39;0&#39;], u&#39;project_id&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[battery]&#39;: [u&#39;73&#39;], u&#39;status&#39;: [u&#39;processing&#39;], u&#39;phone[charging]&#39;: [u&#39;0&#39;], u&#39;direction&#39;: [u&#39;incoming&#39;], u&#39;phone[mccmnc]&#39;: [u&#39;311480&#39;], u&#39;contact[name]&#39;: [u&#39;6503089117&#39;], u&#39;time_sent&#39;: [u&#39;1433974610&#39;], u&#39;phone[time_created]&#39;: [u&#39;1433958131&#39;], u&#39;time_created&#39;: [u&#39;1433978213&#39;], u&#39;service_id&#39;: [u&#39;SV1f9984f7a7a2bfe7&#39;], u&#39;phone[model]&#39;: [u&#39;SM-G900V&#39;], u&#39;phone[app_version]&#39;: [u&#39;3.9.1&#39;], u&#39;phone[send_paused]&#39;: [u&#39;0&#39;], u&#39;phone[manufacturer]&#39;: [u&#39;samsung&#39;], u&#39;phone[android_sdk]&#39;: [u&#39;21&#39;], u&#39;contact[project_id]&#39;: [u&#39;PJa61703ce18b3a11e&#39;], u&#39;phone[last_active_time]&#39;: [u&#39;1433978213&#39;], u&#39;phone[country]&#39;: [u&#39;US&#39;], u&#39;contact[message_count]&#39;: [u&#39;28&#39;], u&#39;context&#39;: [u&#39;message&#39;], u&#39;simulated&#39;: [u&#39;0&#39;], u&#39;contact[phone_number]&#39;: [u&#39;6503089117&#39;], u&#39;starred&#39;: [u&#39;0&#39;], u&#39;message_type&#39;: [u&#39;sms&#39;]}&gt;,\nCOOKIES:{},\nMETA:{&#39;CLUTTER_IM_MODULE&#39;: &#39;xim&#39;,\n &#39;COLORTERM&#39;: &#39;gnome-terminal&#39;,\n &#39;COMPIZ_CONFIG_PROFILE&#39;: &#39;ubuntu&#39;,\n &#39;CONTENT_LENGTH&#39;: &#39;1437&#39;,\n &#39;CONTENT_TYPE&#39;: &#39;application/x-www-form-urlencoded&#39;,\n u&#39;CSRF_COOKIE&#39;: u&#39;tsEo6odUA8uL3uTge5OLGkGbtTXTjtpO&#39;,\n &#39;DBUS_SESSION_BUS_ADDRESS&#39;: &#39;unix:abstract=/tmp/dbus-DrkPMVq1cI&#39;,\n &#39;DEFAULTS_PATH&#39;: &#39;/usr/share/gconf/ubuntu.default.path&#39;,\n &#39;DESKTOP_SESSION&#39;: &#39;ubuntu&#39;,\n &#39;DISPLAY&#39;: &#39;:1&#39;,\n &#39;DJANGO_SETTINGS_MODULE&#39;: &#39;Haedrian_Website.settings.development&#39;,\n &#39;EDITOR&#39;: &#39;emacs -nw&#39;,\n &#39;GATEWAY_INTERFACE&#39;: &#39;CGI/1.1&#39;,\n &#39;GDMSESSION&#39;: &#39;ubuntu&#39;,\n &#39;GDM_LANG&#39;: &#39;en_US&#39;,\n &#39;GNOME_DESKTOP_SESSION_ID&#39;: &#39;this-is-deprecated&#39;,\n &#39;GNOME_KEYRING_CONTROL&#39;: &#39;/run/user/1000/keyring-koueHm&#39;,\n &#39;GNOME_KEYRING_PID&#39;: &#39;24742&#39;,\n &#39;GPG_AGENT_INFO&#39;: &#39;/run/user/1000/keyring-koueHm/gpg:0:1&#39;,\n &#39;GREP_COLOR&#39;: &#39;1;31&#39;,\n &#39;GREP_OPTIONS&#39;: &#39;--color=auto&#39;,\n &#39;GTK_IM_MODULE&#39;: &#39;ibus&#39;,\n &#39;GTK_MODULES&#39;: &#39;overlay-scrollbar:unity-gtk-module&#39;,\n &#39;HOME&#39;: &#39;/home/audakel&#39;,\n &#39;HTTP_ACCEPT&#39;: &#39;*/*&#39;,\n &#39;HTTP_AUTHORIZATION&#39;: &#39;Basic dGVsZXJpdmV0OkFVSDRQWk1NTEhOM1hQSEhIRFc2TU0zSFVSWjkyM1hE&#39;,\n &#39;HTTP_CONNECTION&#39;: &#39;close&#39;,\n &#39;HTTP_HOST&#39;: &#39;243debac.ngrok.com&#39;,\n &#39;HTTP_REFERER&#39;: &#39;http://telerivet.com/&#39;,\n &#39;HTTP_USER_AGENT&#39;: &#39;Telerivet/0.1&#39;,\n &#39;HTTP_X_FORWARDED_PROTO&#39;: &#39;https&#39;,\n &#39;HTTP_X_REAL_IP&#39;: &#39;178.79.191.37&#39;,\n &#39;IM_CONFIG_PHASE&#39;: &#39;1&#39;,\n &#39;INSTANCE&#39;: &#39;Unity&#39;,\n &#39;JOB&#39;: &#39;gnome-session&#39;,\n &#39;LANGUAGE&#39;: &#39;en_US&#39;,\n &#39;LC_ALL&#39;: &#39;POSIX&#39;,\n &#39;LOGNAME&#39;: &#39;audakel&#39;,\n &#39;MANDATORY_PATH&#39;: &#39;/usr/share/gconf/ubuntu.mandatory.path&#39;,\n &#39;NODE_DISABLE_COLORS&#39;: &#39;1&#39;,\n &#39;NODE_PATH&#39;: &#39;/usr/lib/nodejs:/usr/lib/node_modules:/usr/share/javascript&#39;,\n &#39;PATH&#39;: &#39;/home/audakel/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games&#39;,\n &#39;PATH_INFO&#39;: u&#39;/sms/telerivet/&#39;,\n &#39;PWD&#39;: &#39;/home/audakel/cs/haedrian/Haedrian_Website&#39;,\n &#39;QT4_IM_MODULE&#39;: &#39;xim&#39;,\n &#39;QT_IM_MODULE&#39;: &#39;ibus&#39;,\n &#39;QT_QPA_PLATFORMTHEME&#39;: &#39;appmenu-qt5&#39;,\n &#39;QUERY_STRING&#39;: &#39;&#39;,\n &#39;REMOTE_ADDR&#39;: &#39;127.0.0.1&#39;,\n &#39;REMOTE_HOST&#39;: &#39;&#39;,\n &#39;REQUEST_METHOD&#39;: &#39;POST&#39;,\n &#39;RUN_MAIN&#39;: &#39;true&#39;,\n &#39;SCRIPT_NAME&#39;: u&#39;&#39;,\n &#39;SELINUX_INIT&#39;: &#39;YES&#39;,\n &#39;SERVER_NAME&#39;: &#39;localhost&#39;,\n &#39;SERVER_PORT&#39;: &#39;8008&#39;,\n &#39;SERVER_PROTOCOL&#39;: &#39;HTTP/1.1&#39;,\n &#39;SERVER_SOFTWARE&#39;: &#39;WSGIServer/0.1 Python/2.7.6&#39;,\n &#39;SESSIONTYPE&#39;: &#39;gnome-session&#39;,\n &#39;SHELL&#39;: &#39;/bin/bash&#39;,\n &#39;SHLVL&#39;: &#39;1&#39;,\n &#39;SSH_AGENT_LAUNCHER&#39;: &#39;upstart&#39;,\n &#39;SSH_AGENT_PID&#39;: &#39;24824&#39;,\n &#39;SSH_AUTH_SOCK&#39;: &#39;/run/user/1000/keyring-koueHm/ssh&#39;,\n &#39;TERM&#39;: &#39;xterm&#39;,\n &#39;TEXTDOMAIN&#39;: &#39;im-config&#39;,\n &#39;TEXTDOMAINDIR&#39;: &#39;/usr/share/locale/&#39;,\n &#39;TZ&#39;: &#39;America/Denver&#39;,\n &#39;UBUNTU_MENUPROXY&#39;: &#39;1&#39;,\n &#39;UPSTART_EVENTS&#39;: &#39;started starting&#39;,\n &#39;UPSTART_INSTANCE&#39;: &#39;&#39;,\n &#39;UPSTART_JOB&#39;: &#39;unity-settings-daemon&#39;,\n &#39;UPSTART_SESSION&#39;: &#39;unix:abstract=/com/ubuntu/upstart-session/1000/24745&#39;,\n &#39;USER&#39;: &#39;audakel&#39;,\n &#39;VISUAL&#39;: &#39;emacs -nw&#39;,\n &#39;VTE_VERSION&#39;: &#39;3409&#39;,\n &#39;WINDOWID&#39;: &#39;27262988&#39;,\n &#39;XAUTHORITY&#39;: &#39;/home/audakel/.Xauthority&#39;,\n &#39;XDG_CONFIG_DIRS&#39;: &#39;/etc/xdg/xdg-ubuntu:/usr/share/upstart/xdg:/etc/xdg&#39;,\n &#39;XDG_CURRENT_DESKTOP&#39;: &#39;Unity&#39;,\n &#39;XDG_DATA_DIRS&#39;: &#39;/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/&#39;,\n &#39;XDG_GREETER_DATA_DIR&#39;: &#39;/var/lib/lightdm-data/audakel&#39;,\n &#39;XDG_RUNTIME_DIR&#39;: &#39;/run/user/1000&#39;,\n &#39;XDG_SEAT&#39;: &#39;seat0&#39;,\n &#39;XDG_SEAT_PATH&#39;: &#39;/org/freedesktop/DisplayManager/Seat0&#39;,\n &#39;XDG_SESSION_ID&#39;: &#39;c5&#39;,\n &#39;XDG_SESSION_PATH&#39;: &#39;/org/freedesktop/DisplayManager/Session0&#39;,\n &#39;XDG_VTNR&#39;: &#39;7&#39;,\n &#39;XMODIFIERS&#39;: &#39;@im=ibus&#39;,\n &#39;_&#39;: &#39;/usr/bin/python&#39;,\n &#39;wsgi.errors&#39;: &lt;open file &#39;&lt;stderr&gt;&#39;, mode &#39;w&#39; at 0x7f3f794851e0&gt;,\n &#39;wsgi.file_wrapper&#39;: &lt;class wsgiref.util.FileWrapper at 0x7f3f75a63bb0&gt;,\n &#39;wsgi.input&#39;: &lt;socket._fileobject object at 0x7f3f6c4d80d0&gt;,\n &#39;wsgi.multiprocess&#39;: False,\n &#39;wsgi.multithread&#39;: True,\n &#39;wsgi.run_once&#39;: False,\n &#39;wsgi.url_scheme&#39;: &#39;http&#39;,\n &#39;wsgi.version&#39;: (1, 0)}&gt;&quot;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>form_class</td>
+                    <td class="code"><pre>&lt;class &#39;rapidsms_telerivet.forms.TelerivetForm&#39;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>kwargs</td>
+                    <td class="code"><pre>{}</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+          
+        </li>
+      
+        <li class="frame django">
+          <code>/usr/local/lib/python2.7/dist-packages/django/forms/forms.py</code> in <code>is_valid</code>
+
+          
+            <div class="context" id="c139910492635720">
+              
+                <ol start="155" class="pre-context" id="pre139910492635720"><li onclick="toggle('pre139910492635720', 'post139910492635720')"><pre>        return self._errors</pre></li><li onclick="toggle('pre139910492635720', 'post139910492635720')"><pre></pre></li><li onclick="toggle('pre139910492635720', 'post139910492635720')"><pre>    def is_valid(self):</pre></li><li onclick="toggle('pre139910492635720', 'post139910492635720')"><pre>        &quot;&quot;&quot;</pre></li><li onclick="toggle('pre139910492635720', 'post139910492635720')"><pre>        Returns True if the form has no errors. Otherwise, False. If errors are</pre></li><li onclick="toggle('pre139910492635720', 'post139910492635720')"><pre>        being ignored, returns False.</pre></li><li onclick="toggle('pre139910492635720', 'post139910492635720')"><pre>        &quot;&quot;&quot;</pre></li></ol>
+              
+              <ol start="162" class="context-line"><li onclick="toggle('pre139910492635720', 'post139910492635720')"><pre>        return self.is_bound and not bool(self.errors)</pre> <span>...</span></li></ol>
+              
+                <ol start='163' class="post-context" id="post139910492635720"><li onclick="toggle('pre139910492635720', 'post139910492635720')"><pre></pre></li><li onclick="toggle('pre139910492635720', 'post139910492635720')"><pre>    def add_prefix(self, field_name):</pre></li><li onclick="toggle('pre139910492635720', 'post139910492635720')"><pre>        &quot;&quot;&quot;</pre></li><li onclick="toggle('pre139910492635720', 'post139910492635720')"><pre>        Returns the field name with a prefix appended, if this Form has a</pre></li><li onclick="toggle('pre139910492635720', 'post139910492635720')"><pre>        prefix set.</pre></li><li onclick="toggle('pre139910492635720', 'post139910492635720')"><pre></pre></li></ol>
+              
+            </div>
+          
+
+          
+            <div class="commands">
+                
+                    <a href="#" onclick="return varToggle(this, '139910492635720')"><span>&#x25b6;</span> Local vars</a>
+                
+            </div>
+            <table class="vars" id="v139910492635720">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;rapidsms_telerivet.forms.TelerivetForm object at 0x7f3f6c755610&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+          
+        </li>
+      
+        <li class="frame django">
+          <code>/usr/local/lib/python2.7/dist-packages/django/forms/forms.py</code> in <code>errors</code>
+
+          
+            <div class="context" id="c139910492635936">
+              
+                <ol start="147" class="pre-context" id="pre139910492635936"><li onclick="toggle('pre139910492635936', 'post139910492635936')"><pre>                &quot;Key %r not found in &#39;%s&#39;&quot; % (name, self.__class__.__name__))</pre></li><li onclick="toggle('pre139910492635936', 'post139910492635936')"><pre>        return BoundField(self, field, name)</pre></li><li onclick="toggle('pre139910492635936', 'post139910492635936')"><pre></pre></li><li onclick="toggle('pre139910492635936', 'post139910492635936')"><pre>    @property</pre></li><li onclick="toggle('pre139910492635936', 'post139910492635936')"><pre>    def errors(self):</pre></li><li onclick="toggle('pre139910492635936', 'post139910492635936')"><pre>        &quot;Returns an ErrorDict for the data provided for the form&quot;</pre></li><li onclick="toggle('pre139910492635936', 'post139910492635936')"><pre>        if self._errors is None:</pre></li></ol>
+              
+              <ol start="154" class="context-line"><li onclick="toggle('pre139910492635936', 'post139910492635936')"><pre>            self.full_clean()</pre> <span>...</span></li></ol>
+              
+                <ol start='155' class="post-context" id="post139910492635936"><li onclick="toggle('pre139910492635936', 'post139910492635936')"><pre>        return self._errors</pre></li><li onclick="toggle('pre139910492635936', 'post139910492635936')"><pre></pre></li><li onclick="toggle('pre139910492635936', 'post139910492635936')"><pre>    def is_valid(self):</pre></li><li onclick="toggle('pre139910492635936', 'post139910492635936')"><pre>        &quot;&quot;&quot;</pre></li><li onclick="toggle('pre139910492635936', 'post139910492635936')"><pre>        Returns True if the form has no errors. Otherwise, False. If errors are</pre></li><li onclick="toggle('pre139910492635936', 'post139910492635936')"><pre>        being ignored, returns False.</pre></li></ol>
+              
+            </div>
+          
+
+          
+            <div class="commands">
+                
+                    <a href="#" onclick="return varToggle(this, '139910492635936')"><span>&#x25b6;</span> Local vars</a>
+                
+            </div>
+            <table class="vars" id="v139910492635936">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;rapidsms_telerivet.forms.TelerivetForm object at 0x7f3f6c755610&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+          
+        </li>
+      
+        <li class="frame django">
+          <code>/usr/local/lib/python2.7/dist-packages/django/forms/forms.py</code> in <code>full_clean</code>
+
+          
+            <div class="context" id="c139910492636368">
+              
+                <ol start="346" class="pre-context" id="pre139910492636368"><li onclick="toggle('pre139910492636368', 'post139910492636368')"><pre>            return</pre></li><li onclick="toggle('pre139910492636368', 'post139910492636368')"><pre>        self.cleaned_data = {}</pre></li><li onclick="toggle('pre139910492636368', 'post139910492636368')"><pre>        # If the form is permitted to be empty, and none of the form data has</pre></li><li onclick="toggle('pre139910492636368', 'post139910492636368')"><pre>        # changed from the initial data, short circuit any validation.</pre></li><li onclick="toggle('pre139910492636368', 'post139910492636368')"><pre>        if self.empty_permitted and not self.has_changed():</pre></li><li onclick="toggle('pre139910492636368', 'post139910492636368')"><pre>            return</pre></li><li onclick="toggle('pre139910492636368', 'post139910492636368')"><pre></pre></li></ol>
+              
+              <ol start="353" class="context-line"><li onclick="toggle('pre139910492636368', 'post139910492636368')"><pre>        self._clean_fields()</pre> <span>...</span></li></ol>
+              
+                <ol start='354' class="post-context" id="post139910492636368"><li onclick="toggle('pre139910492636368', 'post139910492636368')"><pre>        self._clean_form()</pre></li><li onclick="toggle('pre139910492636368', 'post139910492636368')"><pre>        self._post_clean()</pre></li><li onclick="toggle('pre139910492636368', 'post139910492636368')"><pre></pre></li><li onclick="toggle('pre139910492636368', 'post139910492636368')"><pre>    def _clean_fields(self):</pre></li><li onclick="toggle('pre139910492636368', 'post139910492636368')"><pre>        for name, field in self.fields.items():</pre></li><li onclick="toggle('pre139910492636368', 'post139910492636368')"><pre>            # value_from_datadict() gets the data from the data dictionaries.</pre></li></ol>
+              
+            </div>
+          
+
+          
+            <div class="commands">
+                
+                    <a href="#" onclick="return varToggle(this, '139910492636368')"><span>&#x25b6;</span> Local vars</a>
+                
+            </div>
+            <table class="vars" id="v139910492636368">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;rapidsms_telerivet.forms.TelerivetForm object at 0x7f3f6c755610&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+          
+        </li>
+      
+        <li class="frame django">
+          <code>/usr/local/lib/python2.7/dist-packages/django/forms/forms.py</code> in <code>_clean_fields</code>
+
+          
+            <div class="context" id="c139910492637520">
+              
+                <ol start="364" class="pre-context" id="pre139910492637520"><li onclick="toggle('pre139910492637520', 'post139910492637520')"><pre>                if isinstance(field, FileField):</pre></li><li onclick="toggle('pre139910492637520', 'post139910492637520')"><pre>                    initial = self.initial.get(name, field.initial)</pre></li><li onclick="toggle('pre139910492637520', 'post139910492637520')"><pre>                    value = field.clean(value, initial)</pre></li><li onclick="toggle('pre139910492637520', 'post139910492637520')"><pre>                else:</pre></li><li onclick="toggle('pre139910492637520', 'post139910492637520')"><pre>                    value = field.clean(value)</pre></li><li onclick="toggle('pre139910492637520', 'post139910492637520')"><pre>                self.cleaned_data[name] = value</pre></li><li onclick="toggle('pre139910492637520', 'post139910492637520')"><pre>                if hasattr(self, &#39;clean_%s&#39; % name):</pre></li></ol>
+              
+              <ol start="371" class="context-line"><li onclick="toggle('pre139910492637520', 'post139910492637520')"><pre>                    value = getattr(self, &#39;clean_%s&#39; % name)()</pre> <span>...</span></li></ol>
+              
+                <ol start='372' class="post-context" id="post139910492637520"><li onclick="toggle('pre139910492637520', 'post139910492637520')"><pre>                    self.cleaned_data[name] = value</pre></li><li onclick="toggle('pre139910492637520', 'post139910492637520')"><pre>            except ValidationError as e:</pre></li><li onclick="toggle('pre139910492637520', 'post139910492637520')"><pre>                self.add_error(name, e)</pre></li><li onclick="toggle('pre139910492637520', 'post139910492637520')"><pre></pre></li><li onclick="toggle('pre139910492637520', 'post139910492637520')"><pre>    def _clean_form(self):</pre></li><li onclick="toggle('pre139910492637520', 'post139910492637520')"><pre>        try:</pre></li></ol>
+              
+            </div>
+          
+
+          
+            <div class="commands">
+                
+                    <a href="#" onclick="return varToggle(this, '139910492637520')"><span>&#x25b6;</span> Local vars</a>
+                
+            </div>
+            <table class="vars" id="v139910492637520">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>field</td>
+                    <td class="code"><pre>&lt;django.forms.fields.CharField object at 0x7f3f6c479b10&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;rapidsms_telerivet.forms.TelerivetForm object at 0x7f3f6c755610&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>name</td>
+                    <td class="code"><pre>&#39;secret&#39;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>value</td>
+                    <td class="code"><pre>u&#39;AUH4PZMMLHN3XPHHHDW6MM3HURZ923XD&#39;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+          
+        </li>
+      
+        <li class="frame user">
+          <code>/usr/local/lib/python2.7/dist-packages/rapidsms_telerivet/forms.py</code> in <code>clean_secret</code>
+
+          
+            <div class="context" id="c139910492637952">
+              
+                <ol start="16" class="pre-context" id="pre139910492637952"><li onclick="toggle('pre139910492637952', 'post139910492637952')"><pre>    time_created = forms.CharField(required=False)</pre></li><li onclick="toggle('pre139910492637952', 'post139910492637952')"><pre>    content = forms.CharField()</pre></li><li onclick="toggle('pre139910492637952', 'post139910492637952')"><pre>    project_id = forms.CharField(required=False)</pre></li><li onclick="toggle('pre139910492637952', 'post139910492637952')"><pre>    secret = forms.CharField(required=False)</pre></li><li onclick="toggle('pre139910492637952', 'post139910492637952')"><pre></pre></li><li onclick="toggle('pre139910492637952', 'post139910492637952')"><pre>    def clean_secret(self):</pre></li><li onclick="toggle('pre139910492637952', 'post139910492637952')"><pre>        secret = self.cleaned_data[&#39;secret&#39;]</pre></li></ol>
+              
+              <ol start="23" class="context-line"><li onclick="toggle('pre139910492637952', 'post139910492637952')"><pre>        if secret != settings.INSTALLED_BACKENDS[self.backend_name][&#39;config&#39;].get(&#39;secret&#39;, None):</pre> <span>...</span></li></ol>
+              
+                <ol start='24' class="post-context" id="post139910492637952"><li onclick="toggle('pre139910492637952', 'post139910492637952')"><pre>            raise forms.ValidationError(&#39;Incorrect secret&#39;)</pre></li><li onclick="toggle('pre139910492637952', 'post139910492637952')"><pre>        return secret</pre></li><li onclick="toggle('pre139910492637952', 'post139910492637952')"><pre></pre></li><li onclick="toggle('pre139910492637952', 'post139910492637952')"><pre>    def clean_phone_id(self):</pre></li><li onclick="toggle('pre139910492637952', 'post139910492637952')"><pre>        # select the correct backend based on the phone_id</pre></li><li onclick="toggle('pre139910492637952', 'post139910492637952')"><pre>        installed_backends = settings.INSTALLED_BACKENDS</pre></li></ol>
+              
+            </div>
+          
+
+          
+            <div class="commands">
+                
+                    <a href="#" onclick="return varToggle(this, '139910492637952')"><span>&#x25b6;</span> Local vars</a>
+                
+            </div>
+            <table class="vars" id="v139910492637952">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>secret</td>
+                    <td class="code"><pre>u&#39;AUH4PZMMLHN3XPHHHDW6MM3HURZ923XD&#39;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;rapidsms_telerivet.forms.TelerivetForm object at 0x7f3f6c755610&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+          
+        </li>
+      
+    </ul>
+  </div>
+  
+  <form action="http://dpaste.com/" name="pasteform" id="pasteform" method="post">
+
+  <div id="pastebinTraceback" class="pastebin">
+    <input type="hidden" name="language" value="PythonConsole">
+    <input type="hidden" name="title" value="KeyError at /sms/telerivet/">
+    <input type="hidden" name="source" value="Django Dpaste Agent">
+    <input type="hidden" name="poster" value="Django">
+    <textarea name="content" id="traceback_area" cols="140" rows="25">
+Environment:
+
+
+Request Method: POST
+Request URL: http://243debac.ngrok.com/sms/telerivet/
+
+Django Version: 1.7.8
+Python Version: 2.7.6
+Installed Applications:
+(&#39;django.contrib.admin&#39;,
+ &#39;django.contrib.auth&#39;,
+ &#39;django.contrib.contenttypes&#39;,
+ &#39;django.contrib.sessions&#39;,
+ &#39;django.contrib.messages&#39;,
+ &#39;django.contrib.staticfiles&#39;,
+ &#39;django_countries&#39;,
+ &#39;rest_framework&#39;,
+ &#39;rest_framework.authtoken&#39;,
+ &#39;phonenumber_field&#39;,
+ &#39;djmoney&#39;,
+ &#39;axes&#39;,
+ &#39;apiv1&#39;,
+ &#39;haedrian&#39;,
+ &#39;rapidsms_telerivet&#39;,
+ &#39;rapidsms&#39;,
+ &#39;sms&#39;,
+ &#39;rapidsms.contrib.messagelog&#39;,
+ &#39;debug_toolbar&#39;,
+ &#39;djcelery&#39;)
+Installed Middleware:
+[u&#39;debug_toolbar.middleware.DebugToolbarMiddleware&#39;,
+ &#39;django.contrib.sessions.middleware.SessionMiddleware&#39;,
+ &#39;django.middleware.common.CommonMiddleware&#39;,
+ &#39;django.middleware.csrf.CsrfViewMiddleware&#39;,
+ &#39;django.contrib.auth.middleware.AuthenticationMiddleware&#39;,
+ &#39;django.contrib.messages.middleware.MessageMiddleware&#39;,
+ &#39;django.middleware.clickjacking.XFrameOptionsMiddleware&#39;,
+ &#39;axes.middleware.FailedLoginMiddleware&#39;,
+ &#39;django.middleware.locale.LocaleMiddleware&#39;]
+
+
+Traceback:
+File "/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py" in get_response
+  111.                     response = wrapped_callback(request, *callback_args, **callback_kwargs)
+File "/usr/local/lib/python2.7/dist-packages/django/views/generic/base.py" in view
+  69.             return self.dispatch(request, *args, **kwargs)
+File "/usr/local/lib/python2.7/dist-packages/django/utils/decorators.py" in _wrapper
+  29.             return bound_func(*args, **kwargs)
+File "/usr/local/lib/python2.7/dist-packages/django/views/decorators/csrf.py" in wrapped_view
+  57.         return view_func(*args, **kwargs)
+File "/usr/local/lib/python2.7/dist-packages/django/utils/decorators.py" in bound_func
+  25.                 return func.__get__(self, type(self))(*args2, **kwargs2)
+File "/usr/local/lib/python2.7/dist-packages/rapidsms/backends/http/views.py" in dispatch
+  31.         return super(BaseHttpBackendView, self).dispatch(*args, **kwargs)
+File "/usr/local/lib/python2.7/dist-packages/django/views/generic/base.py" in dispatch
+  87.         return handler(request, *args, **kwargs)
+File "/usr/local/lib/python2.7/dist-packages/django/views/generic/edit.py" in post
+  172.         if form.is_valid():
+File "/usr/local/lib/python2.7/dist-packages/django/forms/forms.py" in is_valid
+  162.         return self.is_bound and not bool(self.errors)
+File "/usr/local/lib/python2.7/dist-packages/django/forms/forms.py" in errors
+  154.             self.full_clean()
+File "/usr/local/lib/python2.7/dist-packages/django/forms/forms.py" in full_clean
+  353.         self._clean_fields()
+File "/usr/local/lib/python2.7/dist-packages/django/forms/forms.py" in _clean_fields
+  371.                     value = getattr(self, &#39;clean_%s&#39; % name)()
+File "/usr/local/lib/python2.7/dist-packages/rapidsms_telerivet/forms.py" in clean_secret
+  23.         if secret != settings.INSTALLED_BACKENDS[self.backend_name][&#39;config&#39;].get(&#39;secret&#39;, None):
+
+Exception Type: KeyError at /sms/telerivet/
+Exception Value: &#39;config&#39;
+</textarea>
+  <br><br>
+  <input type="submit" value="Share this traceback on a public Web site">
+  </div>
+</form>
+</div>
+
+
+
+<div id="requestinfo">
+  <h2>Request information</h2>
+
+
+  <h3 id="get-info">GET</h3>
+  
+    <p>No GET data</p>
+  
+
+  <h3 id="post-info">POST</h3>
+  
+    <table class="req">
+      <thead>
+        <tr>
+          <th>Variable</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+          <tr>
+            <td>event</td>
+            <td class="code"><pre>u&#39;incoming_message&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>phone[project_id]</td>
+            <td class="code"><pre>u&#39;PJa61703ce18b3a11e&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>from_number_e164</td>
+            <td class="code"><pre>u&#39;+16503089117&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>phone[id]</td>
+            <td class="code"><pre>u&#39;PN50774ea8fb7cf4ca&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>to_number</td>
+            <td class="code"><pre>u&#39;4803591947&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>contact_id</td>
+            <td class="code"><pre>u&#39;CTcdd221576dd433a0&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>phone[send_limit]</td>
+            <td class="code"><pre>u&#39;60&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>from_number</td>
+            <td class="code"><pre>u&#39;6503089117&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>contact[last_message_time]</td>
+            <td class="code"><pre>u&#39;1433978213&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>state[time_updated]</td>
+            <td class="code"><pre>u&#39;0&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>contact[last_message_id]</td>
+            <td class="code"><pre>u&#39;SM93ec2f3e5861a709&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>state[project_id]</td>
+            <td class="code"><pre>u&#39;PJa61703ce18b3a11e&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>phone[phone_number]</td>
+            <td class="code"><pre>u&#39;4803591947&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>phone[name]</td>
+            <td class="code"><pre>u&#39;4803591947&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>content</td>
+            <td class="code"><pre>u&#39;No&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>state[contact_id]</td>
+            <td class="code"><pre>u&#39;CTcdd221576dd433a0&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>contact[id]</td>
+            <td class="code"><pre>u&#39;CTcdd221576dd433a0&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>state[service_id]</td>
+            <td class="code"><pre>u&#39;SV1f9984f7a7a2bfe7&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>phone_id</td>
+            <td class="code"><pre>u&#39;PN50774ea8fb7cf4ca&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>id</td>
+            <td class="code"><pre>u&#39;SM93ec2f3e5861a709&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>contact[send_blocked]</td>
+            <td class="code"><pre>u&#39;0&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>source</td>
+            <td class="code"><pre>u&#39;phone&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>secret</td>
+            <td class="code"><pre>u&#39;AUH4PZMMLHN3XPHHHDW6MM3HURZ923XD&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>phone[phone_type]</td>
+            <td class="code"><pre>u&#39;android&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>contact[time_created]</td>
+            <td class="code"><pre>u&#39;1433959592&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>state[time_created]</td>
+            <td class="code"><pre>u&#39;0&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>project_id</td>
+            <td class="code"><pre>u&#39;PJa61703ce18b3a11e&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>phone[battery]</td>
+            <td class="code"><pre>u&#39;73&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>status</td>
+            <td class="code"><pre>u&#39;processing&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>phone[charging]</td>
+            <td class="code"><pre>u&#39;0&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>direction</td>
+            <td class="code"><pre>u&#39;incoming&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>phone[mccmnc]</td>
+            <td class="code"><pre>u&#39;311480&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>contact[name]</td>
+            <td class="code"><pre>u&#39;6503089117&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>time_sent</td>
+            <td class="code"><pre>u&#39;1433974610&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>phone[time_created]</td>
+            <td class="code"><pre>u&#39;1433958131&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>time_created</td>
+            <td class="code"><pre>u&#39;1433978213&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>service_id</td>
+            <td class="code"><pre>u&#39;SV1f9984f7a7a2bfe7&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>phone[model]</td>
+            <td class="code"><pre>u&#39;SM-G900V&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>phone[app_version]</td>
+            <td class="code"><pre>u&#39;3.9.1&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>phone[send_paused]</td>
+            <td class="code"><pre>u&#39;0&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>phone[manufacturer]</td>
+            <td class="code"><pre>u&#39;samsung&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>phone[android_sdk]</td>
+            <td class="code"><pre>u&#39;21&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>contact[project_id]</td>
+            <td class="code"><pre>u&#39;PJa61703ce18b3a11e&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>phone[last_active_time]</td>
+            <td class="code"><pre>u&#39;1433978213&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>phone[country]</td>
+            <td class="code"><pre>u&#39;US&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>contact[message_count]</td>
+            <td class="code"><pre>u&#39;28&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>context</td>
+            <td class="code"><pre>u&#39;message&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>simulated</td>
+            <td class="code"><pre>u&#39;0&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>contact[phone_number]</td>
+            <td class="code"><pre>u&#39;6503089117&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>starred</td>
+            <td class="code"><pre>u&#39;0&#39;</pre></td>
+          </tr>
+        
+          <tr>
+            <td>message_type</td>
+            <td class="code"><pre>u&#39;sms&#39;</pre></td>
+          </tr>
+        
+      </tbody>
+    </table>
+  
+  <h3 id="files-info">FILES</h3>
+  
+    <p>No FILES data</p>
+  
+
+
+  <h3 id="cookie-info">COOKIES</h3>
+  
+    <p>No cookie data</p>
+  
+
+  <h3 id="meta-info">META</h3>
+  <table class="req">
+    <thead>
+      <tr>
+        <th>Variable</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+        <tr>
+          <td>HTTP_AUTHORIZATION</td>
+          <td class="code"><pre>&#39;Basic dGVsZXJpdmV0OkFVSDRQWk1NTEhOM1hQSEhIRFc2TU0zSFVSWjkyM1hE&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>RUN_MAIN</td>
+          <td class="code"><pre>&#39;true&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HTTP_REFERER</td>
+          <td class="code"><pre>&#39;http://telerivet.com/&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XDG_GREETER_DATA_DIR</td>
+          <td class="code"><pre>&#39;/var/lib/lightdm-data/audakel&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>QT4_IM_MODULE</td>
+          <td class="code"><pre>&#39;xim&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SERVER_SOFTWARE</td>
+          <td class="code"><pre>&#39;WSGIServer/0.1 Python/2.7.6&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>UPSTART_EVENTS</td>
+          <td class="code"><pre>&#39;started starting&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SCRIPT_NAME</td>
+          <td class="code"><pre>u&#39;&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>REQUEST_METHOD</td>
+          <td class="code"><pre>&#39;POST&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SERVER_PROTOCOL</td>
+          <td class="code"><pre>&#39;HTTP/1.1&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HOME</td>
+          <td class="code"><pre>&#39;/home/audakel&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DISPLAY</td>
+          <td class="code"><pre>&#39;:1&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>NODE_DISABLE_COLORS</td>
+          <td class="code"><pre>&#39;1&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CONTENT_LENGTH</td>
+          <td class="code"><pre>&#39;1437&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SHELL</td>
+          <td class="code"><pre>&#39;/bin/bash&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XDG_DATA_DIRS</td>
+          <td class="code"><pre>&#39;/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MANDATORY_PATH</td>
+          <td class="code"><pre>&#39;/usr/share/gconf/ubuntu.mandatory.path&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CLUTTER_IM_MODULE</td>
+          <td class="code"><pre>&#39;xim&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>UPSTART_INSTANCE</td>
+          <td class="code"><pre>&#39;&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>JOB</td>
+          <td class="code"><pre>&#39;gnome-session&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TEXTDOMAIN</td>
+          <td class="code"><pre>&#39;im-config&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SERVER_PORT</td>
+          <td class="code"><pre>&#39;8008&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XMODIFIERS</td>
+          <td class="code"><pre>&#39;@im=ibus&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SELINUX_INIT</td>
+          <td class="code"><pre>&#39;YES&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PATH_INFO</td>
+          <td class="code"><pre>u&#39;/sms/telerivet/&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XDG_RUNTIME_DIR</td>
+          <td class="code"><pre>&#39;/run/user/1000&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.file_wrapper</td>
+          <td class="code"><pre>&#39;&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HTTP_X_FORWARDED_PROTO</td>
+          <td class="code"><pre>&#39;https&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>VTE_VERSION</td>
+          <td class="code"><pre>&#39;3409&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>VISUAL</td>
+          <td class="code"><pre>&#39;emacs -nw&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GREP_OPTIONS</td>
+          <td class="code"><pre>&#39;--color=auto&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HTTP_HOST</td>
+          <td class="code"><pre>&#39;243debac.ngrok.com&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XDG_SESSION_ID</td>
+          <td class="code"><pre>&#39;c5&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DBUS_SESSION_BUS_ADDRESS</td>
+          <td class="code"><pre>&#39;unix:abstract=/tmp/dbus-DrkPMVq1cI&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GNOME_KEYRING_PID</td>
+          <td class="code"><pre>&#39;24742&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HTTP_ACCEPT</td>
+          <td class="code"><pre>&#39;*/*&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DESKTOP_SESSION</td>
+          <td class="code"><pre>&#39;ubuntu&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.version</td>
+          <td class="code"><pre>(1, 0)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULTS_PATH</td>
+          <td class="code"><pre>&#39;/usr/share/gconf/ubuntu.default.path&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.run_once</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.errors</td>
+          <td class="code"><pre>&lt;open file &#39;&lt;stderr&gt;&#39;, mode &#39;w&#39; at 0x7f3f794851e0&gt;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GATEWAY_INTERFACE</td>
+          <td class="code"><pre>&#39;CGI/1.1&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>INSTANCE</td>
+          <td class="code"><pre>&#39;Unity&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SSH_AGENT_LAUNCHER</td>
+          <td class="code"><pre>&#39;upstart&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XDG_SEAT</td>
+          <td class="code"><pre>&#39;seat0&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.multiprocess</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GNOME_DESKTOP_SESSION_ID</td>
+          <td class="code"><pre>&#39;this-is-deprecated&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XDG_CURRENT_DESKTOP</td>
+          <td class="code"><pre>&#39;Unity&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>QUERY_STRING</td>
+          <td class="code"><pre>&#39;&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>QT_IM_MODULE</td>
+          <td class="code"><pre>&#39;ibus&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGNAME</td>
+          <td class="code"><pre>&#39;audakel&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USER</td>
+          <td class="code"><pre>&#39;audakel&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GNOME_KEYRING_CONTROL</td>
+          <td class="code"><pre>&#39;/run/user/1000/keyring-koueHm&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XDG_VTNR</td>
+          <td class="code"><pre>&#39;7&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PATH</td>
+          <td class="code"><pre>&#39;/home/audakel/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>NODE_PATH</td>
+          <td class="code"><pre>&#39;/usr/lib/nodejs:/usr/lib/node_modules:/usr/share/javascript&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.input</td>
+          <td class="code"><pre>&lt;socket._fileobject object at 0x7f3f6c4d80d0&gt;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HTTP_X_REAL_IP</td>
+          <td class="code"><pre>&#39;178.79.191.37&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SSH_AGENT_PID</td>
+          <td class="code"><pre>&#39;24824&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TERM</td>
+          <td class="code"><pre>&#39;xterm&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HTTP_USER_AGENT</td>
+          <td class="code"><pre>&#39;Telerivet/0.1&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XDG_SESSION_PATH</td>
+          <td class="code"><pre>&#39;/org/freedesktop/DisplayManager/Session0&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XAUTHORITY</td>
+          <td class="code"><pre>&#39;/home/audakel/.Xauthority&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE</td>
+          <td class="code"><pre>&#39;en_US&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>REMOTE_ADDR</td>
+          <td class="code"><pre>&#39;127.0.0.1&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SHLVL</td>
+          <td class="code"><pre>&#39;1&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>QT_QPA_PLATFORMTHEME</td>
+          <td class="code"><pre>&#39;appmenu-qt5&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.url_scheme</td>
+          <td class="code"><pre>&#39;http&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>COMPIZ_CONFIG_PROFILE</td>
+          <td class="code"><pre>&#39;ubuntu&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>WINDOWID</td>
+          <td class="code"><pre>&#39;27262988&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EDITOR</td>
+          <td class="code"><pre>&#39;emacs -nw&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSIONTYPE</td>
+          <td class="code"><pre>&#39;gnome-session&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>IM_CONFIG_PHASE</td>
+          <td class="code"><pre>&#39;1&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GREP_COLOR</td>
+          <td class="code"><pre>&#39;1;31&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GPG_AGENT_INFO</td>
+          <td class="code"><pre>&#39;/run/user/1000/keyring-koueHm/gpg:0:1&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CONTENT_TYPE</td>
+          <td class="code"><pre>&#39;application/x-www-form-urlencoded&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SSH_AUTH_SOCK</td>
+          <td class="code"><pre>&#39;/run/user/1000/keyring-koueHm/ssh&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GDMSESSION</td>
+          <td class="code"><pre>&#39;ubuntu&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>UPSTART_JOB</td>
+          <td class="code"><pre>&#39;unity-settings-daemon&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TEXTDOMAINDIR</td>
+          <td class="code"><pre>&#39;/usr/share/locale/&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.multithread</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XDG_SEAT_PATH</td>
+          <td class="code"><pre>&#39;/org/freedesktop/DisplayManager/Seat0&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LC_ALL</td>
+          <td class="code"><pre>&#39;POSIX&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>_</td>
+          <td class="code"><pre>&#39;/usr/bin/python&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HTTP_CONNECTION</td>
+          <td class="code"><pre>&#39;close&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GTK_IM_MODULE</td>
+          <td class="code"><pre>&#39;ibus&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>UPSTART_SESSION</td>
+          <td class="code"><pre>&#39;unix:abstract=/com/ubuntu/upstart-session/1000/24745&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XDG_CONFIG_DIRS</td>
+          <td class="code"><pre>&#39;/etc/xdg/xdg-ubuntu:/usr/share/upstart/xdg:/etc/xdg&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SERVER_NAME</td>
+          <td class="code"><pre>&#39;localhost&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>UBUNTU_MENUPROXY</td>
+          <td class="code"><pre>&#39;1&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE</td>
+          <td class="code"><pre>u&#39;tsEo6odUA8uL3uTge5OLGkGbtTXTjtpO&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GDM_LANG</td>
+          <td class="code"><pre>&#39;en_US&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GTK_MODULES</td>
+          <td class="code"><pre>&#39;overlay-scrollbar:unity-gtk-module&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PWD</td>
+          <td class="code"><pre>&#39;/home/audakel/cs/haedrian/Haedrian_Website&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DJANGO_SETTINGS_MODULE</td>
+          <td class="code"><pre>&#39;Haedrian_Website.settings.development&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>COLORTERM</td>
+          <td class="code"><pre>&#39;gnome-terminal&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TZ</td>
+          <td class="code"><pre>&#39;America/Denver&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>REMOTE_HOST</td>
+          <td class="code"><pre>&#39;&#39;</pre></td>
+        </tr>
+      
+    </tbody>
+  </table>
+
+
+  <h3 id="settings-info">Settings</h3>
+  <h4>Using settings module <code>Haedrian_Website.settings.development</code></h4>
+  <table class="req">
+    <thead>
+      <tr>
+        <th>Setting</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+        <tr>
+          <td>GEM_API_TOKEN</td>
+          <td class="code"><pre>u&#39;********************&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USE_THOUSAND_SEPARATOR</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_SECURE</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_CODE</td>
+          <td class="code"><pre>&#39;en-us&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ROOT_URLCONF</td>
+          <td class="code"><pre>&#39;Haedrian_Website.urls&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MANAGERS</td>
+          <td class="code"><pre>()</pre></td>
+        </tr>
+      
+        <tr>
+          <td>BROKER_URL</td>
+          <td class="code"><pre>&#39;django://&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TEST_NON_SERIALIZED_APPS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_CHARSET</td>
+          <td class="code"><pre>&#39;utf-8&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_SERIALIZER</td>
+          <td class="code"><pre>&#39;django.contrib.sessions.serializers.JSONSerializer&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>STATIC_ROOT</td>
+          <td class="code"><pre>&#39;/home/audakel/cs/haedrian/Haedrian_Website/public/static&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MIFOSX_SERVER_URL</td>
+          <td class="code"><pre>&#39;https://mentors.haedrian.io/mifosng-provider/api/v1/&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SANDBOX_COINS_API_KEY</td>
+          <td class="code"><pre>u&#39;********************&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ALLOWED_HOSTS</td>
+          <td class="code"><pre>(&#39;104.236.160.220&#39;, &#39;localhost&#39;, &#39;haedrian.io&#39;, &#39;127.0.0.1&#39;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MESSAGE_STORAGE</td>
+          <td class="code"><pre>&#39;django.contrib.messages.storage.fallback.FallbackStorage&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_SUBJECT_PREFIX</td>
+          <td class="code"><pre>&#39;[Django] &#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SEND_BROKEN_LINK_EMAILS</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CELERY_RESULT_SERIALIZER</td>
+          <td class="code"><pre>&#39;json&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>STATICFILES_FINDERS</td>
+          <td class="code"><pre>(&#39;django.contrib.staticfiles.finders.FileSystemFinder&#39;,
+ &#39;django.contrib.staticfiles.finders.AppDirectoriesFinder&#39;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_CACHE_ALIAS</td>
+          <td class="code"><pre>&#39;default&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_DOMAIN</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_NAME</td>
+          <td class="code"><pre>&#39;sessionid&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ADMIN_FOR</td>
+          <td class="code"><pre>()</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TIME_INPUT_FORMATS</td>
+          <td class="code"><pre>(&#39;%H:%M:%S&#39;, &#39;%H:%M:%S.%f&#39;, &#39;%H:%M&#39;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATABASES</td>
+          <td class="code"><pre>{&#39;default&#39;: {&#39;ATOMIC_REQUESTS&#39;: False,
+             &#39;AUTOCOMMIT&#39;: True,
+             &#39;CONN_MAX_AGE&#39;: 0,
+             &#39;ENGINE&#39;: &#39;django.db.backends.sqlite3&#39;,
+             &#39;HOST&#39;: &#39;&#39;,
+             &#39;NAME&#39;: &#39;/home/audakel/cs/haedrian/Haedrian_Website/db.sqlite3&#39;,
+             &#39;OPTIONS&#39;: {},
+             &#39;PASSWORD&#39;: u&#39;********************&#39;,
+             &#39;PORT&#39;: &#39;&#39;,
+             &#39;TEST&#39;: {&#39;CHARSET&#39;: None,
+                      &#39;COLLATION&#39;: None,
+                      &#39;MIRROR&#39;: None,
+                      &#39;NAME&#39;: None},
+             &#39;TIME_ZONE&#39;: &#39;UTC&#39;,
+             &#39;USER&#39;: &#39;&#39;}}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FILE_UPLOAD_DIRECTORY_PERMISSIONS</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FILE_UPLOAD_PERMISSIONS</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FILE_UPLOAD_HANDLERS</td>
+          <td class="code"><pre>(&#39;django.core.files.uploadhandler.MemoryFileUploadHandler&#39;,
+ &#39;django.core.files.uploadhandler.TemporaryFileUploadHandler&#39;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_CONTENT_TYPE</td>
+          <td class="code"><pre>&#39;text/html&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>APPEND_SLASH</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FIRST_DAY_OF_WEEK</td>
+          <td class="code"><pre>0</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATABASE_ROUTERS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_USE_SSL</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>YEAR_MONTH_FORMAT</td>
+          <td class="code"><pre>&#39;F Y&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>STATICFILES_STORAGE</td>
+          <td class="code"><pre>&#39;django.contrib.staticfiles.storage.StaticFilesStorage&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CACHES</td>
+          <td class="code"><pre>{&#39;default&#39;: {&#39;BACKEND&#39;: &#39;django.core.cache.backends.locmem.LocMemCache&#39;}}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SERVER_EMAIL</td>
+          <td class="code"><pre>&#39;root@localhost&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>COINS_API_KEY</td>
+          <td class="code"><pre>u&#39;********************&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SILENCED_SYSTEM_CHECKS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MIDDLEWARE_CLASSES</td>
+          <td class="code"><pre>[u&#39;debug_toolbar.middleware.DebugToolbarMiddleware&#39;,
+ &#39;django.contrib.sessions.middleware.SessionMiddleware&#39;,
+ &#39;django.middleware.common.CommonMiddleware&#39;,
+ &#39;django.middleware.csrf.CsrfViewMiddleware&#39;,
+ &#39;django.contrib.auth.middleware.AuthenticationMiddleware&#39;,
+ &#39;django.contrib.messages.middleware.MessageMiddleware&#39;,
+ &#39;django.middleware.clickjacking.XFrameOptionsMiddleware&#39;,
+ &#39;axes.middleware.FailedLoginMiddleware&#39;,
+ &#39;django.middleware.locale.LocaleMiddleware&#39;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USE_I18N</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>THOUSAND_SEPARATOR</td>
+          <td class="code"><pre>&#39;,&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECRET_KEY</td>
+          <td class="code"><pre>u&#39;********************&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_COOKIE_NAME</td>
+          <td class="code"><pre>&#39;django_language&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_INDEX_TABLESPACE</td>
+          <td class="code"><pre>&#39;&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TRANSACTIONS_MANAGED</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGGING_CONFIG</td>
+          <td class="code"><pre>&#39;logging.config.dictConfig&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TEMPLATE_LOADERS</td>
+          <td class="code"><pre>(&#39;django.template.loaders.filesystem.Loader&#39;,
+ &#39;django.template.loaders.app_directories.Loader&#39;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>WSGI_APPLICATION</td>
+          <td class="code"><pre>&#39;Haedrian_Website.wsgi.application&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TEMPLATE_DEBUG</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>X_FRAME_OPTIONS</td>
+          <td class="code"><pre>&#39;SAMEORIGIN&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_NAME</td>
+          <td class="code"><pre>&#39;csrftoken&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FORCE_SCRIPT_NAME</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USE_X_FORWARDED_HOST</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>INSTALLED_BACKENDS</td>
+          <td class="code"><pre>{&#39;telerivet&#39;: {&#39;ENGINE&#39;: &#39;rapidsms_telerivet.outgoing.TelerivetBackend&#39;,
+               &#39;api_key&#39;: &#39;SMLXzvuupVOtIP9SIOU5hdXRlSkRwvaM&#39;,
+               &#39;phone_id&#39;: &#39;+14803591947&#39;,
+               &#39;project_id&#39;: &#39;PJa61703ce18b3a11e&#39;,
+               &#39;secret&#39;: &#39;AUH4PZMMLHN3XPHHHDW6MM3HURZ923XD&#39;}}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SIGNING_BACKEND</td>
+          <td class="code"><pre>&#39;django.core.signing.TimestampSigner&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_SECURE</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>BITCOIN</td>
+          <td class="code"><pre>BTC</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PROJECT_APP_ROOT</td>
+          <td class="code"><pre>&#39;/home/audakel/cs/haedrian/Haedrian_Website/Haedrian_Website&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_DOMAIN</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FILE_CHARSET</td>
+          <td class="code"><pre>&#39;utf-8&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEBUG</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_COOKIE_DOMAIN</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_FILE_STORAGE</td>
+          <td class="code"><pre>&#39;django.core.files.storage.FileSystemStorage&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>INSTALLED_APPS</td>
+          <td class="code"><pre>(&#39;django.contrib.admin&#39;,
+ &#39;django.contrib.auth&#39;,
+ &#39;django.contrib.contenttypes&#39;,
+ &#39;django.contrib.sessions&#39;,
+ &#39;django.contrib.messages&#39;,
+ &#39;django.contrib.staticfiles&#39;,
+ &#39;django_countries&#39;,
+ &#39;rest_framework&#39;,
+ &#39;rest_framework.authtoken&#39;,
+ &#39;phonenumber_field&#39;,
+ &#39;djmoney&#39;,
+ &#39;axes&#39;,
+ &#39;apiv1&#39;,
+ &#39;haedrian&#39;,
+ &#39;rapidsms_telerivet&#39;,
+ &#39;rapidsms&#39;,
+ &#39;sms&#39;,
+ &#39;rapidsms.contrib.messagelog&#39;,
+ &#39;debug_toolbar&#39;,
+ &#39;djcelery&#39;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GOOGLE_PLACES_API_KEY</td>
+          <td class="code"><pre>u&#39;********************&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGES_BIDI</td>
+          <td class="code"><pre>(&#39;he&#39;, &#39;ar&#39;, &#39;fa&#39;, &#39;ur&#39;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USE_L10N</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>COMMENTS_ALLOW_PROFANITIES</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TWILIO_AUTH_TOKEN</td>
+          <td class="code"><pre>u&#39;********************&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>STATICFILES_DIRS</td>
+          <td class="code"><pre>(&#39;/home/audakel/cs/haedrian/Haedrian_Website/static&#39;,
+ &#39;/home/audakel/cs/haedrian/Haedrian_Website/haedrian/static&#39;,
+ &#39;/home/audakel/cs/haedrian/Haedrian_Website/dashboard/static&#39;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PREPEND_WWW</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_PROXY_SSL_HEADER</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_COOKIE_AGE</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_HTTPONLY</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEBUG_PROPAGATE_EXCEPTIONS</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_AGE</td>
+          <td class="code"><pre>31449600</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MONTH_DAY_FORMAT</td>
+          <td class="code"><pre>&#39;F j&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGIN_URL</td>
+          <td class="code"><pre>&#39;/accounts/login/&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_EXPIRE_AT_BROWSER_CLOSE</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>COUNTRIES_FIRST_REPEAT</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TIME_FORMAT</td>
+          <td class="code"><pre>&#39;P&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>AUTH_USER_MODEL</td>
+          <td class="code"><pre>&#39;auth.User&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATE_INPUT_FORMATS</td>
+          <td class="code"><pre>(&#39;%Y-%m-%d&#39;,
+ &#39;%m/%d/%Y&#39;,
+ &#39;%m/%d/%y&#39;,
+ &#39;%b %d %Y&#39;,
+ &#39;%b %d, %Y&#39;,
+ &#39;%d %b %Y&#39;,
+ &#39;%d %b, %Y&#39;,
+ &#39;%B %d %Y&#39;,
+ &#39;%B %d, %Y&#39;,
+ &#39;%d %B %Y&#39;,
+ &#39;%d %B, %Y&#39;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>AUTHENTICATION_BACKENDS</td>
+          <td class="code"><pre>(&#39;django.contrib.auth.backends.ModelBackend&#39;,)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_HOST_PASSWORD</td>
+          <td class="code"><pre>u&#39;********************&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CELERY_DISABLE_RATE_LIMITS</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PASSWORD_RESET_TIMEOUT_DAYS</td>
+          <td class="code"><pre>u&#39;********************&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_FILE_PATH</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CACHE_MIDDLEWARE_ALIAS</td>
+          <td class="code"><pre>&#39;default&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TWILIO_ACCOUNT_SID</td>
+          <td class="code"><pre>&#39;AC4f7dec744e3bcad378e19888b8213af3&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_SAVE_EVERY_REQUEST</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>NUMBER_GROUPING</td>
+          <td class="code"><pre>0</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_ENGINE</td>
+          <td class="code"><pre>&#39;django.contrib.sessions.backends.db&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_FAILURE_VIEW</td>
+          <td class="code"><pre>&#39;django.views.csrf.csrf_failure&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_PATH</td>
+          <td class="code"><pre>&#39;/&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGIN_REDIRECT_URL</td>
+          <td class="code"><pre>&#39;/&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CELERY_TASK_SERIALIZER</td>
+          <td class="code"><pre>&#39;json&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_PATH</td>
+          <td class="code"><pre>&#39;/&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PROJECT_ROOT</td>
+          <td class="code"><pre>&#39;/home/audakel/cs/haedrian/Haedrian_Website&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DECIMAL_SEPARATOR</td>
+          <td class="code"><pre>&#39;.&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>IGNORABLE_404_URLS</td>
+          <td class="code"><pre>()</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOCALE_PATHS</td>
+          <td class="code"><pre>(&#39;/home/audakel/cs/haedrian/Haedrian_Website/locale&#39;,)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TEMPLATE_STRING_IF_INVALID</td>
+          <td class="code"><pre>&#39;&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGOUT_URL</td>
+          <td class="code"><pre>&#39;/accounts/logout/&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>COUNTRIES_FIRST</td>
+          <td class="code"><pre>(&#39;US&#39;,)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_USE_TLS</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FIXTURE_DIRS</td>
+          <td class="code"><pre>()</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_HOST</td>
+          <td class="code"><pre>&#39;localhost&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATE_FORMAT</td>
+          <td class="code"><pre>&#39;N j, Y&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PUBLIC_ROOT</td>
+          <td class="code"><pre>&#39;/home/audakel/cs/haedrian/Haedrian_Website/public&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MEDIA_ROOT</td>
+          <td class="code"><pre>&#39;/home/audakel/cs/haedrian/Haedrian_Website/public/media&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_EXCEPTION_REPORTER_FILTER</td>
+          <td class="code"><pre>&#39;django.views.debug.SafeExceptionReporterFilter&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ADMINS</td>
+          <td class="code"><pre>()</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FORMAT_MODULE_PATH</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_FROM_EMAIL</td>
+          <td class="code"><pre>&#39;webmaster@localhost&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>REST_FRAMEWORK</td>
+          <td class="code"><pre>{&#39;DEFAULT_AUTHENTICATION_CLASSES&#39;: [&#39;rest_framework.authentication.BasicAuthentication&#39;,
+                                    &#39;rest_framework.authentication.SessionAuthentication&#39;,
+                                    &#39;rest_framework.authentication.TokenAuthentication&#39;],
+ &#39;DEFAULT_PERMISSION_CLASSES&#39;: [&#39;rest_framework.permissions.IsAuthenticated&#39;]}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MEDIA_URL</td>
+          <td class="code"><pre>&#39;/media/&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATETIME_FORMAT</td>
+          <td class="code"><pre>&#39;N j, Y, P&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TEMPLATE_DIRS</td>
+          <td class="code"><pre>(&#39;/home/audakel/cs/haedrian/Haedrian_Website/templates&#39;,
+ &#39;/home/audakel/cs/haedrian/Haedrian_Website/haedrian/templates&#39;,
+ &#39;/home/audakel/cs/haedrian/Haedrian_Website/dashboard/templates&#39;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CELERY_ACCEPT_CONTENT</td>
+          <td class="code"><pre>[&#39;json&#39;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SITE_ID</td>
+          <td class="code"><pre>1</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DISALLOWED_USER_AGENTS</td>
+          <td class="code"><pre>()</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ALLOWED_INCLUDE_ROOTS</td>
+          <td class="code"><pre>()</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FEE_AMOUNT</td>
+          <td class="code"><pre>Decimal(&#39;0.01&#39;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SANDBOX_COINS_SECRET</td>
+          <td class="code"><pre>u&#39;********************&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGGING</td>
+          <td class="code"><pre>{&#39;disable_existing_loggers&#39;: False,
+ &#39;filters&#39;: {&#39;require_debug_false&#39;: {&#39;()&#39;: &#39;django.utils.log.RequireDebugFalse&#39;}},
+ &#39;formatters&#39;: {&#39;simple&#39;: {&#39;format&#39;: &#39;%(levelname)s %(message)s&#39;}},
+ &#39;handlers&#39;: {&#39;console&#39;: {&#39;class&#39;: &#39;logging.StreamHandler&#39;,
+                          &#39;formatter&#39;: &#39;simple&#39;,
+                          &#39;level&#39;: &#39;DEBUG&#39;},
+              &#39;error_log&#39;: {&#39;class&#39;: &#39;logging.FileHandler&#39;,
+                            &#39;filename&#39;: &#39;/home/audakel/cs/haedrian/Haedrian_Website/django_error.log&#39;,
+                            &#39;level&#39;: &#39;ERROR&#39;},
+              &#39;mail_admins&#39;: {&#39;class&#39;: &#39;django.utils.log.AdminEmailHandler&#39;,
+                              &#39;filters&#39;: [&#39;require_debug_false&#39;],
+                              &#39;include_html&#39;: True,
+                              &#39;level&#39;: &#39;ERROR&#39;},
+              &#39;null&#39;: {&#39;class&#39;: &#39;django.utils.log.NullHandler&#39;,
+                       &#39;level&#39;: &#39;DEBUG&#39;},
+              &#39;rapidsms_file&#39;: {&#39;class&#39;: &#39;logging.FileHandler&#39;,
+                                &#39;filename&#39;: &#39;/home/audakel/cs/haedrian/Haedrian_Website/rapidsms.log&#39;,
+                                &#39;level&#39;: &#39;DEBUG&#39;}},
+ &#39;loggers&#39;: {&#39;django&#39;: {&#39;handlers&#39;: [&#39;mail_admins&#39;],
+                        &#39;level&#39;: &#39;ERROR&#39;,
+                        &#39;propagate&#39;: False},
+             &#39;django.db.backends&#39;: {&#39;handlers&#39;: [&#39;null&#39;], &#39;level&#39;: &#39;DEBUG&#39;},
+             &#39;py.warnings&#39;: {&#39;handlers&#39;: [&#39;null&#39;],
+                             &#39;level&#39;: &#39;WARNING&#39;,
+                             &#39;propagate&#39;: False},
+             &#39;rapidsms&#39;: {&#39;handlers&#39;: [&#39;rapidsms_file&#39;],
+                          &#39;level&#39;: &#39;DEBUG&#39;,
+                          &#39;propagate&#39;: True}},
+ &#39;version&#39;: 1}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SHORT_DATE_FORMAT</td>
+          <td class="code"><pre>&#39;m/d/Y&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ROUND_HALF_EVEN</td>
+          <td class="code"><pre>&#39;ROUND_HALF_EVEN&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>COINS_SECRET</td>
+          <td class="code"><pre>u&#39;********************&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TEST_RUNNER</td>
+          <td class="code"><pre>&#39;django.test.runner.DiscoverRunner&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CACHE_MIDDLEWARE_KEY_PREFIX</td>
+          <td class="code"><pre>u&#39;********************&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TIME_ZONE</td>
+          <td class="code"><pre>&#39;America/Denver&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FILE_UPLOAD_MAX_MEMORY_SIZE</td>
+          <td class="code"><pre>2621440</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_BACKEND</td>
+          <td class="code"><pre>&#39;django.core.mail.backends.smtp.EmailBackend&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_TABLESPACE</td>
+          <td class="code"><pre>&#39;&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TEMPLATE_CONTEXT_PROCESSORS</td>
+          <td class="code"><pre>(&#39;django.contrib.auth.context_processors.auth&#39;,
+ &#39;django.core.context_processors.debug&#39;,
+ &#39;django.core.context_processors.i18n&#39;,
+ &#39;django.core.context_processors.media&#39;,
+ &#39;django.core.context_processors.request&#39;,
+ &#39;django.core.context_processors.static&#39;,
+ &#39;django.core.context_processors.tz&#39;,
+ &#39;django.contrib.messages.context_processors.messages&#39;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MIGRATION_MODULES</td>
+          <td class="code"><pre>{}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_AGE</td>
+          <td class="code"><pre>2592000</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SETTINGS_MODULE</td>
+          <td class="code"><pre>&#39;Haedrian_Website.settings.development&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USE_ETAGS</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGES</td>
+          <td class="code"><pre>((&#39;af&#39;, &#39;Afrikaans&#39;),
+ (&#39;ar&#39;, &#39;Arabic&#39;),
+ (&#39;ast&#39;, &#39;Asturian&#39;),
+ (&#39;az&#39;, &#39;Azerbaijani&#39;),
+ (&#39;bg&#39;, &#39;Bulgarian&#39;),
+ (&#39;be&#39;, &#39;Belarusian&#39;),
+ (&#39;bn&#39;, &#39;Bengali&#39;),
+ (&#39;br&#39;, &#39;Breton&#39;),
+ (&#39;bs&#39;, &#39;Bosnian&#39;),
+ (&#39;ca&#39;, &#39;Catalan&#39;),
+ (&#39;cs&#39;, &#39;Czech&#39;),
+ (&#39;cy&#39;, &#39;Welsh&#39;),
+ (&#39;da&#39;, &#39;Danish&#39;),
+ (&#39;de&#39;, &#39;German&#39;),
+ (&#39;el&#39;, &#39;Greek&#39;),
+ (&#39;en&#39;, &#39;English&#39;),
+ (&#39;en-au&#39;, &#39;Australian English&#39;),
+ (&#39;en-gb&#39;, &#39;British English&#39;),
+ (&#39;eo&#39;, &#39;Esperanto&#39;),
+ (&#39;es&#39;, &#39;Spanish&#39;),
+ (&#39;es-ar&#39;, &#39;Argentinian Spanish&#39;),
+ (&#39;es-mx&#39;, &#39;Mexican Spanish&#39;),
+ (&#39;es-ni&#39;, &#39;Nicaraguan Spanish&#39;),
+ (&#39;es-ve&#39;, &#39;Venezuelan Spanish&#39;),
+ (&#39;et&#39;, &#39;Estonian&#39;),
+ (&#39;eu&#39;, &#39;Basque&#39;),
+ (&#39;fa&#39;, &#39;Persian&#39;),
+ (&#39;fi&#39;, &#39;Finnish&#39;),
+ (&#39;fr&#39;, &#39;French&#39;),
+ (&#39;fy&#39;, &#39;Frisian&#39;),
+ (&#39;ga&#39;, &#39;Irish&#39;),
+ (&#39;gl&#39;, &#39;Galician&#39;),
+ (&#39;he&#39;, &#39;Hebrew&#39;),
+ (&#39;hi&#39;, &#39;Hindi&#39;),
+ (&#39;hr&#39;, &#39;Croatian&#39;),
+ (&#39;hu&#39;, &#39;Hungarian&#39;),
+ (&#39;ia&#39;, &#39;Interlingua&#39;),
+ (&#39;id&#39;, &#39;Indonesian&#39;),
+ (&#39;io&#39;, &#39;Ido&#39;),
+ (&#39;is&#39;, &#39;Icelandic&#39;),
+ (&#39;it&#39;, &#39;Italian&#39;),
+ (&#39;ja&#39;, &#39;Japanese&#39;),
+ (&#39;ka&#39;, &#39;Georgian&#39;),
+ (&#39;kk&#39;, &#39;Kazakh&#39;),
+ (&#39;km&#39;, &#39;Khmer&#39;),
+ (&#39;kn&#39;, &#39;Kannada&#39;),
+ (&#39;ko&#39;, &#39;Korean&#39;),
+ (&#39;lb&#39;, &#39;Luxembourgish&#39;),
+ (&#39;lt&#39;, &#39;Lithuanian&#39;),
+ (&#39;lv&#39;, &#39;Latvian&#39;),
+ (&#39;mk&#39;, &#39;Macedonian&#39;),
+ (&#39;ml&#39;, &#39;Malayalam&#39;),
+ (&#39;mn&#39;, &#39;Mongolian&#39;),
+ (&#39;mr&#39;, &#39;Marathi&#39;),
+ (&#39;my&#39;, &#39;Burmese&#39;),
+ (&#39;nb&#39;, &#39;Norwegian Bokmal&#39;),
+ (&#39;ne&#39;, &#39;Nepali&#39;),
+ (&#39;nl&#39;, &#39;Dutch&#39;),
+ (&#39;nn&#39;, &#39;Norwegian Nynorsk&#39;),
+ (&#39;os&#39;, &#39;Ossetic&#39;),
+ (&#39;pa&#39;, &#39;Punjabi&#39;),
+ (&#39;pl&#39;, &#39;Polish&#39;),
+ (&#39;pt&#39;, &#39;Portuguese&#39;),
+ (&#39;pt-br&#39;, &#39;Brazilian Portuguese&#39;),
+ (&#39;ro&#39;, &#39;Romanian&#39;),
+ (&#39;ru&#39;, &#39;Russian&#39;),
+ (&#39;sk&#39;, &#39;Slovak&#39;),
+ (&#39;sl&#39;, &#39;Slovenian&#39;),
+ (&#39;sq&#39;, &#39;Albanian&#39;),
+ (&#39;sr&#39;, &#39;Serbian&#39;),
+ (&#39;sr-latn&#39;, &#39;Serbian Latin&#39;),
+ (&#39;sv&#39;, &#39;Swedish&#39;),
+ (&#39;sw&#39;, &#39;Swahili&#39;),
+ (&#39;ta&#39;, &#39;Tamil&#39;),
+ (&#39;te&#39;, &#39;Telugu&#39;),
+ (&#39;th&#39;, &#39;Thai&#39;),
+ (&#39;tr&#39;, &#39;Turkish&#39;),
+ (&#39;tt&#39;, &#39;Tatar&#39;),
+ (&#39;udm&#39;, &#39;Udmurt&#39;),
+ (&#39;uk&#39;, &#39;Ukrainian&#39;),
+ (&#39;ur&#39;, &#39;Urdu&#39;),
+ (&#39;vi&#39;, &#39;Vietnamese&#39;),
+ (&#39;zh-cn&#39;, &#39;Simplified Chinese&#39;),
+ (&#39;zh-hans&#39;, &#39;Simplified Chinese&#39;),
+ (&#39;zh-hant&#39;, &#39;Traditional Chinese&#39;),
+ (&#39;zh-tw&#39;, &#39;Traditional Chinese&#39;))</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FILE_UPLOAD_TEMP_DIR</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>INTERNAL_IPS</td>
+          <td class="code"><pre>(u&#39;::1&#39;, u&#39;127.0.0.1&#39;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>STATIC_URL</td>
+          <td class="code"><pre>&#39;/static/&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_PORT</td>
+          <td class="code"><pre>25</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USE_TZ</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SHORT_DATETIME_FORMAT</td>
+          <td class="code"><pre>&#39;m/d/Y P&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CELERY_RESULT_BACKEND</td>
+          <td class="code"><pre>&#39;djcelery.backends.database:DatabaseBackend&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PASSWORD_HASHERS</td>
+          <td class="code"><pre>u&#39;********************&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ABSOLUTE_URL_OVERRIDES</td>
+          <td class="code"><pre>{}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_COOKIE_PATH</td>
+          <td class="code"><pre>&#39;/&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CACHE_MIDDLEWARE_SECONDS</td>
+          <td class="code"><pre>600</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_HTTPONLY</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATETIME_INPUT_FORMATS</td>
+          <td class="code"><pre>(&#39;%Y-%m-%d %H:%M:%S&#39;,
+ &#39;%Y-%m-%d %H:%M:%S.%f&#39;,
+ &#39;%Y-%m-%d %H:%M&#39;,
+ &#39;%Y-%m-%d&#39;,
+ &#39;%m/%d/%Y %H:%M:%S&#39;,
+ &#39;%m/%d/%Y %H:%M:%S.%f&#39;,
+ &#39;%m/%d/%Y %H:%M&#39;,
+ &#39;%m/%d/%Y&#39;,
+ &#39;%m/%d/%y %H:%M:%S&#39;,
+ &#39;%m/%d/%y %H:%M:%S.%f&#39;,
+ &#39;%m/%d/%y %H:%M&#39;,
+ &#39;%m/%d/%y&#39;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GEM_ADMIN_TOKEN</td>
+          <td class="code"><pre>u&#39;********************&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_HOST_USER</td>
+          <td class="code"><pre>&#39;&#39;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PROFANITIES_LIST</td>
+          <td class="code"><pre>u&#39;********************&#39;</pre></td>
+        </tr>
+      
+    </tbody>
+  </table>
+
+</div>
+
+  <div id="explanation">
+    <p>
+      You're seeing this error because you have <code>DEBUG = True</code> in your
+      Django settings file. Change that to <code>False</code>, and Django will
+      display a standard 500 page.
+    </p>
+  </div>
+
+
+<style type="text/css">
+@media print { #djDebug {display:none;}}
+</style>
+<link rel="stylesheet" href="/static/debug_toolbar/css/toolbar.css" type="text/css" />
+
+<!-- Prevent our copy of jQuery from registering as an AMD module on sites that use RequireJS. -->
+<script>var _djdt_define_backup = window.define; window.define = undefined;</script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script>var djdt = {jQuery: jQuery.noConflict(true)}; window.define = _djdt_define_backup;</script>
+
+<script src="/static/debug_toolbar/js/toolbar.js"></script>
+<div id="djDebug" style="display:none;" dir="ltr"
+     data-store-id="3517b7ab5f9e4098bfe19eeaca4c7129" data-render-panel-url="/__debug__/render_panel/"
+     >
+	<div style="display:none;" id="djDebugToolbar">
+		<ul id="djDebugPanelList">
+			
+			<li><a id="djHideToolBarButton" href="#" title="Hide toolbar">Hide &#187;</a></li>
+			
+			
+				<li class="djDebugPanelButton">
+					<input type="checkbox" data-cookie="djdtVersionsPanel" checked="checked" title="Disable for next and successive requests" />
+					
+						<a href="#" title="Versions" class="VersionsPanel">
+					
+					Versions
+					
+					
+						<br /><small>Django 1.7.8</small>
+					
+					
+					
+						</a>
+					
+				</li>
+			
+				<li class="djDebugPanelButton">
+					<input type="checkbox" data-cookie="djdtTimerPanel" checked="checked" title="Disable for next and successive requests" />
+					
+						<a href="#" title="Time" class="TimerPanel">
+					
+					Time
+					
+					
+						<br /><small>CPU: 244.04ms (244.45ms)</small>
+					
+					
+					
+						</a>
+					
+				</li>
+			
+				<li class="djDebugPanelButton">
+					<input type="checkbox" data-cookie="djdtSettingsPanel" checked="checked" title="Disable for next and successive requests" />
+					
+						<a href="#" title="Settings from &lt;code&gt;Haedrian_Website.settings.development&lt;/code&gt;" class="SettingsPanel">
+					
+					Settings
+					
+					
+						
+					
+					
+					
+						</a>
+					
+				</li>
+			
+				<li class="djDebugPanelButton">
+					<input type="checkbox" data-cookie="djdtHeadersPanel" checked="checked" title="Disable for next and successive requests" />
+					
+						<a href="#" title="Headers" class="HeadersPanel">
+					
+					Headers
+					
+					
+						
+					
+					
+					
+						</a>
+					
+				</li>
+			
+				<li class="djDebugPanelButton">
+					<input type="checkbox" data-cookie="djdtRequestPanel" checked="checked" title="Disable for next and successive requests" />
+					
+						<a href="#" title="Request" class="RequestPanel">
+					
+					Request
+					
+					
+						<br /><small>TelerivetBackendView</small>
+					
+					
+					
+						</a>
+					
+				</li>
+			
+				<li class="djDebugPanelButton">
+					<input type="checkbox" data-cookie="djdtSQLPanel" checked="checked" title="Disable for next and successive requests" />
+					
+						<a href="#" title="SQL queries from 0 connections" class="SQLPanel">
+					
+					SQL
+					
+					
+						<br /><small>0 queries in 0.00ms</small>
+					
+					
+					
+						</a>
+					
+				</li>
+			
+				<li class="djDebugPanelButton">
+					<input type="checkbox" data-cookie="djdtStaticFilesPanel" checked="checked" title="Disable for next and successive requests" />
+					
+						<a href="#" title="Static files (1070 found, 0 used)" class="StaticFilesPanel">
+					
+					Static files
+					
+					
+						<br /><small>0 files used</small>
+					
+					
+					
+						</a>
+					
+				</li>
+			
+				<li class="djDebugPanelButton">
+					<input type="checkbox" data-cookie="djdtTemplatesPanel" checked="checked" title="Disable for next and successive requests" />
+					
+						<a href="#" title="Templates (1 rendered)" class="TemplatesPanel">
+					
+					Templates
+					
+					
+						<br /><small>Technical 500 template</small>
+					
+					
+					
+						</a>
+					
+				</li>
+			
+				<li class="djDebugPanelButton">
+					<input type="checkbox" data-cookie="djdtCachePanel" checked="checked" title="Disable for next and successive requests" />
+					
+						<a href="#" title="Cache calls from 1 backend" class="CachePanel">
+					
+					Cache
+					
+					
+						<br /><small>0 calls in 0.00ms</small>
+					
+					
+					
+						</a>
+					
+				</li>
+			
+				<li class="djDebugPanelButton">
+					<input type="checkbox" data-cookie="djdtSignalsPanel" checked="checked" title="Disable for next and successive requests" />
+					
+						<a href="#" title="Signals" class="SignalsPanel">
+					
+					Signals
+					
+					
+						<br /><small>16 receivers of 12 signals</small>
+					
+					
+					
+						</a>
+					
+				</li>
+			
+				<li class="djDebugPanelButton">
+					<input type="checkbox" data-cookie="djdtLoggingPanel" checked="checked" title="Disable for next and successive requests" />
+					
+						<a href="#" title="Log messages" class="LoggingPanel">
+					
+					Logging
+					
+					
+						<br /><small>0 messages</small>
+					
+					
+					
+						</a>
+					
+				</li>
+			
+				<li class="djDebugPanelButton">
+					<input type="checkbox" data-cookie="djdtRedirectsPanel" title="Enable for next and successive requests" />
+					
+						<div class="djdt-contentless djdt-disabled">
+					
+					Intercept redirects
+					
+					
+						</div>
+					
+				</li>
+			
+		</ul>
+	</div>
+	<div style="display:none;" id="djDebugToolbarHandle">
+		<span title="Show toolbar" id="djShowToolBarButton">&#171;</span>
+	</div>
+	
+		
+			<div id="VersionsPanel" class="djdt-panelContent">
+				<div class="djDebugPanelTitle">
+					<a href="" class="djDebugClose"></a>
+					<h3>Versions</h3>
+				</div>
+				<div class="djDebugPanelContent">
+					
+					<img src="/static/debug_toolbar/img/ajax-loader.gif" alt="loading" class="djdt-loader" />
+					<div class="djdt-scroll"></div>
+					
+				</div>
+			</div>
+		
+	
+		
+			<div id="TimerPanel" class="djdt-panelContent">
+				<div class="djDebugPanelTitle">
+					<a href="" class="djDebugClose"></a>
+					<h3>Time</h3>
+				</div>
+				<div class="djDebugPanelContent">
+					
+					<img src="/static/debug_toolbar/img/ajax-loader.gif" alt="loading" class="djdt-loader" />
+					<div class="djdt-scroll"></div>
+					
+				</div>
+			</div>
+		
+	
+		
+			<div id="SettingsPanel" class="djdt-panelContent">
+				<div class="djDebugPanelTitle">
+					<a href="" class="djDebugClose"></a>
+					<h3>Settings from <code>Haedrian_Website.settings.development</code></h3>
+				</div>
+				<div class="djDebugPanelContent">
+					
+					<img src="/static/debug_toolbar/img/ajax-loader.gif" alt="loading" class="djdt-loader" />
+					<div class="djdt-scroll"></div>
+					
+				</div>
+			</div>
+		
+	
+		
+			<div id="HeadersPanel" class="djdt-panelContent">
+				<div class="djDebugPanelTitle">
+					<a href="" class="djDebugClose"></a>
+					<h3>Headers</h3>
+				</div>
+				<div class="djDebugPanelContent">
+					
+					<img src="/static/debug_toolbar/img/ajax-loader.gif" alt="loading" class="djdt-loader" />
+					<div class="djdt-scroll"></div>
+					
+				</div>
+			</div>
+		
+	
+		
+			<div id="RequestPanel" class="djdt-panelContent">
+				<div class="djDebugPanelTitle">
+					<a href="" class="djDebugClose"></a>
+					<h3>Request</h3>
+				</div>
+				<div class="djDebugPanelContent">
+					
+					<img src="/static/debug_toolbar/img/ajax-loader.gif" alt="loading" class="djdt-loader" />
+					<div class="djdt-scroll"></div>
+					
+				</div>
+			</div>
+		
+	
+		
+			<div id="SQLPanel" class="djdt-panelContent">
+				<div class="djDebugPanelTitle">
+					<a href="" class="djDebugClose"></a>
+					<h3>SQL queries from 0 connections</h3>
+				</div>
+				<div class="djDebugPanelContent">
+					
+					<img src="/static/debug_toolbar/img/ajax-loader.gif" alt="loading" class="djdt-loader" />
+					<div class="djdt-scroll"></div>
+					
+				</div>
+			</div>
+		
+	
+		
+			<div id="StaticFilesPanel" class="djdt-panelContent">
+				<div class="djDebugPanelTitle">
+					<a href="" class="djDebugClose"></a>
+					<h3>Static files (1070 found, 0 used)</h3>
+				</div>
+				<div class="djDebugPanelContent">
+					
+					<img src="/static/debug_toolbar/img/ajax-loader.gif" alt="loading" class="djdt-loader" />
+					<div class="djdt-scroll"></div>
+					
+				</div>
+			</div>
+		
+	
+		
+			<div id="TemplatesPanel" class="djdt-panelContent">
+				<div class="djDebugPanelTitle">
+					<a href="" class="djDebugClose"></a>
+					<h3>Templates (1 rendered)</h3>
+				</div>
+				<div class="djDebugPanelContent">
+					
+					<img src="/static/debug_toolbar/img/ajax-loader.gif" alt="loading" class="djdt-loader" />
+					<div class="djdt-scroll"></div>
+					
+				</div>
+			</div>
+		
+	
+		
+			<div id="CachePanel" class="djdt-panelContent">
+				<div class="djDebugPanelTitle">
+					<a href="" class="djDebugClose"></a>
+					<h3>Cache calls from 1 backend</h3>
+				</div>
+				<div class="djDebugPanelContent">
+					
+					<img src="/static/debug_toolbar/img/ajax-loader.gif" alt="loading" class="djdt-loader" />
+					<div class="djdt-scroll"></div>
+					
+				</div>
+			</div>
+		
+	
+		
+			<div id="SignalsPanel" class="djdt-panelContent">
+				<div class="djDebugPanelTitle">
+					<a href="" class="djDebugClose"></a>
+					<h3>Signals</h3>
+				</div>
+				<div class="djDebugPanelContent">
+					
+					<img src="/static/debug_toolbar/img/ajax-loader.gif" alt="loading" class="djdt-loader" />
+					<div class="djdt-scroll"></div>
+					
+				</div>
+			</div>
+		
+	
+		
+			<div id="LoggingPanel" class="djdt-panelContent">
+				<div class="djDebugPanelTitle">
+					<a href="" class="djDebugClose"></a>
+					<h3>Log messages</h3>
+				</div>
+				<div class="djDebugPanelContent">
+					
+					<img src="/static/debug_toolbar/img/ajax-loader.gif" alt="loading" class="djdt-loader" />
+					<div class="djdt-scroll"></div>
+					
+				</div>
+			</div>
+		
+	
+		
+	
+	<div id="djDebugWindow" class="djdt-panelContent"></div>
+</div>
+</body>
+</html>

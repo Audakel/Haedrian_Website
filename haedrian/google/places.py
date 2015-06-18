@@ -291,9 +291,9 @@ class GooglePlaces(object):
         if language is not None:
             self._request_params['language'] = language
         self._add_required_param_keys()
-        url, places_response = _fetch_remote_json(
-                GooglePlaces.TEXT_SEARCH_API_URL, self._request_params)
+        url, places_response = _fetch_remote_json(GooglePlaces.TEXT_SEARCH_API_URL, self._request_params)
         _validate_response(url, places_response)
+
         return (self, places_response)
 
     def autocomplete(self, input, lat_lng=None, location=None, radius=3200,

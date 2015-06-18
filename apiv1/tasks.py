@@ -11,10 +11,13 @@ def fetch_mfi_client(new_user):
     :param new_user: JSON containing the fields 'pk', 'app', 'id'
     :return: {'success': True|False, 'message': message}
     """
+
     if new_user['app'] == UserData.MENTORS:
         res = mifosx_api("clients/?externalId={}".format(new_user['id']))
         if res['success']:
             userdata = UserData.objects.get(pk=new_user['pk'])
+            if not res['response']['pageItems']:
+                return {"success": False, "message": "Could not find user with id {}".format(new_user['id'])}
             r = res['response']['pageItems'][0]
             userdata.user.first_name = r['firstname']
             userdata.user.last_name = r['lastname']
@@ -34,7 +37,7 @@ def repay_outstanding_loan(json):
     """Queries the external application to see if there is an outstanding loan for this
     user and applies the money from this transaction to that loan
 
-    :param clientId: JSON containing the internal ID to query the user by
+    :param clientId: JSON containing the internal (MIFOSX) ID to query the user by
     :param transactionId: Primary Key to look up the Transaction by
     :return: {'success': True|False, 'message': message}
     """
@@ -58,5 +61,40 @@ def repay_outstanding_loan(json):
         res = mifosx_api('loans/{}/transactions'.format(loan_id), params={'command': 'repayment'}, body=body)
         if res['success']:
             return {'success': True, 'message': 'Paid back loan'}
+    # something went wrong
+    return res
+
+
+@shared_task
+def get_group_members(json):
+    """Queries the external application to see if there is a group associated with
+        the user and if so returns the group and info on the members
+
+    :param clientId: JSON containing the internal (MIFOSX) ID to query the user by
+    :return: {'success': True|False, 'message': message}
+    """
+    id = json['clientId']
+    # user = UserData.objects.get(app_interal_id=id)
+    res = mifosx_api('groups/1', params='associations=activeClientMembers&clientId={}'.format(id))
+    if res['success']:
+        group = []
+        acm = res['response']['activeClientMembers']
+        for person in acm:
+            group.append({
+                "first_name": person['firstname'],
+                "middle_name": person.get('middlename', ''),
+                "last_name": person['lastname'],
+                "phone": person['mobileNo'],
+                "mifos_id": person['id']
+            })
+
+        return {
+            'success': True,
+            'group_id': res['response']['id'],
+            'office': res['response']['officeName'],
+            'group_members': group
+        }
+
+
     # something went wrong
     return res

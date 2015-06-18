@@ -56,3 +56,10 @@ class NewUserForm(ModelForm):
         id = cleaned_data.get('app_external_id')
         if app and not id or id and not app:
             raise ValidationError(_("If a microfinance institution is selected, then you must enter an ID as well"))
+
+        # http://stackoverflow.com/a/21934494/4112231
+        if cleaned_data.get('app_internal_id', "") == "":
+            cleaned_data['app_internal_id'] = None
+
+        if cleaned_data.get('app_external_id', "") == "":
+            cleaned_data['app_external_id'] = None

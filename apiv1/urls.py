@@ -5,7 +5,7 @@ from apiv1 import views
 
 urlpatterns = [
     # url(r'^send-to-handle/', send_to_user_handle),
-    url(r'^send/', views.send_to_address),
+    url(r'^send/', views.send),
     url(r'^pending/', views.get_pending_balance),
     url(r'^balance/', views.get_balance),
     url(r'^wallet-info/', views.get_wallet_info),
@@ -18,13 +18,20 @@ urlpatterns = [
     url(r'^buy/', views.buy),
     url(r'^id/', views.get_id),
     url(r'^exchange-rate/', views.get_exchange_rate),
+    url(r'^group/', views.get_groups),
+    url(r'^group-verify/', views.group_verify),
 
-    # testing
     url(r'^create-wallet/', views.create_wallet),
     url(r'^exchange-fees/', views.get_exchange_fees),
     url(r'^exchange-types/', views.get_exchange_types),
 
     url(r'^external/', include('apiv1.external.urls', namespace='external')),
+
+    # testing
+    url(r'^testing/', views.testing),
+
+
+
 ]
 
 urlpatterns += [

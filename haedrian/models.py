@@ -17,8 +17,8 @@ class UserData(models.Model):
     credit_score = models.IntegerField(max_length=4, default=0)
     country = CountryField(blank_label='(Country)')
     default_currency = models.CharField(max_length=4, default='USD')
-    app_internal_id = models.CharField(max_length=50, blank=True, default='')
-    app_external_id = models.CharField(max_length=50, blank=True, default='')
+    app_internal_id = models.CharField(max_length=50, blank=True, default=None, null=True)
+    app_external_id = models.CharField(max_length=50, blank=True, default=None, null=True)
     MENTORS = 'MENTORS'
     APPLICATIONS = (
         (MENTORS, _('Mentors International'),),
@@ -51,20 +51,22 @@ class Wallet(models.Model):
 
     BITCOIN = 'BTC'
     PHILIPPINE_PESO = 'PHP'
+    US_DOLLAR = 'USD'
     CURRENCY = (
         (BITCOIN, 'Bitcoin'),
         (PHILIPPINE_PESO, 'Philippine Peso'),
+        (US_DOLLAR, 'United States Dollar'),
     )
 
     user = models.ForeignKey(User)
     type = models.CharField(max_length=2, choices=WALLET_TYPE, default=COINS_PH)
-    api_client_id = models.CharField(max_length=60, default="")
-    # token that each wallet provding company uses to id their wallets
+    # provider_wallet_id: token that each wallet provding company uses to id their wallets
     provider_wallet_id = models.CharField(max_length=60, default="")
     access_token = models.CharField(max_length=60, default="")
     refresh_token = models.CharField(max_length=60, default="")
     expires_at = models.CharField(max_length=60, default="")
     currency = models.CharField(max_length=6, choices=CURRENCY, default=BITCOIN)
+    blockchain_address = models.CharField(max_length=80, default="")
 
 class Transaction(models.Model):
     sender = models.ForeignKey(User, related_name="sent")

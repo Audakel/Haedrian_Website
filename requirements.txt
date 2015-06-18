@@ -35,3 +35,4 @@ django-extensions
 # https://github.com/slimkrazy/python-google-places/zipball/master
 django-celery
 PyMySQL
+git+https://github.com/Audakel/rapidsms-telerivet.git

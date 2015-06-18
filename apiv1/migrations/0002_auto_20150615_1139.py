@@ -11,11 +11,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='externaluser',
-            name='user',
-        ),
-        migrations.DeleteModel(
-            name='ExternalUser',
+        migrations.RenameField(
+            model_name='verifyperson',
+            old_name='group_id',
+            new_name='group',
         ),
     ]

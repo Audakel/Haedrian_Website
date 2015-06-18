@@ -1,6 +1,6 @@
 import copy
 import importlib
-
+import random
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -13,10 +13,14 @@ from rest_framework.authtoken.models import Token
 from apiv1.serializers import SendSerializer
 from haedrian.forms import NewUserForm, EmailUserForm
 from haedrian.models import UserData, Transaction, Wallet
+from models import VerifyGroup, VerifyPerson
 from haedrian.views import _create_account
 from haedrian.wallets.coins_ph import CoinsPhWallet
 import requests
-from tasks import repay_outstanding_loan
+from tasks import repay_outstanding_loan, get_group_members
+from rapidsms.router import send, lookup_connections
+
+
 __author__ = 'audakel'
 
 
@@ -36,8 +40,8 @@ def _new_user(kwargs):
         "password2": kwargs['password1'],
         "phone": kwargs['phone'],
         "country": kwargs['country'],
-        "application": kwargs.get("application", ""),
-        "app_external_id": kwargs.get("app_external_id", "")
+        "application": kwargs.get("application", None),
+        "app_external_id": kwargs.get("app_external_id", None)
     }
     account = _create_account(new_data)
     if account['success']:
@@ -99,8 +103,8 @@ def _send_to_user_handle(user, **kwargs):
     pass
     # wallet = get_temp_wallet(user)
     # try:
-    #     data = wallet.send_to_user(data["receiving_user"], data["amount_btc"], data["target_address"])
-    #     return data
+    # data = wallet.send_to_user(data["receiving_user"], data["amount_btc"], data["target_address"])
+    # return data
     # except:
     #     return False
 
@@ -122,7 +126,9 @@ def _send(user, kwargs):
         except ObjectDoesNotExist as e:
             return {"success": False, "error": e.message}
 
-        currency = UserData.objects.get(user_id=sender.id).default_currency
+        # TODO:: fix to look at user preference
+        # currency = UserData.objects.get(user_id=sender.id).default_currency
+        currency = kwargs['currency']
         amount_btc = Money(amount=send_data.data['amount_local'], currency=currency).to('BTC')
         amount_fee = amount_btc * settings.FEE_AMOUNT
         total_sent = amount_btc - amount_fee
@@ -130,29 +136,41 @@ def _send(user, kwargs):
         fee_local = Money(amount=amount_fee.amount, currency='BTC').to(currency)
 
         # TODO:: put logic in to find bitcoin address and redo local currency !!!
-        data = wallet.send(receiver, send_data.data['amount_local'], send_data.data['target_address'])
+
+        # target_address = Wallet.objects.get(id=receiver)
+        target_address = '1NaE38hefkbq3WdKZSZzEuVtAP8HPJyQnu'
+
+        data = wallet.send(receiver=receiver,
+                           currency=currency,
+                           amount_btc=total_sent.amount,
+                           amount_local=total_sent_local.amount,
+                           target_address=target_address)
+
         if data['success']:
-            transaction = Transaction(sender=sender, receiver=receiver,
-                                      amount_btc=total_sent.amount, amount_btc_currency='BTC',
-                                      amount_local=total_sent_local.amount, amount_local_currency=total_sent_local.currency)
+            transaction = Transaction(sender=sender,
+                                      receiver=receiver,
+                                      amount_btc=total_sent.amount,
+                                      amount_btc_currency='BTC',
+                                      amount_local=total_sent_local.amount,
+                                      amount_local_currency=total_sent_local.currency)
             try:
                 transaction.save()
             except DatabaseError as e:
                 return {"success": False, "error": e.message}
 
-            # ret_val = wallet.send(haedrian_account, round(amount_fee.amount, 8), send_data.data['target_address'])
+            # ret_val = wallet.lsend(haedrian_account, round(amount_fee.amount, 8), send_data.data['target_address'])
             # if ret_val['success']:
-            #     fee = Transaction(sender=sender, receiver=haedrian_account,
-            #                       amount_btc=amount_fee.amount, amount_btc_currency='BTC',
+            # fee = Transaction(sender=sender, receiver=haedrian_account,
+            # amount_btc=amount_fee.amount, amount_btc_currency='BTC',
             #                       amount_local=fee_local.amount, amount_local_currency=fee_local.currency)
             #     try:
             #         fee.save()
             #     except DatabaseError as e:
             #         return {"success": False, "error": e.message}
-        repay_outstanding_loan({
-            'clientId': sender.userdata.app_internal_id,
-            'transactionId': transaction.id
-        })
+            repay_outstanding_loan({
+                'clientId': sender.userdata.app_internal_id,
+                'transactionId': transaction.id
+            })
         return data
     return send_data.errors
 
@@ -233,6 +251,7 @@ def _get_history(user, kwargs):
                 'fee_amount': transaction['fee_amount'],
                 'entry_type': transaction['entry_type'],
                 'date': transaction['date'],
+                'id': transaction['id'],
                 'amount': transaction['amount'],
                 'original_target': transaction['original_target'],
                 'original_sender': transaction['original_sender'],
@@ -252,8 +271,8 @@ def _buy(user, kwargs):
     try:
         data = wallet.buy(kwargs)
         return data
-    except:
-        return False
+    except Exception as e:
+        return {'success': False, 'error': e.message}
 
 
 def _verify_buy(user, kwargs):
@@ -295,7 +314,8 @@ def _get_exchange_rate(user, kwargs):
 
 
 def get_temp_wallet(user):
-    wallets = Wallet.objects.filter(user=user)
+    wallets = Wallet.objects.filter(user=user, currency="BTC")
+    # TODO:: turn on PHP wallets instead of BTC
     wallet = wallets[0]
     wallet_class = Wallet.WALLET_CLASS[wallet.type]
     p, m = wallet_class.rsplit('.', 1)
@@ -321,3 +341,81 @@ def create_account(request):
         'user_form': user_form,
         'data_form': data_form,
     })
+
+
+def _get_groups(user, kwargs):
+    #  TODO :: fix hard coded user when we have more real users
+    try:
+        return get_group_members({'clientId': UserData.objects.filter(user=4)[0].app_internal_id})
+    except Exception as e:
+        return {'success': False, 'error': e.message}
+
+
+def _group_verify(user, kwargs):
+    '''
+{
+    "group_id": "4f4er5ed21g5",
+    "group_members": [
+        {
+            "amount": 10,
+            "id": "W41ELXWPWM4GWU44",
+            "phone": "+18016905609",
+            "first_name": "Olgeth"
+        },
+        {
+            "amount": 17,
+            "id": "5VII5NK4WPYHA8RT",
+            "phone": "+14803591947",
+            "first_name": "Randoy"
+        }
+    ]
+}
+'''
+    from dummy_data import a_nice_message
+
+    backend = 'telerivet'
+    def nice_message():
+        return a_nice_message[random.randint(0, 6)]
+
+    def message(member, group_leader, amount, mfi):
+        return 'Hi {}, looks like {} is preparing to send ${} to {} for you. ' \
+               'If there has been an error please talk to your representitive at {}. Remember - {}'.format(
+            member, group_leader, amount, mfi, mfi, nice_message())
+
+    if VerifyGroup.objects.filter(group_id=kwargs['group_id']).exists():
+        VerifyGroup.objects.get(group_id=kwargs['group_id']).delete()
+
+    try:
+        group = VerifyGroup(group_id=kwargs['group_id'], size=len(kwargs['group_members']))
+        group.save()
+    except Exception as e:
+        return {'success': False, 'error': "Try again - Couldn't save to group database: {}".format(e.message)}
+
+    for member in kwargs['group_members']:
+        person = VerifyPerson(group_id=group.id,
+                              personal_id=member['id'],
+                              phone=member['phone'],
+                              amount=member['amount'])
+        try:
+            person.save()
+        except Exception as e:
+            VerifyGroup.objects.get(group_id=kwargs['group_id']).delete()
+            return {'success': False, 'error': "Couldn't save to member database: {}".format(e.message)}
+
+    try:
+        for member in kwargs['group_members']:
+            connection = lookup_connections(backend=backend, identities=[member['phone']])
+            send(message(member['first_name'], user.first_name, member['amount'], 'Mentors International'), connection)
+    except Exception as e:
+        VerifyGroup.objects.get(group_id=kwargs['group_id']).delete()
+        return {'error': 'Messages not sent, retry. Details: {}'.format(e.message), 'success': False}
+
+    return {
+        'success': True,
+        'group_repayment_id': group.id
+    }
+
+
+def _testing(user, data):
+    pass
+

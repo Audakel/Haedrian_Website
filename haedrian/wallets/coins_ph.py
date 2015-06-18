@@ -9,6 +9,7 @@ from django.conf import settings
 
 from haedrian.models import Wallet
 from wallet import BaseWallet
+from apiv1.models import VerifyGroup, VerifyPerson
 
 """
 # send
@@ -67,28 +68,64 @@ class CoinsPhWallet(BaseWallet):
         return "{}'s CoinsPhWallet".format(self.user)
 
     def verify_buy(self, data):
-        url = 'https://sandbox.coins.ph/api/v2/buyorder/34069e71ce1246fea6a53c4e051e73b5'
-
+        url = 'https://sandbox.coins.ph/api/v2/buyorder/' + data['order_id']
         data = make_oauth_request(url, self.user, put=True)
-        return data
+        if data['success']:
+            group = VerifyGroup.objects.filter(buy_order_id=data['order_id'])[0]
+            if group:
+                group.buy_confirmed = True
+            return data
 
 
-    def buy(self, data):
-
+    def buy(self, kwargs):
+        
         url = 'https://sandbox.coins.ph/api/v2/buyorder'
         # input_data = CoinsphBuySerializer(data=data)
         # if input_data.is_valid():
         #     data = make_oauth_request(url, self.user, input_data.validated_data)
         #     return data
 
+        group_repayment_flag = False
+        if kwargs.get('group_repayment_id', "") != "":
+            group_repayment_flag = True
+
+
         _data = {
-            "currency": data["currency"],
-            "currency_amount": data["currency_amount"],
-            "payment_method": data["payment_method"],
+            "currency": kwargs["currency"],
+            "currency_amount": kwargs["amount_local"],
+            "payment_method": kwargs["payment_method"],
             "target_account_id": Wallet.objects.filter(user_id=self.user)[0].provider_wallet_id
         }
+
         data = make_oauth_request(url, self.user, json.dumps(_data, separators=(',', ':'), skipkeys=True))
-        return data
+        if data['success']:
+            data = data['order']
+            order = {
+                "status": data['status'],
+                "marked_paid_time": data['marked_paid_time'],
+                "rate": data['rate'],
+                "payment_outlet_name": data['payment_outlet_name'],
+                "payment_method": data['payment_method'],
+                "payment_outlet_title": data['payment_outlet_title'],
+                "created_at": data['created_at'],
+                "canceled_time": data['canceled_time'],
+                "btc_released": data['btc_released'],
+                "region": data['region'],
+                "expiration_time": data['expiration_time'],
+                "instructions": data['instructions'],
+                "wallet_address": data['wallet_address'],
+                "id": data['id'],
+                "btc_amount": data['btc_amount'],
+                "currency_amount": data['currency_amount']
+            }
+            if group_repayment_flag:
+                g = VerifyGroup.objects.filter(id=kwargs['group_repayment_id'])[0]
+                g.buy_order_id = data['id']
+                g.save()
+
+            return {'success': True, 'order': order}
+
+        return {'error': data.get('errors', data['error'])}
 
 
     def __init__(self, user):
@@ -142,6 +179,7 @@ class CoinsPhWallet(BaseWallet):
                     'fee_amount': transaction['fee_amount'],
                     'entry_type': transaction['entry_type'],
                     'date': transaction['created_at'],
+                    'id': transaction['id'],
                     'amount': transaction['amount'],
                     'original_target': transaction['metadata']['original_target_address'],
                     'original_sender': transaction['metadata']['original_sender_address'],
@@ -195,35 +233,36 @@ class CoinsPhWallet(BaseWallet):
     #
     #     return data
 
-    def send(self, receiver, amount_local, target_address):
+    def send(self, receiver, currency, amount_btc, amount_local, target_address):
         url = 'https://sandbox.coins.ph/api/v3/crypto-payments/'
         user_wallet = Wallet.objects.filter(user_id=self.user)[0]
-        sender_account = user_wallet.provider_wallet_id
-        address = target_address
 
         body = {
             # 'amount': amount_local,
-            'amount': float(amount_local),
-            'account': sender_account,
-            'target_address': address
+            'amount': round(amount_btc, 8),
+            'account': user_wallet.provider_wallet_id,
+            'target_address': target_address
         }
 
         _data = make_oauth_request(url, self.user, json.dumps(body))
-        if _data["crypto-payment"]['status'] == 'pending':
-            _data = _data["crypto-payment"]
-            data = {
-                "status": _data['status'],
-                "fee": _data['fee_amount'],
-                "target": _data['target_address'],
-                "amount": _data['amount'],
-                "currency": currency[0],
-                "success": True
-            }
-            return data
+
+        if _data['success']:
+            if _data["crypto-payment"]['status'] == 'pending':
+                _data = _data["crypto-payment"]
+                data = {
+                    "status": _data['status'],
+                    "fee": _data['fee_amount'],
+                    "target": _data['target_address'],
+                    "amount": _data['amount'],
+                    "currency": user_wallet.currency,
+                    "id": _data['id'],
+                    "success": True
+                }
+                return data
         else:
             return {
                 'success': False,
-                'error': _data['errors']
+                'error': _data.get('error', _data.get('errors', 'Error message 398'))
             }
 
     def get_balance(self, **kwargs):
@@ -252,7 +291,6 @@ class CoinsPhWallet(BaseWallet):
         return data
 
     def get_exchanges(self, kwargs):
-
         # Get locations
         locations = self.get_exchange_types()
         if not locations:
@@ -309,7 +347,7 @@ class CoinsPhWallet(BaseWallet):
         _data = make_oauth_request(url, self.user)
         # Bank, gCash, online banking, pre paid load - just for PH
         exclude_foreign = ['atm_transfer_deposit', 'online_bank_transfer_deposit', 'over_the_counter_deposit',
-                           'cash_deposit_machine_deposit', 'online_bank_transfer_deposit']
+                           'cash_deposit_machine_deposit', 'online_bank_transfer_deposit', 'prepaid_card_deposit']
         if _data['success']:
             _data = _data['payin-outlet-categories']
 
@@ -344,9 +382,9 @@ class CoinsPhWallet(BaseWallet):
             'password': data['password1'],
             'api_key': settings.COINS_API_KEY
         }
-
         # TODO check for duplicte emails - roll back
         _data = make_hmac_request(url, body)
+
         if _data['success']:
             access_token = _data['user']['access_token']
             refresh_token = _data['user']['refresh_token']
@@ -355,8 +393,23 @@ class CoinsPhWallet(BaseWallet):
             wallet.access_token = access_token
             wallet.refresh_token = refresh_token
             wallet.expires_at = expires_at
+            wallet.currency = "BTC"
             try:
                 wallet.save()
+            except Exception as e:
+                return {
+                    'error': e.message,
+                    'success': False
+                }
+
+            # Make PHP wallet
+            wallet2 = Wallet(user_id=user.id)
+            wallet2.currency = "PHP"
+            wallet2.access_token = access_token
+            wallet2.refresh_token = refresh_token
+            wallet2.expires_at = expires_at
+            try:
+                wallet2.save()
             except Exception as e:
                 return {
                     'error': e.message,
@@ -366,8 +419,11 @@ class CoinsPhWallet(BaseWallet):
             additional_params = get_extra_wallet_info(user)
             wallet.blockchain_address = additional_params['blockchain_address']
             wallet.provider_wallet_id = additional_params['provider_wallet_id']
+            wallet2.blockchain_address = additional_params['blockchain_address2']
+            wallet2.provider_wallet_id = additional_params['provider_wallet_id2']
             try:
                 wallet.save()
+                wallet2.save()
             except Exception as e:
                 return {
                     'error': e.message,
@@ -393,16 +449,20 @@ API_SECRET = settings.COINS_SECRET  # Replace this with your API secret
 
 # TODO:: fix this internal rewrite
 def get_extra_wallet_info(user):
+
     url = 'https://sandbox.coins.ph/api/v3/crypto-accounts/'
-    _data = make_oauth_request(url, user)['crypto-accounts'][0]
+    _data = make_oauth_request(url, user)['crypto-accounts']
     data = {
-        'blockchain_address': _data['default_address'],
-        'provider_wallet_id': _data['id']
+        'blockchain_address': _data[0]['default_address'],
+        'provider_wallet_id': _data[0]['id'],
+        'blockchain_address2': _data[2]['default_address'],
+        'provider_wallet_id2': _data[2]['id']
     }
     return data
 
 
 def make_oauth_request(url, user, body={}, put=False, headers="", content_type=True):
+
     user_token = get_user_token(user)
     if user_token['success']:
         TOKEN = user_token['token']
@@ -436,14 +496,16 @@ def make_oauth_request(url, user, body={}, put=False, headers="", content_type=T
             return {"success": False, "error": e.message}
 
     result = response.json()
-
-    if response.ok and response.status_code == 200:
+    if response.ok and (response.status_code == 200 or response.status_code == 201):
         result['success'] = True
         return result
     else:
         error_result = {}
         error_result['success'] = False
-        error_result['error'] = result.get('errors', response.reason)
+        try:
+            error_result['error'] = result['errors']['non_field_errors']
+        except:
+           error_result['error'] = result.get('errors', response.reason)
 
         return error_result
 
@@ -451,26 +513,25 @@ def make_oauth_request(url, user, body={}, put=False, headers="", content_type=T
 
 def make_hmac_request(url, body=''):
     """Make a HMAC request to coins"""
-    nonce = str(int(time.time() * 1e6))
+    nonce = int(time.time() * 1e6)
 
-    if body:
+    if body is None:
+        # For GET requests
+        message = str(nonce) + url
+    else:
+        # For POST requests
         body = json.dumps(body, separators=(',', ':'))
-    message = nonce + url + body
-
-    # Generate an hmac using the message
-    signature = hmac.new(
-        settings.COINS_SECRET,
-        message,
-        hashlib.sha256
-    ).hexdigest()
+        message = str(nonce) + url + body
+    signature = hmac.new(str(settings.COINS_SECRET), message, hashlib.sha256).hexdigest()
 
     headers = {
-        'ACCESS_SIGNATURE': signature,
+        'ACCESS_SIGNATURE': str(signature),
         'ACCESS_KEY': settings.COINS_API_KEY,
         'ACCESS_NONCE': nonce,
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     }
+
 
     if body:
         try:

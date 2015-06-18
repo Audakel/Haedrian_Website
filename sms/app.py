@@ -13,14 +13,24 @@ from haedrian.models import UserData
 from models import Message
 from sms_verify import verify_sender, str_usage_commands
 from strings import str_deposit_locations
+import phonenumbers
 
 
 class SMSApplication(AppBase):
     def handle(self, msg):
         # sms sender is in our DB
-        country_name = geocoder.country_name_for_number(msg.connections[0].identity, 'en')
+        return True
+
         try:
-            country = pycountry.countries.get(common_name=country_name)
+            # TODO:: why are the numbers not in i17n form?
+            # TODO:: right now just default to all US numbers
+            country_name = geocoder.country_name_for_number(phonenumbers.parse(
+                msg.connections[0].identity), 'en')
+        except Exception as e:
+            e.message
+
+        try:
+            country = pycountry.countries.get(name=country_name)
             translation.activate(country.alpha2)
         except KeyError as e:
             # Translation for this language not found
@@ -83,7 +93,6 @@ def sms_send(msg, parts):
 
     msg.respond(_("Sent %d to %s successfully!") % (amount, receiver_name))
     user = UserData.objects.get(phone=msg.connections[0].identity)
-    # import pdb;pdb.set_trace()
 
     user.sms_balance = F('sms_balance') - amount
     user.save()

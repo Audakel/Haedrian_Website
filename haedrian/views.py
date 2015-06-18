@@ -32,6 +32,7 @@ def _create_account(user_data):
 
     :returns True if the account creation was successful
     """
+
     data_form = NewUserForm(user_data)
     user_form = EmailUserForm(user_data)
     if user_form.is_valid() and data_form.is_valid():

@@ -2,12 +2,32 @@
 
 {% load static %}
 
+<head>
+    <link href="../static/css/style.css" rel="stylesheet">
+</head>
+
 {% block content %}
-    <!-- banner start -->
-      <div class="banner-image"  style="background-image: url('{% static "images/banner.png" %}');
-              background-size: cover;
-              width: 100%; height:100%">
-      </div>
+    {#    <!-- banner start -->#}
+    {#    <div class="banner-image"  style="background-image: url('{% static "images/banner.png" %}');#}
+    {#            background-size: cover;#}
+    {#            position: fixed;#}
+    {#            width: 100%; height:100%#}
+    {#            ">#}
+    {#    </div>#}
+    <div id="myCarousel" class="slide carousel" data-ride="carousel" style="margin-bottom: -40px">
+        <div class="banner-image" style="background-image: url('{% static "images/banner.png" %}');
+                background-size: cover;
+                position: relative;
+                width: 100%; height:100%;
+                z-index: -1;">
+            <!-- Indicators -->
+        </div>
+    </div><!-- /.carousel -->
 
-
+    <footer>
+        <div style="text-align: center; text-decoration: underline; margin-bottom: -50px">
+            <a style="color: #ffffff;" href="{% url "haedrian:tos" %}">Terms of Service</a>
+            <a style="color: #ffffff; margin-left: 5px" href="{% url "haedrian:privacy-policy" %}">Privacy Policy</a>
+        </div>
+    </footer>
 {% endblock content %}

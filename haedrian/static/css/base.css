@@ -1,0 +1,11 @@
+@media (min-width: 768px) {
+    #container-customized {
+        width: 100%;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+}
+
+#navbar-customized {
+    margin-bottom: 0px;
+}

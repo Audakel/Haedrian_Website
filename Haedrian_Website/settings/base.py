@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
-
+from datetime import timedelta
+from celery.schedules import crontab
 gettext_noop = lambda s: s
 
 PROJECT_APP_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
@@ -92,6 +93,7 @@ INSTALLED_APPS = (
     'sms',
     'rapidsms.contrib.messagelog',
     # 'django_google_places',
+    'kombu.transport.django',
 )
 
 INSTALLED_BACKENDS = {
@@ -202,6 +204,12 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
+CELERYBEAT_SCHEDULE = {
+    'check-verify-send-que': {
+        'task': 'apiv1.tasks.verify_send_que',
+        'schedule': timedelta(seconds=30), # crontab(hour=7, minute=30, day_of_week=1),
+    },
+}
 
 # countries conf
 COUNTRIES_FIRST = (

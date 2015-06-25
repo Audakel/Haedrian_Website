@@ -36,3 +36,4 @@ django-extensions
 django-celery
 PyMySQL
 git+https://github.com/Audakel/rapidsms-telerivet.git
+django-kombu

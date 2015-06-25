@@ -1,24 +1,25 @@
 import copy
-import importlib
 import random
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.db import DatabaseError
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from money import Money
 from rest_framework.authtoken.models import Token
+import requests
+from rapidsms.router import send, lookup_connections
+
+from apiv1.internal.views_tasks import _get_history, get_temp_wallet, repay_outstanding_loan
 
 from apiv1.serializers import SendSerializer
 from haedrian.forms import NewUserForm, EmailUserForm
-from haedrian.models import UserData, Transaction, Wallet
-from models import VerifyGroup, VerifyPerson
+from haedrian.models import UserData
+from apiv1.models import VerifyGroup, VerifyPerson, TransactionQueItem
 from haedrian.views import _create_account
 from haedrian.wallets.coins_ph import CoinsPhWallet
-import requests
-from tasks import repay_outstanding_loan, get_group_members
-from rapidsms.router import send, lookup_connections
+from apiv1.tasks import get_group_members
 
 
 __author__ = 'audakel'
@@ -117,18 +118,22 @@ def _send(user, kwargs):
     haedrian_account = UserModel.objects.get(username='haedrian')
 
     send_data = SendSerializer(data=kwargs)
+
     if send_data.is_valid():
         sender = user
         # TODO figure out whether this is a handle, phone number or email.
         # receiver = UserModel.objects.get(username=send_data.data['receiver'])
-        try:
-            receiver = UserModel.objects.get(username='mentors_international')
-        except ObjectDoesNotExist as e:
-            return {"success": False, "error": e.message}
+        if send_data.data['send_method'] == 'username':
+            try:
+                receiver = UserModel.objects.get(username=send_data.data['send_to'])
+            except ObjectDoesNotExist as e:
+                return {"success": False, "error": e.message}
+        else:
+            return {"success": False, "error": 'Please choose a user to send to'}
 
         # TODO:: fix to look at user preference
         # currency = UserData.objects.get(user_id=sender.id).default_currency
-        currency = kwargs['currency']
+        currency = send_data.data['currency']
         amount_btc = Money(amount=send_data.data['amount_local'], currency=currency).to('BTC')
         amount_fee = amount_btc * settings.FEE_AMOUNT
         total_sent = amount_btc - amount_fee
@@ -136,7 +141,6 @@ def _send(user, kwargs):
         fee_local = Money(amount=amount_fee.amount, currency='BTC').to(currency)
 
         # TODO:: put logic in to find bitcoin address and redo local currency !!!
-
         # target_address = Wallet.objects.get(id=receiver)
         target_address = '1NaE38hefkbq3WdKZSZzEuVtAP8HPJyQnu'
 
@@ -147,32 +151,36 @@ def _send(user, kwargs):
                            target_address=target_address)
 
         if data['success']:
-            transaction = Transaction(sender=sender,
-                                      receiver=receiver,
-                                      amount_btc=total_sent.amount,
-                                      amount_btc_currency='BTC',
-                                      amount_local=total_sent_local.amount,
-                                      amount_local_currency=total_sent_local.currency)
-            try:
-                transaction.save()
-            except DatabaseError as e:
-                return {"success": False, "error": e.message}
+            q = add_to_que(user, data['id'], kwargs.get('payment_id', None))
+            if q['success']:
+                return data
+            else:
+                return q
+        else:
+            return data
+    return {'success': False, 'error': send_data.errors}
 
-            # ret_val = wallet.lsend(haedrian_account, round(amount_fee.amount, 8), send_data.data['target_address'])
-            # if ret_val['success']:
-            # fee = Transaction(sender=sender, receiver=haedrian_account,
-            # amount_btc=amount_fee.amount, amount_btc_currency='BTC',
-            #                       amount_local=fee_local.amount, amount_local_currency=fee_local.currency)
-            #     try:
-            #         fee.save()
-            #     except DatabaseError as e:
-            #         return {"success": False, "error": e.message}
-            repay_outstanding_loan({
-                'clientId': sender.userdata.app_internal_id,
-                'transactionId': transaction.id
-            })
-        return data
-    return send_data.errors
+
+def add_to_que(user, send_id, group_id=None):
+    data = _get_history(user, {'id': send_id})
+    if data['success']:
+        if group_id:
+            que = TransactionQueItem(user=user, sent_payment_id=send_id,
+                                     group=VerifyGroup.objects.get(id=group_id))
+        else:
+            que = TransactionQueItem(user=user, sent_payment_id=send_id)
+
+        try:
+            que.save()
+            return {'success': True}
+        except Exception as e:
+            return {'success': False, 'error': e.message}
+
+    # add_transaction(user, send_id)
+    return data
+
+
+
 
 
 def _get_pending_balance(user, kwargs):
@@ -239,32 +247,6 @@ def _get_address(user, kwargs):
         return False
 
 
-def _get_history(user, kwargs):
-    wallet = get_temp_wallet(user)
-    data = wallet.get_history(kwargs)
-    if data['success']:
-        currency = Wallet.objects.get(user=user).currency
-        transactions = []
-        for transaction in data['transactions']:
-            transactions.append(dict({
-                'status': transaction['status'],
-                'fee_amount': transaction['fee_amount'],
-                'entry_type': transaction['entry_type'],
-                'date': transaction['date'],
-                'id': transaction['id'],
-                'amount': transaction['amount'],
-                'original_target': transaction['original_target'],
-                'original_sender': transaction['original_sender'],
-                'currency': currency
-            }))
-        return {
-            'transaction_count': data['transaction_count'],
-            'success': True,
-            'transactions': transactions
-        }
-    else:
-        return data
-
 
 def _buy(user, kwargs):
     wallet = get_temp_wallet(user)
@@ -279,9 +261,17 @@ def _verify_buy(user, kwargs):
     wallet = get_temp_wallet(user)
     try:
         data = wallet.verify_buy(kwargs)
+        vg = VerifyGroup.objects.filter(created_by=user).filter(buy_order_id=kwargs['order_id'])
+        if data['success'] and vg:
+            vg[0].buy_confirmed = True
+            try:
+                vg[0].save()
+            except Exception as e:
+                return {'success': False, 'error': e.message}
+
         return data
-    except:
-        return False
+    except Exception as e:
+        return {'success': False, 'error': e.message}
 
 
 def _get_buy_history(user, kwargs):
@@ -313,19 +303,6 @@ def _get_exchange_rate(user, kwargs):
     return response.json()
 
 
-def get_temp_wallet(user):
-    wallets = Wallet.objects.filter(user=user, currency="BTC")
-    # TODO:: turn on PHP wallets instead of BTC
-    wallet = wallets[0]
-    wallet_class = Wallet.WALLET_CLASS[wallet.type]
-    p, m = wallet_class.rsplit('.', 1)
-
-    mod = importlib.import_module(p)
-    met = getattr(mod, m)
-
-    return met(user)
-
-
 def create_account(request):
     if request.method == 'POST':
         # the forms seem to destructively remove the elements? deep copy until I find out why
@@ -346,32 +323,13 @@ def create_account(request):
 def _get_groups(user, kwargs):
     #  TODO :: fix hard coded user when we have more real users
     try:
-        return get_group_members({'clientId': UserData.objects.filter(user=4)[0].app_internal_id})
+        return get_group_members({'clientId': UserData.objects.get(user=user).app_external_id})
     except Exception as e:
         return {'success': False, 'error': e.message}
 
 
 def _group_verify(user, kwargs):
-    '''
-{
-    "group_id": "4f4er5ed21g5",
-    "group_members": [
-        {
-            "amount": 10,
-            "id": "W41ELXWPWM4GWU44",
-            "phone": "+18016905609",
-            "first_name": "Olgeth"
-        },
-        {
-            "amount": 17,
-            "id": "5VII5NK4WPYHA8RT",
-            "phone": "+14803591947",
-            "first_name": "Randoy"
-        }
-    ]
-}
-'''
-    from dummy_data import a_nice_message
+    from apiv1.dummy_data import a_nice_message
 
     backend = 'telerivet'
     def nice_message():
@@ -385,8 +343,12 @@ def _group_verify(user, kwargs):
     if VerifyGroup.objects.filter(group_id=kwargs['group_id']).exists():
         VerifyGroup.objects.get(group_id=kwargs['group_id']).delete()
 
+    group_total = 0
+    for member in kwargs['group_members']:
+        group_total += member['amount']
+
     try:
-        group = VerifyGroup(group_id=kwargs['group_id'], size=len(kwargs['group_members']))
+        group = VerifyGroup(group_id=kwargs['group_id'], total_payment=group_total, created_by=user, size=len(kwargs['group_members']))
         group.save()
     except Exception as e:
         return {'success': False, 'error': "Try again - Couldn't save to group database: {}".format(e.message)}
@@ -416,6 +378,40 @@ def _group_verify(user, kwargs):
     }
 
 
+def _group_payment(user, kwargs):
+    payments = VerifyGroup.objects.filter(created_by=user).order_by('created')
+    payment_list = []
+    for payment in payments:
+        payment_list.append({
+            'total_payment': payment.total_payment,
+            'deposit_confirmed': payment.buy_confirmed,
+            'group_id': payment.group_id,
+            'payment_id': payment.id
+        })
+    return {
+        'success': True,
+        'payments': payment_list
+    }
+
+
+
+
 def _testing(user, data):
-    pass
+    from apiv1.internal.views_tasks import _get_history, add_transaction
+    que = TransactionQueItem.objects.filter()
+    for q in que:
+        history = _get_history(q.user, {'id': q.sent_payment_id})
+        if history['success']:
+            if history['transactions'][0]['status'] == 'success':
+                group = ''
+                if q.group:
+                    group = q.group
+
+                add_transaction(q.user,
+                                get_user_model().objects.filter(username='mentors_international')[0],
+                                history['transactions'][0]['amount'],
+                                history['transactions'][0]['currency'],
+                                group)
+                q.delete()
+
 

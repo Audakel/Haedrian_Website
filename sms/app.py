@@ -7,13 +7,13 @@ from django.contrib.auth import get_user_model
 from django.db.models import F
 from phonenumbers import geocoder
 import pycountry
+import phonenumbers
 
-from apiv1.views_internal import _get_exchange_types
+from apiv1.internal.views import _get_exchange_types
 from haedrian.models import UserData
 from models import Message
 from sms_verify import verify_sender, str_usage_commands
 from strings import str_deposit_locations
-import phonenumbers
 
 
 class SMSApplication(AppBase):

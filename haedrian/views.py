@@ -79,11 +79,11 @@ def _create_account(user_data):
                     u.save()
                     return {'success': True }
         # TODO:: JAMES - rollback delete and remove internal id from mifos on fail?
+
+        error = '{} -- {}'.format(user_form.errors, data_form.errors['__all__'].as_text())
+
         return {
-            'error':{
-                'user': user_form.error_messages,
-                'data': data_form.errors
-            },
+            'error': error,
             'success': False
         }
 

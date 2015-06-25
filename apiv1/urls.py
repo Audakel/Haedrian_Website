@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^exchange-rate/', views.get_exchange_rate),
     url(r'^group/', views.get_groups),
     url(r'^group-verify/', views.group_verify),
+    url(r'^group-payment/', views.group_payment),
 
     url(r'^create-wallet/', views.create_wallet),
     url(r'^exchange-fees/', views.get_exchange_fees),

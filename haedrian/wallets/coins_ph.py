@@ -10,13 +10,17 @@ from django.conf import settings
 from haedrian.models import Wallet
 from wallet import BaseWallet
 from apiv1.models import VerifyGroup, VerifyPerson
+from money import xrates, Money
+xrates.install('apiv1.btc_exchange_rate.BTCExchangeBackend')
+
 
 """
 # send
 {
-    "receiver": "mentors_international",
+    "send_to": "mentors_international",
     "amount_local": 10,
-    "target_address": "12UkkQ58ksRXHzHdNzhcy4e6f8JwWGTG3H"
+    "currency": "PHP",
+    "send_method": "username"
 }
 
 {
@@ -69,16 +73,17 @@ class CoinsPhWallet(BaseWallet):
 
     def verify_buy(self, data):
         url = 'https://sandbox.coins.ph/api/v2/buyorder/' + data['order_id']
-        data = make_oauth_request(url, self.user, put=True)
+        data = make_oauth_request(url, self.user, put=True, content_type=False)
         if data['success']:
-            group = VerifyGroup.objects.filter(buy_order_id=data['order_id'])[0]
-            if group:
-                group.buy_confirmed = True
-            return data
+            if data.get('order_id', ''):
+                group = VerifyGroup.objects.filter(buy_order_id=data['order_id'])[0]
+                if group:
+                    group.buy_confirmed = True
+        return data
 
 
     def buy(self, kwargs):
-        
+
         url = 'https://sandbox.coins.ph/api/v2/buyorder'
         # input_data = CoinsphBuySerializer(data=data)
         # if input_data.is_valid():
@@ -89,10 +94,12 @@ class CoinsPhWallet(BaseWallet):
         if kwargs.get('group_repayment_id', "") != "":
             group_repayment_flag = True
 
+        amount_btc = Money(amount=kwargs["amount_local"], currency=kwargs["currency"]).to('BTC')
+        amount_php = Money(amount=amount_btc.amount, currency='BTC').to('PHP')
 
         _data = {
-            "currency": kwargs["currency"],
-            "currency_amount": kwargs["amount_local"],
+            "currency": "PHP",
+            "currency_amount": round(amount_php.amount, 8),
             "payment_method": kwargs["payment_method"],
             "target_account_id": Wallet.objects.filter(user_id=self.user)[0].provider_wallet_id
         }
@@ -125,7 +132,7 @@ class CoinsPhWallet(BaseWallet):
 
             return {'success': True, 'order': order}
 
-        return {'error': data.get('errors', data['error'])}
+        return {'success': False, 'error': data.get('errors', data['error'])}
 
 
     def __init__(self, user):
@@ -167,13 +174,31 @@ class CoinsPhWallet(BaseWallet):
 
     def get_history(self, kwargs):
         url = 'https://sandbox.coins.ph/api/v3/crypto-payments/'
-        data = make_oauth_request(url, self.user)
+        if kwargs.get('id', ''):
+            url += kwargs['id']
+            data = make_oauth_request(url, self.user)
+        else:
+            data = make_oauth_request(url, self.user)
+        transactions = []
         if data['success']:
-            transactions = []
-            data = data['crypto-payments']
+            _data = data.get('crypto-payments', "")
             count = 0
+            if _data:
 
-            for transaction in data:
+                for transaction in _data:
+                    transactions.append(dict({
+                        'status': transaction['status'],
+                        'fee_amount': transaction['fee_amount'],
+                        'entry_type': transaction['entry_type'],
+                        'date': transaction['created_at'],
+                        'id': transaction['id'],
+                        'amount': transaction['amount'],
+                        'original_target': transaction['metadata']['original_target_address'],
+                        'original_sender': transaction['metadata']['original_sender_address'],
+                    }))
+                    count += 1
+            elif data.get('crypto-payment', ""):
+                transaction = data['crypto-payment']
                 transactions.append(dict({
                     'status': transaction['status'],
                     'fee_amount': transaction['fee_amount'],
@@ -184,8 +209,7 @@ class CoinsPhWallet(BaseWallet):
                     'original_target': transaction['metadata']['original_target_address'],
                     'original_sender': transaction['metadata']['original_sender_address'],
                 }))
-                count += 1
-
+                count = 1
             return {
                 'transaction_count': count,
                 'success': True,
@@ -260,10 +284,7 @@ class CoinsPhWallet(BaseWallet):
                 }
                 return data
         else:
-            return {
-                'success': False,
-                'error': _data.get('error', _data.get('errors', 'Error message 398'))
-            }
+            return _data
 
     def get_balance(self, **kwargs):
         # TODO:: fix hard code
@@ -461,7 +482,7 @@ def get_extra_wallet_info(user):
     return data
 
 
-def make_oauth_request(url, user, body={}, put=False, headers="", content_type=True):
+def make_oauth_request(url, user, body={}, put=False, headers="", content_type=True, get_params={}):
 
     user_token = get_user_token(user)
     if user_token['success']:
@@ -491,7 +512,11 @@ def make_oauth_request(url, user, body={}, put=False, headers="", content_type=T
             return {"success": False, "error": e.message}
     else:
         try:
-            response = requests.get(url, headers=headers, params='per_page=100')
+            if get_params:
+                params = dict({'per_page': 100}.items() + get_params.items())
+            else:
+                params = {'per_page': 100}
+            response = requests.get(url, headers=headers, params=params)
         except Exception as e:
             return {"success": False, "error": e.message}
 
@@ -507,6 +532,10 @@ def make_oauth_request(url, user, body={}, put=False, headers="", content_type=T
         except:
            error_result['error'] = result.get('errors', response.reason)
 
+        if isinstance(error_result['error'], str):
+            error_result['error'] = error_result['error']
+        else:
+            error_result['error'] = error_result['error'][0]
         return error_result
 
     # Use requests.get instead of POST for GET requests, without the data kwarg
@@ -548,10 +577,15 @@ def make_hmac_request(url, body=''):
     if result['success'] and response.status_code == 201:
         return result
     else:
-        return {
-            'success': False,
-            'error': result['errors']
-        }
+        error_result = {}
+        error_result['success'] = False
+        if isinstance(result['errors'], str):
+            error_result['error'] = error_result['error']
+        else:
+            error_result['error'] = result['errors'][0]
+        return error_result
+
+
 
 
 def get_user_token(user):

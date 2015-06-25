@@ -7,10 +7,11 @@ from rest_framework.decorators import api_view, authentication_classes
 from django.conf import settings
 from money import xrates
 
-import apiv1.views_internal as internal
+import apiv1.internal.views as internal
+from apiv1.internal.views_tasks import _get_history
 from apiv1.serializers import PlacesSerializer
 from haedrian.google.places import GooglePlaces
-from haedrian.google.lang import *
+
 
 xrates.install('apiv1.btc_exchange_rate.BTCExchangeBackend')
 
@@ -164,7 +165,7 @@ def get_locations(request):
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
 def get_history(request):
     try:
-        data = internal._get_history(request.user, request.data)
+        data = _get_history(request.user, request.data)
         return Response(data)
     except Exception as e:
         return Response(({'success': False, 'error': e.message}), status=400)
@@ -238,3 +239,15 @@ def testing(request):
         return Response(data)
     except Exception as e:
         return Response(({'success': False, 'error': e.message}), status=400)
+
+
+@api_view(http_method_names=['GET'])
+@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+def group_payment(request):
+    try:
+        data = internal._group_payment(request.user, request.query_params)
+        return Response(data)
+    except Exception as e:
+        return Response(({'success': False, 'error': e.message}), status=400)
+
+

@@ -1,30 +1,30 @@
+from collections import namedtuple
 from celery import shared_task
 from django.contrib.auth import get_user_model
 
 from apiv1.external.mifosx import mifosx_api
 from haedrian.models import UserData
-from apiv1.models import TransactionQueItem
+from apiv1.models import TransactionQueue
 from Haedrian_Website.celery import app
 from apiv1.internal.views_tasks import _get_history, add_transaction
 
 
 @app.task
 def verify_send_que():
-    que = TransactionQueItem.objects.filter()
+    que = TransactionQueue.objects.all()
     for q in que:
         history = _get_history(q.user, {'id': q.sent_payment_id})
-        if history['success']:
-            if history['transactions'][0]['status'] == 'success':
-                group = ''
-                if q.group:
-                    group = q.group
-
-                add_transaction(q.user,
-                                get_user_model().objects.filter(username='mentors_international')[0],
-                                history['transactions'][0]['amount'],
-                                history['transactions'][0]['currency'],
-                                group)
-                q.delete()
+        if history['success'] and history['transactions'][0]['status'] == 'success':
+            if q.qroup:
+                group = q.group
+                user = None
+            else:
+                group = None
+                GroupMember = namedtuple("GroupMember", ["userdata", "amount"])
+                user = GroupMember(q.user.userdata, history['transactions'][0]['amount'])
+            add_transaction(history['transactions'][0]['currency'],
+                            group=group, user=user)
+            q.delete()
 
 
 
@@ -44,7 +44,7 @@ def fetch_mfi_client(new_user):
             r = res['response']['pageItems'][0]
             userdata.user.first_name = r['firstname']
             userdata.user.last_name = r['lastname']
-            userdata.app_internal_id = res['response']['id']
+            userdata.app_id = res['response']['id']
             userdata.user.save()
             # TODO text the user to let them know they are successfully connected to Mifosx
             return {'success': True, 'message': 'User updated'}

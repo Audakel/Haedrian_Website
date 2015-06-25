@@ -45,7 +45,7 @@ class CreateUser(APIView):
         else:
             # TODO: lol. security by obscurity. pls fix
             return Response(status=404)
-        exists = UserData.objects.filter(application=app, app_internal_id=request.data['clientId'])
+        exists = UserData.objects.filter(application=app, app_id=request.data['clientId'])
         if len(exists) == 1:
             # user has an account already so nothing to do?
             pass
@@ -53,7 +53,6 @@ class CreateUser(APIView):
             # user doesn't have an account so lets make them a temp account
             name = "placeholder" + ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(10))
             password = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(30))
-            external = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(10))
             phone = '+17068019809'
             country = 'US'
             # fetch the rest of the client's info from Mifosx
@@ -80,8 +79,7 @@ class CreateUser(APIView):
                 'phone': phone,
                 'country': country,
                 'application': UserData.MENTORS,
-                'app_internal_id': request.data['clientId'],
-                'app_external_id': external,
+                'app_id': request.data['clientId'],
             }
             ret_val = _create_account(account)
             if not ret_val['success']:

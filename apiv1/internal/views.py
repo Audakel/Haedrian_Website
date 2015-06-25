@@ -16,7 +16,7 @@ from apiv1.internal.views_tasks import _get_history, get_temp_wallet, repay_outs
 from apiv1.serializers import SendSerializer
 from haedrian.forms import NewUserForm, EmailUserForm
 from haedrian.models import UserData
-from apiv1.models import VerifyGroup, VerifyPerson, TransactionQueItem
+from apiv1.models import VerifyGroup, VerifyPerson, TransactionQueue
 from haedrian.views import _create_account
 from haedrian.wallets.coins_ph import CoinsPhWallet
 from apiv1.tasks import get_group_members
@@ -165,10 +165,10 @@ def add_to_que(user, send_id, group_id=None):
     data = _get_history(user, {'id': send_id})
     if data['success']:
         if group_id:
-            que = TransactionQueItem(user=user, sent_payment_id=send_id,
+            que = TransactionQueue(user=user, sent_payment_id=send_id,
                                      group=VerifyGroup.objects.get(id=group_id))
         else:
-            que = TransactionQueItem(user=user, sent_payment_id=send_id)
+            que = TransactionQueue(user=user, sent_payment_id=send_id)
 
         try:
             que.save()
@@ -323,7 +323,7 @@ def create_account(request):
 def _get_groups(user, kwargs):
     #  TODO :: fix hard coded user when we have more real users
     try:
-        return get_group_members({'clientId': UserData.objects.get(user=user).app_external_id})
+        return get_group_members({'clientId': UserData.objects.get(user=user).app_id})
     except Exception as e:
         return {'success': False, 'error': e.message}
 
@@ -398,7 +398,7 @@ def _group_payment(user, kwargs):
 
 def _testing(user, data):
     from apiv1.internal.views_tasks import _get_history, add_transaction
-    que = TransactionQueItem.objects.filter()
+    que = TransactionQueue.objects.filter()
     for q in que:
         history = _get_history(q.user, {'id': q.sent_payment_id})
         if history['success']:

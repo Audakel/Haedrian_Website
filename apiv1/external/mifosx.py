@@ -10,14 +10,14 @@ mifosx_password = 'MifosxSaTeCoCeMuBu1'
 # mifosx_username = 'mifos'
 # mifosx_password = 'password'
 
-def mifosx_auth():
+def mifosx_auth(username=mifosx_username, password=mifosx_password, baseurl=settings.MIFOSX_SERVER_URL, tenant="default"):
     headers ={
-        "X-Mifos-Platform-TenantId": "default",
+        "X-Mifos-Platform-TenantId": tenant,
     }
     ssl_cert_check = not settings.DEBUG
     response = requests.post(
-        urlparse.urljoin(settings.MIFOSX_SERVER_URL, 'authentication?username={}&password={}'
-            .format(mifosx_username, mifosx_password)),
+        urlparse.urljoin(baseurl, 'authentication?username={}&password={}'
+            .format(username, password)),
         headers=headers,
         verify=ssl_cert_check,
     )
@@ -27,21 +27,22 @@ def mifosx_auth():
     else:
         return False, response
 
-def mifosx_api(endpoint, method='GET', params={}, body=None):
+def mifosx_api(endpoint, method='GET', params={}, body=None, baseurl=settings.MIFOSX_SERVER_URL, token=None, tenant="default"):
     """Make a request to the Mifosx API to get the rest of the client info that we need"""
     # TODO: add the ability for multiple tenants
-    token, err = mifosx_auth()
+    if not token:
+        token, err = mifosx_auth()
     if token:
         headers = {
             "Authorization": "Basic {}".format(token),
-            "X-Mifos-Platform-TenantId": "default",
+            "X-Mifos-Platform-TenantId": tenant,
         }
         # if not 'tenantIdentifier' in params.keys():
         #     params['tenantIdentifier'] = 'default'
         ssl_cert_check = not settings.DEBUG
         if method.lower() == 'get':
             response = requests.get(
-                urlparse.urljoin(settings.MIFOSX_SERVER_URL, endpoint),
+                urlparse.urljoin(baseurl, endpoint),
                 # "https://mentors.haedrian.io/mifosng-provider/api/v1/clients/{}".format(data['client_id']),
                 params=params,
                 headers=headers,
@@ -49,11 +50,12 @@ def mifosx_api(endpoint, method='GET', params={}, body=None):
             )
         elif method.lower() == 'post':
             response = requests.post(
-                urlparse.urljoin(settings.MIFOSX_SERVER_URL, endpoint),
+                urlparse.urljoin(baseurl, endpoint),
                 # "https://mentors.haedrian.io/mifosng-provider/api/v1/clients/{}".format(data['client_id']),
                 params=params,
                 headers=headers,
                 verify=ssl_cert_check,
+                data=body,
             )
         else:
             return {'message': "Cannot send api call with method {}".format(method), 'success': False}

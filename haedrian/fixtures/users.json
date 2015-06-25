@@ -64,8 +64,7 @@
             "default_currency": "USD",
             "country": "US",
             "application": "MENTORS",
-            "app_internal_id": "12",
-            "app_external_id": "jack"
+            "app_id": "12"
         }
     },
     {
@@ -78,9 +77,7 @@
             "default_currency": "USD",
             "country": "US",
             "application": "MENTORS",
-            "app_internal_id": "1211",
-            "app_external_id": "jack11"
-
+            "app_id": "1211"
         }
     },
     {
@@ -93,9 +90,7 @@
             "default_currency": "USD",
             "country": "US",
             "application": "MENTORS",
-            "app_internal_id": "121",
-            "app_external_id": "jack1"
-
+            "app_id": "121"
         }
     },
     {

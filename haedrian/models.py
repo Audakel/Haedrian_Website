@@ -17,8 +17,7 @@ class UserData(models.Model):
     credit_score = models.IntegerField(max_length=4, default=0)
     country = CountryField(blank_label='(Country)')
     default_currency = models.CharField(max_length=4, default='USD')
-    app_internal_id = models.CharField(max_length=50, blank=True, default=None, null=True)
-    app_external_id = models.CharField(max_length=50, blank=True, default=None, null=True)
+    app_id = models.CharField(max_length=50, blank=True, default=None, null=True)
     MENTORS = 'MENTORS'
     APPLICATIONS = (
         (MENTORS, _('Mentors International'),),
@@ -26,8 +25,7 @@ class UserData(models.Model):
     application = models.CharField(max_length=7, blank=True, choices=APPLICATIONS)
     class Meta:
         unique_together = (
-            ("application", "app_internal_id"),
-            ("application", "app_external_id"),
+            ("application", "app_id"),
         )
 
 

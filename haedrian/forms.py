@@ -6,7 +6,7 @@ from django.utils.translation import ugettext as _
 import phonenumbers
 
 from haedrian.models import BetaApplicant, UserData
-
+from apiv1.external.mifosx import mifosx_api
 
 class BetaApplicantForm(ModelForm):
     class Meta:
@@ -29,16 +29,25 @@ class EmailUserForm(UserCreationForm):
 class NewUserForm(ModelForm):
     class Meta:
         model = UserData
-        fields = ("phone", "country", "application", "app_external_id")
-        # exclude = ['user', 'credit_score', 'default_currency', 'app_internal_id',]
+        fields = ("phone", "country", "application", "app_id")
         labels = {
             "application": _("Select the institution you are connected to"),
-            "app_external_id": _("ID number"),
+            "app_id": _("ID number"),
         }
 
     def clean_phone(self):
         data = self.cleaned_data['phone']
         return data
+
+    def clean_app_id(self):
+        _id = self.cleaned_data['app_id']
+        res = mifosx_api('clients', params={"externalId": _id})
+        if res['success']:
+            return res['response']['pageItems']['id']
+        res = mifosx_api('clients/{}'.format(_id))
+        if res['success']:
+            return _id
+        raise ValidationError(_("The ID provided is not a member of the application chosen"))
 
     def clean(self):
         cleaned_data = super(NewUserForm, self).clean()
@@ -53,13 +62,10 @@ class NewUserForm(ModelForm):
                 cleaned_data['phone'] = phonenumbers.format_number(pn, phonenumbers.PhoneNumberFormat.E164)
 
         app = cleaned_data.get('application')
-        id = cleaned_data.get('app_external_id')
+        id = cleaned_data.get('app_id')
         if app and not id or id and not app:
             raise ValidationError(_("If a microfinance institution is selected, then you must enter an ID as well"))
 
         # http://stackoverflow.com/a/21934494/4112231
-        if cleaned_data.get('app_internal_id', "") == "":
-            cleaned_data['app_internal_id'] = None
-
-        if cleaned_data.get('app_external_id', "") == "":
-            cleaned_data['app_external_id'] = None
+        if cleaned_data.get('app_id', "") == "":
+            cleaned_data['app_id'] = None

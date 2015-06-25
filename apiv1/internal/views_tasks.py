@@ -53,57 +53,36 @@ def get_temp_wallet(user):
     return met(user)
 
 
-def add_transaction(user, receiver, amount, currency, group_id=''):
-    if group_id:
-        # Group payment
-        members = VerifyPerson.objects.filter(group=group_id)
-        # TODO:: DB rollback
-        for member in members:
-            amount_btc = Money(amount=member.amount, currency=currency).to('BTC')
-            amount_fee = amount_btc * settings.FEE_AMOUNT
-            total_sent = amount_btc - amount_fee
-            total_sent_local = Money(amount=total_sent.amount, currency='BTC').to(currency)
-            fee_local = Money(amount=amount_fee.amount, currency='BTC').to(currency)
-
-            transaction = Transaction(sender=UserData.objects.get(app_internal_id=member.personal_id).id,
-                                      receiver=get_user_model().object.get(username='mentors_international'),
-                                      amount_btc=total_sent.amount,
-                                      amount_btc_currency='BTC',
-                                      amount_local=total_sent_local.amount,
-                                      amount_local_currency=total_sent_local.currency)
-            try:
-                transaction.save()
-            except DatabaseError as e:
-                return {"success": False, "error": e.message}
-
-            repay_outstanding_loan({
-                'clientId': UserData.objects.get(user_id=member.personal_id).app_internal_id,
-                'transactionId': transaction.id
-            })
-
+def add_transaction(currency, user=None, group=None):
+    if group:
+        members = group
+    elif user:
+        members = list(user)
     else:
-        amount_btc = Money(amount=amount, currency=currency).to('BTC')
+        return {"success": False, "error": "Either User or Group needs to be provided"}
+    # TODO:: DB rollback
+    for member in members:
+        amount_btc = Money(amount=member.amount, currency=currency).to('BTC')
         amount_fee = amount_btc * settings.FEE_AMOUNT
         total_sent = amount_btc - amount_fee
         total_sent_local = Money(amount=total_sent.amount, currency='BTC').to(currency)
         fee_local = Money(amount=amount_fee.amount, currency='BTC').to(currency)
-        transaction = Transaction(sender=user,
-                                  receiver=receiver,
+
+        transaction = Transaction(sender=member.userdata,
+                                  receiver=get_user_model().object.get(username='mentors_international'),
                                   amount_btc=total_sent.amount,
                                   amount_btc_currency='BTC',
                                   amount_local=total_sent_local.amount,
-                                  amount_local_currency=total_sent_local.currency,
-                                  type='REPAYMENT')
+                                  amount_local_currency=total_sent_local.currency)
         try:
             transaction.save()
         except DatabaseError as e:
-            return {"success": False, "error": e.message}
+            return {"success": False, "error": str(e)}
 
         repay_outstanding_loan({
-                # TODO :: whats up with external vs internal? need to choose which to use
-                'clientId': UserData.objects.get(user_id=user).app_external_id,
-                'transactionId': transaction.id
-            })
+            'clientId': member.userdata.app_id,
+            'transactionId': transaction.id
+        })
 
     # ret_val = wallet.lsend(haedrian_account, round(amount_fee.amount, 8), send_data.data['target_address'])
     # if ret_val['success']:

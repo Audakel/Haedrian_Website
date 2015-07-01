@@ -158,6 +158,7 @@ class CoinsPhWallet(BaseWallet):
                     'instructions': transaction['instructions'],
                     'wallet_address': transaction['wallet_address'],
                     'btc_amount': transaction['btc_amount'],
+                    'currency': 'BTC',
                     'currency_amount': transaction['currency_amount'],
                     'exchange_rate': transaction['rate']
                 }))
@@ -222,8 +223,13 @@ class CoinsPhWallet(BaseWallet):
         url = 'https://sandbox.coins.ph/api/v3/crypto-accounts/'
         data = make_oauth_request(url, self.user)
         if data['success']:
-            data = data['crypto-accounts']
+            _data = data
+            data = {
+                'wallets': _data['crypto-accounts'],
+                'success': True
+            }
         return data
+
 
     def get_pending_balance(self):
         url = 'https://sandbox.coins.ph/api/v3/crypto-accounts/'
@@ -286,16 +292,17 @@ class CoinsPhWallet(BaseWallet):
         else:
             return _data
 
-    def get_balance(self, **kwargs):
+    def get_balance(self, kwargs):
         # TODO:: fix hard code
         url = 'https://sandbox.coins.ph/api/v3/crypto-accounts/'
         balance = make_oauth_request(url, self.user)
         if balance['success']:
+            # TODO:: fix crypto default to PHP instead of bitcoin
             _data = balance['crypto-accounts'][0]
             data = {
                 "balance": _data['balance'],
                 "pending_balance": _data['pending_balance'],
-                "currency": currency[0],
+                "currency": _data['currency'],
                 "success": True
             }
             return data
@@ -335,14 +342,6 @@ class CoinsPhWallet(BaseWallet):
                     })
         return locations
 
-
-
-        # Get fees
-
-
-
-
-
         url = 'https://sandbox.coins.ph/d/api/payin-outlets/'
         _data = make_oauth_request(url, self.user)["payin-outlets"]
         data = []
@@ -350,6 +349,7 @@ class CoinsPhWallet(BaseWallet):
             if i['amount_limits'][0]['currency'] == 'PHP':
                 data.append(i)
         return data
+
 
     def get_exchange_fees(self, kwargs):
         url = 'https://sandbox.coins.ph/d/api/payin-outlet-fees/'

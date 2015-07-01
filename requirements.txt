@@ -37,3 +37,4 @@ django-celery
 git+https://github.com/Audakel/rapidsms-telerivet.git
 django-kombu
 simplejson
+babel

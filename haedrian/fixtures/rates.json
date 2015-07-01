@@ -5,8 +5,8 @@
         "fields": {
             "code": "USD",
             "name": "US Dollar",
-            "buy_rate": "234.23",
-            "sell_rate": "234.23"
+            "buy_rate": "241.97",
+            "sell_rate": "241.97"
         }
     },
     {
@@ -15,8 +15,8 @@
         "fields": {
             "code": "PHP",
             "name": "Phillipine Peso",
-            "sell_rate": "10000.000",
-            "buy_rate": "10000.000"
+            "sell_rate": "10935.20",
+            "buy_rate": "10935.20"
         }
     }
 ]

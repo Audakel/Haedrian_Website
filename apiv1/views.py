@@ -230,12 +230,11 @@ def group_verify(request):
     except Exception as e:
         return Response(({'success': False, 'error': e.message}), status=400)
 
-
 @api_view(http_method_names=['GET'])
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
-def testing(request):
+def get_home_screen(request):
     try:
-        data = internal._testing(request.user, request.data)
+        data = internal._get_home_screen(request.user, request.data)
         return Response(data)
     except Exception as e:
         return Response(({'success': False, 'error': e.message}), status=400)
@@ -251,3 +250,21 @@ def group_payment(request):
         return Response(({'success': False, 'error': e.message}), status=400)
 
 
+@api_view(http_method_names=['POST'])
+@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+def update_currency(request):
+    try:
+        data = internal._update_currency(request.user, **request.data)
+        return Response(data)
+    except Exception as e:
+        return Response(({'success': False, 'error': e.message}), status=400)
+
+
+@api_view(http_method_names=['GET'])
+@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+def testing(request):
+    try:
+        data = internal._testing(request.user, request.data)
+        return Response(data)
+    except Exception as e:
+        return Response(({'success': False, 'error': e.message}), status=400)

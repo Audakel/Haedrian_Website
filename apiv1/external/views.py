@@ -58,7 +58,7 @@ class CreateUser(APIView):
             # fetch the rest of the client's info from Mifosx
             res = mifosx_api("clients/{}".format(request.data['clientId']))
             if res['success']:
-                external = res['response'].get('externalId', external)
+                # external = res['response'].get('externalId', external)
                 # can't get their phone number properly from Mifosx it seems
                 # if 'mobileNo' in res['response']:
                 #     phone = res['response']['mobileNo']

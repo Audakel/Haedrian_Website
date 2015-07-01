@@ -11,8 +11,8 @@ from rest_framework.authtoken.models import Token
 import requests
 from rapidsms.router import send, lookup_connections
 
-from apiv1.internal.views_tasks import _get_history, get_temp_wallet, repay_outstanding_loan
-
+from apiv1.internal.format_currency_display import format_currency_display
+from apiv1.internal.views_tasks import _get_history, get_temp_wallet
 from apiv1.serializers import SendSerializer
 from haedrian.forms import NewUserForm, EmailUserForm
 from haedrian.models import UserData
@@ -20,6 +20,7 @@ from apiv1.models import VerifyGroup, VerifyPerson, TransactionQueue
 from haedrian.views import _create_account
 from haedrian.wallets.coins_ph import CoinsPhWallet
 from apiv1.tasks import get_group_members
+from apiv1.external.mifosx import mifosx_loan
 
 
 __author__ = 'audakel'
@@ -42,7 +43,7 @@ def _new_user(kwargs):
         "phone": kwargs['phone'],
         "country": kwargs['country'],
         "application": kwargs.get("application", None),
-        "app_external_id": kwargs.get("app_external_id", None)
+        "app_id": kwargs.get("app_id", None)
     }
     account = _create_account(new_data)
     if account['success']:
@@ -75,6 +76,16 @@ def _get_exchanges(user, kwargs):
     wallet = get_temp_wallet(user)
     try:
         data = wallet.get_exchanges(kwargs)
+        default_currency = user.userdata.default_currency
+        for location in data['locations']:
+            for outlet in location['outlets']:
+                info = outlet.get('fee_info', '')
+                if info:
+                    info['fee_amount'] = format_currency_display(info['currency'], default_currency, info['fee_amount'])
+                    info['from_amount'] = format_currency_display(info['currency'], default_currency, info['from_amount'])
+                    info['until_amount'] = format_currency_display(info['currency'], default_currency, info['until_amount'])
+                    info['currency'] = default_currency
+
         return data
     except Exception as e:
         return e.message
@@ -133,7 +144,7 @@ def _send(user, kwargs):
 
         # TODO:: fix to look at user preference
         # currency = UserData.objects.get(user_id=sender.id).default_currency
-        currency = send_data.data['currency']
+        currency = user.userdata.default_currency
         amount_btc = Money(amount=send_data.data['amount_local'], currency=currency).to('BTC')
         amount_fee = amount_btc * settings.FEE_AMOUNT
         total_sent = amount_btc - amount_fee
@@ -192,13 +203,18 @@ def _get_pending_balance(user, kwargs):
         return False
 
 
-def _get_balance(user, kwargs):
+def _get_balance(user, kwargs=''):
     wallet = get_temp_wallet(user)
     try:
         data = wallet.get_balance(kwargs)
+        default_currency = user.userdata.default_currency
+        data['balance'] = format_currency_display(data['currency'], default_currency, data['balance'])
+        data['pending_balance'] = format_currency_display(data['currency'], default_currency, data['pending_balance'])
+        data['currency'] = default_currency
+
         return data
-    except:
-        return False
+    except Exception as e:
+        return {'error': e, 'success': False}
 
 
 def _get_wallet_info(user, kwargs):
@@ -211,31 +227,33 @@ def _get_wallet_info(user, kwargs):
     default_address - The default address used when the account is specified as a recipient.
     """
     wallet = get_temp_wallet(user)
-    try:
-        data = wallet.get_wallet_info(kwargs)
-        _data = {
+    data = wallet.get_wallet_info(kwargs)
+    if data['success']:
+        default_currency = user.userdata.default_currency
+        _data = data['wallets']
+        data = {
             'bitcoin': {
-                "name": data[0]["name"],
-                "total_received": data[0]["total_received"],
-                "currency": data[0]["currency"],
-                "blockchain_address": data[0]["default_address"],
-                "balance": data[0]["balance"],
-                "id": data[0]["id"],
-                "pending_balance": data[0]["pending_balance"]
+                "name": _data[0]["name"],
+                "total_received": format_currency_display(_data[0]['currency'], default_currency, _data[0]["total_received"]),
+                "blockchain_address": _data[0]["default_address"],
+                "balance": format_currency_display(_data[0]['currency'], default_currency, _data[0]["balance"]),
+                "id": _data[0]["id"],
+                "pending_balance": format_currency_display(_data[0]['currency'], default_currency, _data[0]["pending_balance"]),
+                "btc_balance": format_currency_display(_data[0]['currency'], 'BTC', _data[0]["balance"]),
+                "currency": default_currency
             },
             'local': {
-                "name": data[2]["name"],
-                "total_received": data[2]["total_received"],
-                "currency": data[2]["currency"],
-                "blockchain_address": data[2]["default_address"],
-                "balance": data[2]["balance"],
-                "wallet_id": data[2]["id"],
-                "pending_balance": data[2]["pending_balance"]
+                "name": _data[2]["name"],
+                "total_received": format_currency_display(_data[2]['currency'], default_currency, _data[2]["total_received"]),
+                "blockchain_address": _data[2]["default_address"],
+                "balance": format_currency_display(_data[2]['currency'], default_currency, _data[2]["balance"]),
+                "id": _data[2]["id"],
+                "pending_balance": format_currency_display(_data[2]['currency'], default_currency, _data[2]["pending_balance"]),
+                "btc_balance": format_currency_display(_data[2]['currency'], 'BTC', _data[2]["balance"]),
+                "currency": default_currency
             }
         }
-        return _data
-    except:
-        return False
+    return data
 
 
 def _get_address(user, kwargs):
@@ -278,6 +296,10 @@ def _get_buy_history(user, kwargs):
     wallet = get_temp_wallet(user)
     try:
         data = wallet.buy_history(kwargs)
+        if data['success']:
+            default_currency = user.userdata.default_currency
+            for trans in data['transactions']:
+                trans['currency_amount'] = format_currency_display(trans['currency'], default_currency, trans['btc_amount'])
         return data
     except Exception as e:
         return e.message
@@ -393,25 +415,50 @@ def _group_payment(user, kwargs):
         'payments': payment_list
     }
 
+def _get_home_screen(user, kwargs=''):
+    balance = _get_balance(user)
+    loan = mifosx_loan(user)
+
+    return {
+        'wallet_balance': balance['balance'],
+        'loan_info': loan['loans'],
+        'username': user.username.title(),
+        'pending_buy_order': True,
+        'success': True
+    }
+
+def _update_currency(user, currency):
+    try:
+        u = user.userdata
+        u.default_currency = currency
+        u.save()
+    except Exception as e:
+        return {'success': False, 'error': e.message}
+
+    return {'success': True, 'new_currency': user.userdata.default_currency}
+
+
 
 
 
 def _testing(user, data):
-    from apiv1.internal.views_tasks import _get_history, add_transaction
-    que = TransactionQueue.objects.filter()
-    for q in que:
-        history = _get_history(q.user, {'id': q.sent_payment_id})
-        if history['success']:
-            if history['transactions'][0]['status'] == 'success':
-                group = ''
-                if q.group:
-                    group = q.group
+    u = get_user_model().objects.get(username='kovutron')
+    return _get_home_screen(u)
 
-                add_transaction(q.user,
-                                get_user_model().objects.filter(username='mentors_international')[0],
-                                history['transactions'][0]['amount'],
-                                history['transactions'][0]['currency'],
-                                group)
-                q.delete()
+    # transaction = Transaction(sender=user,
+    #                           receiver=get_user_model().objects.get(username='mentors_international'),
+    #                           amount_btc=2.568,
+    #                           amount_btc_currency='BTC',
+    #                           amount_local=568,
+    #                           amount_local_currency='USD')
+    # try:
+    #     transaction.save()
+    # except Exception as e:
+    #     return {"success": False, "error": str(e)}
+    #
+    # repay_outstanding_loan({
+    #     'clientId': user.userdata.app_id,
+    #     'transactionId': transaction.id
+    # })
 
 

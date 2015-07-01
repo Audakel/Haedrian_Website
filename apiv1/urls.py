@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^group/', views.get_groups),
     url(r'^group-verify/', views.group_verify),
     url(r'^group-payment/', views.group_payment),
+    url(r'^update-currency/', views.update_currency),
 
     url(r'^create-wallet/', views.create_wallet),
     url(r'^exchange-fees/', views.get_exchange_fees),
@@ -30,6 +31,7 @@ urlpatterns = [
 
     # testing
     url(r'^testing/', views.testing),
+    url(r'^home/', views.get_home_screen),
 
 
 

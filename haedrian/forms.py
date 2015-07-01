@@ -35,17 +35,28 @@ class NewUserForm(ModelForm):
             "app_id": _("ID number"),
         }
 
+    def __init__(self, *args, **kwargs):
+        super(NewUserForm, self).__init__(*args, **kwargs)
+        self.first_name = ''
+        self.last_name = ''
+
     def clean_phone(self):
         data = self.cleaned_data['phone']
         return data
 
     def clean_app_id(self):
         _id = self.cleaned_data['app_id']
+        if not _id:
+            return _id
         res = mifosx_api('clients', params={"externalId": _id})
-        if res['success']:
+        if res['success'] and res['response']['totalFilteredRecords'] == 1:
+            self.first_name = res['response']['pageItems']['firstname']
+            self.last_name = res['response']['pageItems']['lastname']
             return res['response']['pageItems']['id']
-        res = mifosx_api('clients/{}'.format(_id))
+        res = mifosx_api('clients/{}'.format(_id), params={"fields": "id,firstname,lastname"})
         if res['success']:
+            self.first_name = res['response']['firstname']
+            self.last_name = res['response']['lastname']
             return _id
         raise ValidationError(_("The ID provided is not a member of the application chosen"))
 

@@ -18,16 +18,16 @@ def _create_account(user_data):
     :param user_data - Dict that contains all the fields that are expected for the user to fill out.
     Required keys in the dict are
     ["username", "email", "password1", "password2", "phone", "country"]
-
+    Optional fields are
+    ['application', 'app_id']
     :returns True if the account creation was successful
     """
-
     data_form = NewUserForm(user_data)
     user_form = EmailUserForm(user_data)
     if user_form.is_valid() and data_form.is_valid():
         django_user = user_form.save(commit=False)
-        django_user.first_name = user_data.get('first_name', '')
-        django_user.last_name = user_data.get('last_name', '')
+        django_user.first_name = user_data.get('first_name', data_form.first_name)
+        django_user.last_name = user_data.get('last_name', data_form.last_name)
         django_user.save()
         haedrian_user = data_form.save(commit=False)
         haedrian_user.user = django_user
@@ -41,17 +41,11 @@ def _create_account(user_data):
             haedrian_user.save()
         except IntegrityError as e:
             return {'success': False, 'error': e.message}
-        # TODO: Form validation fetches the user info, no need to do that up to three times, but at least this is backgrounded
-        fetch_mfi_client.delay({
-            'pk': haedrian_user.pk,
-            'app': haedrian_user.application,
-            'id': haedrian_user.app_external_id,
-        })
         # TODO: send verification email or something
         return {'success': True}
     else:
         # user has an account created by an external app so update instead of create
-        user = UserData.objects.filter(app_id=user_data['app_external_id'])
+        user = UserData.objects.filter(app_id=user_data['app_id'])
         if len(user) == 1:
             u = user[0]
             # only update the user account if the person has a placeholder name
@@ -63,8 +57,9 @@ def _create_account(user_data):
                 u.phone = data_form.cleaned_data['phone']
                 u.country = data_form.cleaned_data['country']
                 u.save()
-                return {'success': True }
-        error = '{} - {}'.format(user_form.errors, data_form.errors['__all__'].as_text())
+                return {'success': True}
+
+        error = 'Signup: {} - {}'.format(user_form.errors, data_form.errors['__all__'].as_text())
 
         return {
             'error': error,

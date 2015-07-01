@@ -7,7 +7,8 @@ from money import Money
 from apiv1.external.mifosx import mifosx_api
 from apiv1.models import VerifyPerson
 from haedrian.models import Wallet, Transaction, UserData
-
+import simplejson as json
+from format_currency_display import format_currency_display
 __author__ = 'audakel'
 
 
@@ -18,18 +19,21 @@ def _get_history(user, kwargs):
         # TODO: fix double wallet issue.... find out what currecny wallet they want
         # currency = Wallet.objects.filter(user=user).currency
         currency = "PHP"
+
+        default_currency = user.userdata.default_currency
+
         transactions = []
         for transaction in data['transactions']:
             transactions.append(dict({
                 'status': transaction['status'],
-                'fee_amount': transaction['fee_amount'],
+                'fee_amount': format_currency_display(currency, default_currency, transaction['fee_amount']),
                 'entry_type': transaction['entry_type'],
                 'date': transaction['date'],
                 'id': transaction['id'],
-                'amount': transaction['amount'],
+                'amount': format_currency_display(currency, default_currency, transaction['amount']),
                 'original_target': transaction['original_target'],
                 'original_sender': transaction['original_sender'],
-                'currency': currency
+                'currency': default_currency
             }))
         return {
             'transaction_count': data['transaction_count'],
@@ -57,7 +61,7 @@ def add_transaction(currency, user=None, group=None):
     if group:
         members = group
     elif user:
-        members = list(user)
+        members = [user]
     else:
         return {"success": False, "error": "Either User or Group needs to be provided"}
     # TODO:: DB rollback
@@ -68,8 +72,8 @@ def add_transaction(currency, user=None, group=None):
         total_sent_local = Money(amount=total_sent.amount, currency='BTC').to(currency)
         fee_local = Money(amount=amount_fee.amount, currency='BTC').to(currency)
 
-        transaction = Transaction(sender=member.userdata,
-                                  receiver=get_user_model().object.get(username='mentors_international'),
+        transaction = Transaction(sender=member.userdata.user,
+                                  receiver=get_user_model().objects.get(username='mentors_international'),
                                   amount_btc=total_sent.amount,
                                   amount_btc_currency='BTC',
                                   amount_local=total_sent_local.amount,
@@ -96,7 +100,7 @@ def add_transaction(currency, user=None, group=None):
 
 
 @shared_task
-def repay_outstanding_loan(json):
+def repay_outstanding_loan(_json):
     """Queries the external application to see if there is an outstanding loan for this
     user and applies the money from this transaction to that loan
 
@@ -104,24 +108,25 @@ def repay_outstanding_loan(json):
     :param transactionId: Primary Key to look up the Transaction by
     :return: {'success': True|False, 'message': message}
     """
-    id = json['clientId']
-    tr = json['transactionId']
+    id = _json['clientId']
+    tr = _json['transactionId']
     # user = UserData.objects.get(app_interal_id=id)
     trans = Transaction.objects.get(id=tr)
-    res = mifosx_api('loans/template', params='templateType=individual&clientId={}'.format(id))
+    res = mifosx_api('loans/', params={"sqlSearch": "l.client_id={}".format(id)})
+
     if res['success']:
         # TODO: assumed their loan is the first one
-        loan_id = res['response']['productOptions'][0]['id']
+        loan_id = res['response']['pageItems'][0]['id']
         # loan_name = res['response']['productOptions'][0]['name']
         body = {
             "dateFormat": "dd MMMM yyyy",
             "locale": "en",
             "transactionDate": trans.date_modified.strftime("%d %B %Y"),
-            "transactionAmount": trans.amount_local,
-            "paymentTypeId": "12",
+            "transactionAmount": trans.amount_local.amount,
+            "paymentTypeId": "1",
             "note": "Payment through Haedrian Labs",
         }
-        res = mifosx_api('loans/{}/transactions'.format(loan_id), params={'command': 'repayment'}, body=body)
+        res = mifosx_api('loans/{}/transactions'.format(loan_id), params={'command': 'repayment'}, body=json.dumps(body), method='POST')
         if res['success']:
             return {'success': True, 'message': 'Paid back loan'}
     # something went wrong

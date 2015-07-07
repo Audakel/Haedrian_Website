@@ -1,3 +1,7 @@
+
+{% load i18n %}
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,9 +26,9 @@
     <![endif]-->
 
     <!-- Custom styles for this template -->
-    <link href="../static/css/base.css" rel="stylesheet">
+    <link href="{% static "css/base.css" %}" rel="stylesheet">
 
-    <link href="../static/css/carousel.css" rel="stylesheet">
+    <link href="{% static "css/carousel.css" %}" rel="stylesheet">
 
     {% block style %}
     {% endblock %}

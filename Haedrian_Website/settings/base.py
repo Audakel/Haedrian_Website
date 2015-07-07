@@ -47,6 +47,7 @@ ADMINS = (
     ('Haedrian Admins', 'haedrian.beta@gmail.com'),
     # remove later after proper email is set up
     ('James Rowe', 'jroweboy@gmail.com'),
+    ('Alex Lin', '646114995@qq.com'),
 )
 MANAGERS = ADMINS
 

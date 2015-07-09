@@ -250,11 +250,14 @@ def group_payment(request):
         return Response(({'success': False, 'error': e.message}), status=400)
 
 
-@api_view(http_method_names=['POST'])
+@api_view(http_method_names=['POST', 'GET'])
 @authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
-def update_currency(request):
+def currency(request):
     try:
-        data = internal._update_currency(request.user, **request.data)
+        if request.method == 'POST':
+            data = internal._update_currency(request.user, **request.data)
+        else:
+            data = internal._get_currencies(request.user, request.query_params)
         return Response(data)
     except Exception as e:
         return Response(({'success': False, 'error': e.message}), status=400)

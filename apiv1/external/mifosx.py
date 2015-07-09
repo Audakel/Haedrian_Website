@@ -1,5 +1,5 @@
 import urlparse
-
+from money import Money as Convert
 import requests
 from django.conf import settings
 from apiv1.internal.format_currency_display import format_currency_display
@@ -9,48 +9,65 @@ from haedrian.models import UserData
 # TODO: get a new account to the API
 mifosx_username = 'aquila'
 mifosx_password = 'MifosxSaTeCoCeMuBu1'
+
 # mifosx_username = 'mifos'
 # mifosx_password = 'password'
 
 def mifosx_loan(user):
     params = {"sqlSearch": "l.client_id={}".format(UserData.objects.get(user=user).app_id)}
     loan = mifosx_api('loans/', params=params)
+    loans = []
     if loan['success']:
-        loans = []
         loan = loan['response']['pageItems']
         missing = 'missing'
         default_currency = user.userdata.default_currency
 
         for l in loan:
-            currency = l['currency'].get('code', missing)
-            starting_balance = format_currency_display(currency, default_currency, l['summary'].get('principalDisbursed', -1))
-            current_balance = format_currency_display(currency, default_currency, l['summary'].get('principalOutstanding', -1))
-            loan_cost = format_currency_display(currency, default_currency, l['summary'].get('totalExpectedCostOfLoan', -1)),
-            # For home screen display - due to size constraints remove decimal places from display
-            if current_balance[len(current_balance)-3] == '.':
-                current_balance = current_balance[:-3]
-            if starting_balance[len(starting_balance)-3] == '.':
-                starting_balance = starting_balance[:-3]
-            if loan_cost[len(loan_cost)-3] == '.':
-                loan_cost = loan_cost[:-3]
-            
-            loans.append({
-                'starting_balance_display': starting_balance,
-                'starting_balance': l['summary'].get('principalDisbursed', -1),
-                'current_balance_display': current_balance,
-                'current_balance': l['summary'].get('principalOutstanding', -1),
-                'loan_id': l.get('id', -1),
-                'interest_rate': l.get('interestRatePerPeriod', missing),
-                'interest_frequency': l['interestRateFrequencyType'].get('value', missing),
-                'loan_descriptor': l.get('loanProductDescription', missing),
-                'repay_every': l.get('repaymentEvery', -1),
-                'repay_time_unit': l['repaymentFrequencyType'].get('value', missing),
-                'total_overdue': format_currency_display(currency, default_currency, l['summary'].get('totalOverdue', -1)),
-                'total_estimated_loan_cost': format_currency_display(currency, default_currency, l['summary'].get('totalExpectedCostOfLoan', -1)),
-                'total_estimated_loan_cost_display': loan_cost, 
-                'number_of_repayments': l.get('numberOfRepayments', missing),
-                'currency': default_currency,
+            if not l['status']['active']:
+                return {'success': False, 'error': 'Loan not active - {}'.format(l['status']['value'])}
 
+            # Get main display numbers for home screen
+            currency = l['currency'].get('code', missing)
+            starting_balance_display = format_currency_display(currency, default_currency, l['summary'].get(
+                'principalDisbursed', -1))
+            current_balance_display = format_currency_display(currency, default_currency, l['summary'].get(
+                'principalOutstanding', -1))
+            loan_cost_display = format_currency_display(currency, default_currency, l['summary'].get(
+                'totalExpectedCostOfLoan', -1))
+
+            # For home screen display - due to size constraints remove decimal places from display
+            if current_balance_display[len(current_balance_display)-3] == '.':
+                current_balance_display = current_balance_display[:-3]
+            if starting_balance_display[len(starting_balance_display)-3] == '.':
+                starting_balance_display = starting_balance_display[:-3]
+            if loan_cost_display[len(loan_cost_display)-3] == '.':
+                loan_cost_display = loan_cost_display[:-3]
+
+            # For graphs - use actual converted currency w/o formatting
+            starting_balance = Convert(amount=l['summary'].get('principalDisbursed', -1),currency=currency).to(default_currency).amount
+            current_balance = Convert(amount=l['summary'].get('principalOutstanding', -1),currency=currency).to(default_currency).amount
+            total_estimated_loan_cost = Convert(amount=l['summary'].get('totalExpectedCostOfLoan', -1),currency=currency).to(default_currency).amount
+
+            # Other general formating
+            total_overdue = format_currency_display(currency, default_currency, l['summary'].get('totalOverdue', -1))
+
+            # Prepare JSON to send
+            loans.append({
+                'starting_balance_display': starting_balance_display,
+                'starting_balance': starting_balance,
+                'current_balance_display': current_balance_display,
+                'current_balance': current_balance,
+                'total_estimated_loan_cost_display': loan_cost_display,
+                'total_estimated_loan_cost': total_estimated_loan_cost,
+                'loan_id': l.get('id', -1),
+                'currency': default_currency,
+                'repay_every': l.get('repaymentEvery', -1),
+                'loan_descriptor': l.get('loanProductDescription', missing),
+                'interest_rate': l.get('interestRatePerPeriod', missing),
+                'number_of_repayments': l.get('numberOfRepayments', missing),
+                'interest_frequency': l['interestRateFrequencyType'].get('value', missing),
+                'repay_time_unit': l['repaymentFrequencyType'].get('value', missing),
+                'total_overdue': total_overdue,
             })
 
     return {'success': True, 'loans': loans}

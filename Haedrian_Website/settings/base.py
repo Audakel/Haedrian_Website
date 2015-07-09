@@ -110,7 +110,7 @@ INSTALLED_BACKENDS = {
     "telerivet": {
         "ENGINE": "rapidsms_telerivet.outgoing.TelerivetBackend",
         "project_id": "PJa61703ce18b3a11e",
-        "phone_id": "PN50774ea8fb7cf4ca",
+        "phone_id": "PN1370f45e6aa449c2",
         "secret": "AUH4PZMMLHN3XPHHHDW6MM3HURZ923XD",
         "api_key": "SMLXzvuupVOtIP9SIOU5hdXRlSkRwvaM",
     },
@@ -252,15 +252,16 @@ BITCOIN = moneyed.add_currency(
 _FORMATTER.add_sign_definition(
     'default',
     BITCOIN,
-    prefix=u'Ƀ '
+    prefix=u'Ƀ'
 )
 
-_FORMATTER.add_formatting_definition(
-    'en_us',
-    group_size=0, group_separator="", decimal_point=".",
-    positive_sign="",  trailing_positive_sign="",
-    negative_sign="-", trailing_negative_sign="",
-    rounding_method=ROUND_HALF_EVEN)
+# _FORMATTER.add_formatting_definition(
+#     'btc_BTC',
+#     group_size=3, group_separator="", decimal_point=".",
+#     positive_sign="",  trailing_positive_sign="",
+#     negative_sign="-", trailing_negative_sign="",
+#     rounding_method=ROUND_HALF_EVEN
+# )
 
 # Logging
 

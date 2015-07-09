@@ -1,3 +1,6 @@
+import re
+from apiv1.internal.format_currency_display import format_currency_display
+
 __author__ = 'audakel'
 import hashlib
 import hmac
@@ -10,7 +13,8 @@ from django.conf import settings
 from haedrian.models import Wallet
 from wallet import BaseWallet
 from apiv1.models import VerifyGroup, VerifyPerson
-from money import xrates, Money
+from money import xrates
+from money import Money as Convert
 xrates.install('apiv1.btc_exchange_rate.BTCExchangeBackend')
 
 
@@ -83,7 +87,7 @@ class CoinsPhWallet(BaseWallet):
 
 
     def buy(self, kwargs):
-
+        default_currency = self.user.userdata.default_currency
         url = 'https://sandbox.coins.ph/api/v2/buyorder'
         # input_data = CoinsphBuySerializer(data=data)
         # if input_data.is_valid():
@@ -94,8 +98,8 @@ class CoinsPhWallet(BaseWallet):
         if kwargs.get('group_repayment_id', "") != "":
             group_repayment_flag = True
 
-        amount_btc = Money(amount=kwargs["amount_local"], currency=kwargs["currency"]).to('BTC')
-        amount_php = Money(amount=amount_btc.amount, currency='BTC').to('PHP')
+        amount_btc = Convert(amount=kwargs["amount_local"], currency=default_currency).to('BTC')
+        amount_php = Convert(amount=amount_btc.amount, currency='BTC').to('PHP')
 
         _data = {
             "currency": "PHP",
@@ -107,6 +111,14 @@ class CoinsPhWallet(BaseWallet):
         data = make_oauth_request(url, self.user, json.dumps(_data, separators=(',', ':'), skipkeys=True))
         if data['success']:
             data = data['order']
+
+            instructions = data['instructions']
+            pattern = re.compile("(PHP) (\d*[,.][0-9]{1,2})(?=</strong>)")
+            match = pattern.search(instructions)
+            php_amount = match.group(2)
+            new_amount = format_currency_display('PHP', default_currency, php_amount)
+            instructions = pattern.sub(new_amount, instructions)
+
             order = {
                 "status": data['status'],
                 "marked_paid_time": data['marked_paid_time'],
@@ -119,11 +131,12 @@ class CoinsPhWallet(BaseWallet):
                 "btc_released": data['btc_released'],
                 "region": data['region'],
                 "expiration_time": data['expiration_time'],
-                "instructions": data['instructions'],
+                "instructions": instructions,
                 "wallet_address": data['wallet_address'],
                 "id": data['id'],
                 "btc_amount": data['btc_amount'],
-                "currency_amount": data['currency_amount']
+                # TODO:: will it always be coming back as PHP for currency amount?
+                "currency_amount": format_currency_display('PHP', default_currency, data['currency_amount'])
             }
             if group_repayment_flag:
                 g = VerifyGroup.objects.filter(id=kwargs['group_repayment_id'])[0]
@@ -146,8 +159,18 @@ class CoinsPhWallet(BaseWallet):
             transactions = []
             data = data['orders']
             count = 0
+            default_currency = self.user.userdata.default_currency
 
             for transaction in data:
+
+                instructions = transaction['instructions']
+                pattern = re.compile("(PHP) (\d*[,.][0-9]{1,2})(?=</strong>)")
+                match = pattern.search(instructions)
+                php_amount = match.group(2)
+                currency = match.group(1)
+                new_amount = format_currency_display(currency, default_currency, php_amount)
+                instructions = pattern.sub(new_amount, instructions)
+
                 transactions.append(dict({
                     'id': transaction['id'],
                     'status': transaction['status'],
@@ -155,10 +178,10 @@ class CoinsPhWallet(BaseWallet):
                     'created_at': transaction['created_at'],
                     'marked_paid_time': transaction['marked_paid_time'],
                     'expiration_time': transaction['expiration_time'],
-                    'instructions': transaction['instructions'],
+                    'instructions': instructions,
                     'wallet_address': transaction['wallet_address'],
                     'btc_amount': transaction['btc_amount'],
-                    'currency': 'BTC',
+                    'currency': currency,
                     'currency_amount': transaction['currency_amount'],
                     'exchange_rate': transaction['rate']
                 }))
@@ -266,7 +289,6 @@ class CoinsPhWallet(BaseWallet):
     def send(self, receiver, currency, amount_btc, amount_local, target_address):
         url = 'https://sandbox.coins.ph/api/v3/crypto-payments/'
         user_wallet = Wallet.objects.filter(user_id=self.user)[0]
-
         body = {
             # 'amount': amount_local,
             'amount': round(amount_btc, 8),
@@ -534,6 +556,11 @@ def make_oauth_request(url, user, body={}, put=False, headers="", content_type=T
 
         if isinstance(error_result['error'], str):
             error_result['error'] = error_result['error']
+        elif isinstance(error_result['error'], dict):
+            try:
+                error_result['error'] = error_result['error']['target_address'][0]
+            except:
+                error_result['error'] = 'New error from coins.ph'
         else:
             error_result['error'] = error_result['error'][0]
         return error_result

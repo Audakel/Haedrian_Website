@@ -21,6 +21,12 @@ def format_currency_display(in_currency, out_currency, amount):
                            currency=convert_data.data['in_currency']).to(convert_data.data['out_currency'])
         amount_final = Money(amount=amount_out.amount, currency=amount_out.currency)
 
+        if amount_out.currency == 'USD':
+            return format_money(amount_final, locale='en_US')
+
+        if amount_out.currency == 'BTC':
+            return format_money(amount_final, decimal_places=5)
+
         return format_money(amount_final)
 
 

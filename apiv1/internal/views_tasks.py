@@ -8,6 +8,8 @@ from apiv1.external.mifosx import mifosx_api
 from apiv1.models import VerifyPerson
 from haedrian.models import Wallet, Transaction, UserData
 import simplejson as json
+from money import Money as Convert
+
 from format_currency_display import format_currency_display
 __author__ = 'audakel'
 
@@ -18,7 +20,7 @@ def _get_history(user, kwargs):
     if data['success']:
         # TODO: fix double wallet issue.... find out what currecny wallet they want
         # currency = Wallet.objects.filter(user=user).currency
-        currency = "PHP"
+        currency = "BTC"
 
         default_currency = user.userdata.default_currency
 
@@ -30,7 +32,8 @@ def _get_history(user, kwargs):
                 'entry_type': transaction['entry_type'],
                 'date': transaction['date'],
                 'id': transaction['id'],
-                'amount': format_currency_display(currency, default_currency, transaction['amount']),
+                'amount_display': format_currency_display(currency, default_currency, transaction['amount']),
+                'amount': Convert(transaction['amount'], currency).to(default_currency).amount,
                 'original_target': transaction['original_target'],
                 'original_sender': transaction['original_sender'],
                 'currency': default_currency
@@ -58,6 +61,7 @@ def get_temp_wallet(user):
 
 
 def add_transaction(currency, user=None, group=None):
+
     if group:
         members = group
     elif user:

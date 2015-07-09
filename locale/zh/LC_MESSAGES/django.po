@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-07 12:48-0600\n"
+"POT-Creation-Date: 2015-07-07 12:54-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,93 +19,93 @@ msgstr ""
 
 #: .\haedrian\forms.py:34
 msgid "Select the institution you are connected to"
-msgstr ""
+msgstr "请选择您所在的企业"
 
 #: .\haedrian\forms.py:35
 msgid "ID number"
-msgstr ""
+msgstr "用户ID"
 
 #: .\haedrian\forms.py:61
 msgid "The ID provided is not a member of the application chosen"
-msgstr ""
+msgstr "您提供的用户ID不是所选企业的客户"
 
 #: .\haedrian\forms.py:71
 msgid "Enter a valid phone number."
-msgstr ""
+msgstr "请输入正确的电话号码"
 
 #: .\haedrian\forms.py:78
 msgid ""
 "If a microfinance institution is selected, then you must enter an ID as well"
-msgstr ""
+msgstr "如果您选择了一个信贷企业，请输入您的用户ID"
 
 #: .\haedrian\models.py:23
 msgid "Mentors International"
-msgstr ""
+msgstr "Mentors International"
 
 #: .\haedrian\templates\registration\logged_out.html:7
 msgid "Thank you for visiting today! We hope to see you again soon!"
-msgstr ""
+msgstr "感谢您今天的参与！我们希望可以再次见到您！"
 
 #: .\haedrian\templates\registration\login.html:96
 #: .\haedrian\templates\registration\login.html:118
 msgid "Login"
-msgstr ""
+msgstr "登录"
 
 #: .\haedrian\templates\registration\login.html:106
 msgid "Username"
-msgstr ""
+msgstr "用户名"
 
 #: .\haedrian\templates\registration\login.html:111
 msgid "Password"
-msgstr ""
+msgstr "密码"
 
 #: .\haedrian\templates\registration\login.html:116
 msgid "Remember me on this computer"
-msgstr ""
+msgstr "记住我"
 
 #: .\haedrian\templates\registration\register.html:13
 msgid "Sign Up"
-msgstr ""
+msgstr "注册"
 
 #: .\sms\app.py:47
 msgid "balance"
-msgstr ""
+msgstr "平衡"
 
 #: .\sms\app.py:49
 msgid "send"
-msgstr ""
+msgstr "发送"
 
 #: .\sms\app.py:51
 msgid "use"
-msgstr ""
+msgstr "使用"
 
 #: .\sms\app.py:55
 msgid "whoami"
-msgstr ""
+msgstr "whoami"
 
 #: .\sms\app.py:57
 msgid "deposit"
-msgstr ""
+msgstr "存款"
 
 #: .\sms\app.py:59
 msgid "where"
-msgstr ""
+msgstr "地点"
 
 #: .\sms\app.py:72
 msgid "Error: Enter a monetary amount to send."
-msgstr ""
+msgstr "错误：请输入金额数量再发送"
 
 #: .\sms\app.py:76
 msgid "Error: The amount to send must be positive"
-msgstr ""
+msgstr "错误：金额数量必须是正数"
 
 #: .\sms\app.py:80
 msgid "Error: Not enough funds"
-msgstr ""
+msgstr "错误：金额不足"
 
 #: .\sms\app.py:85
 msgid "Error: The receiver must be an @ handle."
-msgstr ""
+msgstr "错误："
 
 #: .\sms\app.py:91
 #, python-format

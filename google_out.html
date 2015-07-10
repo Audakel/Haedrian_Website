@@ -42,11 +42,11 @@
 
                                     <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            asdfg
+            lukadog
             <b class="caret"></b>
         </a>
         <ul class="dropdown-menu">
-            <li><a href='/v1/api-auth/logout/?next=/v1/home/'>Log out</a></li>
+            <li><a href='/v1/api-auth/logout/?next=/v1/buy-history/'>Log out</a></li>
         </ul>
     </li>
 
@@ -61,7 +61,7 @@
                 <ul class="breadcrumb">
 
 
-                            <li class="active"><a href="/v1/home/">Get Home Screen</a></li>
+                            <li class="active"><a href="/v1/buy-history/">Get Buy History</a></li>
 
 
                 </ul>
@@ -74,8 +74,8 @@
                     <form id="get-form" class="pull-right">
                         <fieldset>
                             <div class="btn-group format-selection">
-                                <a class="btn btn-primary js-tooltip" href='/v1/home/?format=api'
-                                     rel="nofollow" title="Make a GET request on the Get Home Screen resource">GET</a>
+                                <a class="btn btn-primary js-tooltip" href='/v1/buy-history/'
+                                     rel="nofollow" title="Make a GET request on the Get Buy History resource">GET</a>
 
                                 <button class="btn btn-primary dropdown-toggle js-tooltip" data-toggle="dropdown"
                                         title="Specify a format for the GET request">
@@ -85,18 +85,18 @@
 
                                         <li>
                                             <a class="js-tooltip format-option"
-                                                href='/v1/home/?format=json'
+                                                href='/v1/buy-history/?format=json'
                                                  rel="nofollow"
-                                               title="Make a GET request on the Get Home Screen resource with the format set to `json`">
+                                               title="Make a GET request on the Get Buy History resource with the format set to `json`">
                                                 json
                                             </a>
                                         </li>
 
                                         <li>
                                             <a class="js-tooltip format-option"
-                                                href='/v1/home/?format=api'
+                                                href='/v1/buy-history/?format=api'
                                                  rel="nofollow"
-                                               title="Make a GET request on the Get Home Screen resource with the format set to `api`">
+                                               title="Make a GET request on the Get Buy History resource with the format set to `api`">
                                                 api
                                             </a>
                                         </li>
@@ -108,11 +108,11 @@
 
 
 
-                    <form class="button-form" action="/v1/home/?format=api" method="POST">
-                        <input type='hidden' name='csrfmiddlewaretoken' value='64sQwKVxWJXHBr0AhXBupBq3JmtxgdPQ' />
+                    <form class="button-form" action="/v1/buy-history/" method="POST">
+                        <input type='hidden' name='csrfmiddlewaretoken' value='CtoUf117v1bNzTokz9AP1eKYFbHOPmuO' />
                         <input type="hidden" name="_method" value="OPTIONS" />
                         <button class="btn btn-primary js-tooltip"
-                                title="Make an OPTIONS request on the Get Home Screen resource">OPTIONS</button>
+                                title="Make an OPTIONS request on the Get Buy History resource">OPTIONS</button>
                     </form>
 
 
@@ -120,7 +120,7 @@
 
                 <div class="content-main">
                     <div class="page-header">
-                        <h1>Get Home Screen</h1>
+                        <h1>Get Buy History</h1>
                     </div>
                     <div style="float:left">
 
@@ -131,17 +131,89 @@
 
 
                     <div class="request-info" style="clear: both" >
-                        <pre class="prettyprint"><b>GET</b> /v1/home/?format=api</pre>
+                        <pre class="prettyprint"><b>GET</b> /v1/buy-history/</pre>
                     </div>
                     <div class="response-info">
-                        <pre class="prettyprint"><span class="meta nocode"><b>HTTP 400 BAD REQUEST</b>
+                        <pre class="prettyprint"><span class="meta nocode"><b>HTTP 200 OK</b>
 <b>Content-Type:</b> <span class="lit">application/json</span>
 <b>Vary:</b> <span class="lit">Accept</span>
 <b>Allow:</b> <span class="lit">OPTIONS, GET</span>
 
 </span>{
-    &quot;success&quot;: false,
-    &quot;error&quot;: &quot;response&quot;
+    &quot;transaction_count&quot;: 5,
+    &quot;success&quot;: true,
+    &quot;transactions&quot;: [
+        {
+            &quot;status&quot;: &quot;pending_payment&quot;,
+            &quot;outlet_title&quot;: &quot;Union Bank Deposit&quot;,
+            &quot;currency&quot;: &quot;USD&quot;,
+            &quot;created_at&quot;: &quot;1436505213&quot;,
+            &quot;exchange_rate&quot;: &quot;13372&quot;,
+            &quot;instructions&quot;: &quot;&lt;ol&gt;\n  &lt;li&gt;Please deposit the exact total due amount (&lt;strong&gt;$2.00&lt;/strong&gt;) at any UnionBank of the Philippines branch to the following account:\n  &lt;pre style=\&quot;font-size:small\&quot;&gt;\n    Account name: BETUR INC.\n    Account number: 000910028667\n    Account type: CHECKING &lt;/pre&gt;\nFor help finding a Union Bank branch near you, use this\n  &lt;a href=\&quot;https://www.unionbankph.com/index.php?option=com_content&amp;view=article&amp;id=1043&amp;Itemid=505\&quot;&gt; branch locator&lt;/a&gt;.\n  &lt;/li&gt;\n  &lt;li&gt;Once you have deposited the full amount, please mark your order as paid. We will then confirm your payment and release the funds to your account.&lt;/li&gt;\n&lt;/ol&gt;&quot;,
+            &quot;expiration_time&quot;: &quot;1436508813&quot;,
+            &quot;marked_paid_time&quot;: null,
+            &quot;wallet_address&quot;: &quot;1L3KUqB2NWxfgynZiJwb23XX1avnXCMpVp&quot;,
+            &quot;id&quot;: &quot;665597c1485d41629c0214f723c47f1d&quot;,
+            &quot;btc_amount&quot;: &quot;0.00734669&quot;,
+            &quot;currency_amount&quot;: &quot;$2.00&quot;
+        },
+        {
+            &quot;status&quot;: &quot;pending_submit&quot;,
+            &quot;outlet_title&quot;: &quot;Citibank&quot;,
+            &quot;currency&quot;: &quot;USD&quot;,
+            &quot;created_at&quot;: null,
+            &quot;exchange_rate&quot;: &quot;13372&quot;,
+            &quot;instructions&quot;: &quot;Pay the money!&quot;,
+            &quot;expiration_time&quot;: &quot;1436508806&quot;,
+            &quot;marked_paid_time&quot;: null,
+            &quot;wallet_address&quot;: &quot;1L3KUqB2NWxfgynZiJwb23XX1avnXCMpVp&quot;,
+            &quot;id&quot;: &quot;9d7f9a213f964179973d41c15f029873&quot;,
+            &quot;btc_amount&quot;: &quot;0.00734669&quot;,
+            &quot;currency_amount&quot;: &quot;$2.00&quot;
+        },
+        {
+            &quot;status&quot;: &quot;pending_submit&quot;,
+            &quot;outlet_title&quot;: &quot;Citibank&quot;,
+            &quot;currency&quot;: &quot;USD&quot;,
+            &quot;created_at&quot;: null,
+            &quot;exchange_rate&quot;: &quot;13372&quot;,
+            &quot;instructions&quot;: &quot;Pay the money!&quot;,
+            &quot;expiration_time&quot;: &quot;1436508797&quot;,
+            &quot;marked_paid_time&quot;: null,
+            &quot;wallet_address&quot;: &quot;1L3KUqB2NWxfgynZiJwb23XX1avnXCMpVp&quot;,
+            &quot;id&quot;: &quot;b32c36c89cc34c1fa7b13fd11bc85598&quot;,
+            &quot;btc_amount&quot;: &quot;0.08448474&quot;,
+            &quot;currency_amount&quot;: &quot;$23.00&quot;
+        },
+        {
+            &quot;status&quot;: &quot;released&quot;,
+            &quot;outlet_title&quot;: &quot;BDO Bank&quot;,
+            &quot;currency&quot;: &quot;USD&quot;,
+            &quot;created_at&quot;: &quot;1436499573&quot;,
+            &quot;exchange_rate&quot;: &quot;13323&quot;,
+            &quot;instructions&quot;: &quot;&lt;ol&gt;\n  &lt;li&gt;Please deposit the exact total due amount (&lt;strong&gt;-&lt;/strong&gt;) at any BDO branch to the following account:\n  &lt;pre style=\&quot;font-size:small\&quot;&gt;\n    Account name: BETUR INC.\n    Account number: 008178000421\n    Account type: CURRENT&lt;/pre&gt;\n  For help finding a BDO branch near you, use this\n  &lt;a href=\&quot;https://www.bdo.com.ph/branches-atms-locator\&quot;&gt; branch locator&lt;/a&gt;.\n  &lt;/li&gt;\n  &lt;li&gt;Once you have deposited the full amount, please mark your order as paid. We will then confirm your payment and release the funds to your account.&lt;/li&gt;\n&lt;/ol&gt;&quot;,
+            &quot;expiration_time&quot;: &quot;1436503173&quot;,
+            &quot;marked_paid_time&quot;: &quot;1436499580&quot;,
+            &quot;wallet_address&quot;: &quot;1L3KUqB2NWxfgynZiJwb23XX1avnXCMpVp&quot;,
+            &quot;id&quot;: &quot;6b591c6241ef4b61a4c4c2f571926d01&quot;,
+            &quot;btc_amount&quot;: &quot;0.01319898&quot;,
+            &quot;currency_amount&quot;: &quot;$3.62&quot;
+        },
+        {
+            &quot;status&quot;: &quot;released&quot;,
+            &quot;outlet_title&quot;: &quot;BDO Bank&quot;,
+            &quot;currency&quot;: &quot;USD&quot;,
+            &quot;created_at&quot;: &quot;1436499437&quot;,
+            &quot;exchange_rate&quot;: &quot;13327&quot;,
+            &quot;instructions&quot;: &quot;&lt;ol&gt;\n  &lt;li&gt;Please deposit the exact total due amount (&lt;strong&gt;-&lt;/strong&gt;) at any BDO branch to the following account:\n  &lt;pre style=\&quot;font-size:small\&quot;&gt;\n    Account name: BETUR INC.\n    Account number: 008178000421\n    Account type: CURRENT&lt;/pre&gt;\n  For help finding a BDO branch near you, use this\n  &lt;a href=\&quot;https://www.bdo.com.ph/branches-atms-locator\&quot;&gt; branch locator&lt;/a&gt;.\n  &lt;/li&gt;\n  &lt;li&gt;Once you have deposited the full amount, please mark your order as paid. We will then confirm your payment and release the funds to your account.&lt;/li&gt;\n&lt;/ol&gt;&quot;,
+            &quot;expiration_time&quot;: &quot;1436503037&quot;,
+            &quot;marked_paid_time&quot;: &quot;1436499444&quot;,
+            &quot;wallet_address&quot;: &quot;1L3KUqB2NWxfgynZiJwb23XX1avnXCMpVp&quot;,
+            &quot;id&quot;: &quot;34b3ea38707147e6825cd9aa864821a1&quot;,
+            &quot;btc_amount&quot;: &quot;0.018428&quot;,
+            &quot;currency_amount&quot;: &quot;$5.05&quot;
+        }
+    ]
 }</pre>
                     </div>
                 </div>
@@ -176,7 +248,7 @@
 
 <script src="/static/debug_toolbar/js/toolbar.js"></script>
 <div id="djDebug" style="display:none;" dir="ltr"
-     data-store-id="77509e7467be4f4a9f7341da1f3f3bcc" data-render-panel-url="/__debug__/render_panel/"
+     data-store-id="e37bcda932554c9da208d7d9e685927e" data-render-panel-url="/__debug__/render_panel/"
      >
 	<div style="display:none;" id="djDebugToolbar">
 		<ul id="djDebugPanelList">
@@ -208,7 +280,7 @@
 					Time
 
 
-						<br /><small>CPU: 307.21ms (1092.32ms)</small>
+						<br /><small>CPU: 344.60ms (1103.51ms)</small>
 
 
 
@@ -256,7 +328,7 @@
 					Request
 
 
-						<br /><small>get_home_screen</small>
+						<br /><small>get_buy_history</small>
 
 
 
@@ -272,7 +344,7 @@
 					SQL
 
 
-						<br /><small>7 queries in 3.68ms</small>
+						<br /><small>16 queries in 7.11ms</small>
 
 
 
@@ -283,12 +355,12 @@
 				<li class="djDebugPanelButton">
 					<input type="checkbox" data-cookie="djdtStaticFilesPanel" checked="checked" title="Disable for next and successive requests" />
 
-						<a href="#" title="Static files (1070 found, 0 used)" class="StaticFilesPanel">
+						<a href="#" title="Static files (1076 found, 8 used)" class="StaticFilesPanel">
 
 					Static files
 
 
-						<br /><small>0 files used</small>
+						<br /><small>8 files used</small>
 
 
 
@@ -472,7 +544,7 @@
 			<div id="StaticFilesPanel" class="djdt-panelContent">
 				<div class="djDebugPanelTitle">
 					<a href="" class="djDebugClose"></a>
-					<h3>Static files (1070 found, 0 used)</h3>
+					<h3>Static files (1076 found, 8 used)</h3>
 				</div>
 				<div class="djDebugPanelContent">
 

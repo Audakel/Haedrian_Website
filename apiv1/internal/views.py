@@ -316,10 +316,7 @@ def _get_buy_history(user, kwargs):
     try:
         data = wallet.buy_history(kwargs)
         if data['success']:
-            default_currency = user.userdata.default_currency
-            for trans in data['transactions']:
-                trans['currency_amount'] = format_currency_display(trans['currency'], default_currency,
-                                                                   trans['btc_amount'])
+            pass
         return data
     except Exception as e:
         return e.message
@@ -331,7 +328,7 @@ def _get_id(user, kwargs):
         'email': user.email,
         'first_name': user.first_name,
         'last_name': user.last_name,
-        'currencies': ['USD', 'PHP', 'BTC']
+        'currencies': ['USD', 'PHP']
     }
     return data
 
@@ -436,9 +433,13 @@ def _group_verify(user, kwargs):
 def _group_payment(user, kwargs):
     payments = VerifyGroup.objects.filter(created_by=user).order_by('created')
     payment_list = []
+    default_currency = user.userdata.default_currency
+
     for payment in payments:
         payment_list.append({
-            'total_payment': payment.total_payment,
+            'total_payment': Convert(payment.total_payment, payment.currency).to(user.userdata.default_currency),
+            'total_payment_display': format_currency_display(payment.currency, user.userdata.default_currency,
+                                                             payment.total_payment),
             'deposit_confirmed': payment.buy_confirmed,
             'group_id': payment.group_id,
             'payment_id': payment.id
@@ -528,18 +529,18 @@ def _get_next_repayment(user, data=''):
     # "2 July 2015"
     submitted_on_date = '{} {} {}'.format(
         res['timeline']['submittedOnDate'][2],
-        month_name[2],
+        month_name[res['timeline']['submittedOnDate'][1]],
         res['timeline']['submittedOnDate'][0]
     )
     expected_disbursement_date = '{} {} {}'.format(
         res['timeline']['expectedDisbursementDate'][2],
-        month_name[2],
+        month_name[res['timeline']['submittedOnDate'][1]],
         res['timeline']['expectedDisbursementDate'][0]
     )
     # 1 - individual
     # 2 - Group
     # 3 - JLG
-    # TODO:: fix loanType
+    # TODO:: fix loanType bug in mifos
     loanType = 'individual'
 
 
@@ -572,7 +573,6 @@ def _get_next_repayment(user, data=''):
         baseurl=settings.MIFOSX_SERVER_URL,
         tenant="default"
     )
-
     res = response['response']
     what_repayment_number = 2
 
@@ -592,20 +592,8 @@ def _get_next_repayment(user, data=''):
 
 
 def _testing(user, data=''):
-    from apiv1.dummy_data import a_nice_message
-    backend = 'telerivet'
-    def nice_message():
-        return a_nice_message[random.randint(0, 6)]
-    def message(member, group_leader, amount, mfi):
-        return 'Hi {}, looks like {} is preparing to send ${} to {} for you. ' \
-               'If there has been an error please talk to your representitive at {}. Remember - {}'.format(
-            member, group_leader, amount, mfi, mfi, nice_message())
-    try:
-        connection = lookup_connections(backend=backend, identities=['+639985443713'])
-        send(message('Evan', 'Haedrian Labs', '$23', 'Mentors International'), connection)
-        return 'Success'
-    except Exception as e:
-        return 'error message: {}'.format(e.message)
+    from apiv1.tasks import verify_send_que
+    verify_send_que()
 
     # transaction = Transaction(sender=user,
     # receiver=get_user_model().objects.get(username='mentors_international'),

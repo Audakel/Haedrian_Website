@@ -153,6 +153,7 @@ class CoinsPhWallet(BaseWallet):
 
 
     def buy_history(self, kwargs):
+
         url = 'https://sandbox.coins.ph/api/v2/buyorder'
         data = make_oauth_request(url, self.user, content_type=False)
         if data['success']:
@@ -162,14 +163,19 @@ class CoinsPhWallet(BaseWallet):
             default_currency = self.user.userdata.default_currency
 
             for transaction in data:
-
                 instructions = transaction['instructions']
                 pattern = re.compile("(PHP) (\d*[,.][0-9]{1,2})(?=</strong>)")
                 match = pattern.search(instructions)
-                php_amount = match.group(2)
-                currency = match.group(1)
-                new_amount = format_currency_display(currency, default_currency, php_amount)
-                instructions = pattern.sub(new_amount, instructions)
+                if not match == None:
+                    php_amount = match.group(2)
+                    currency = match.group(1)
+                    new_amount = format_currency_display(currency, default_currency, php_amount)
+                    instructions = pattern.sub(new_amount, instructions)
+                else:
+                    php_amount = 0
+                    currency = 'PHP'
+
+
 
                 transactions.append(dict({
                     'id': transaction['id'],
@@ -181,9 +187,10 @@ class CoinsPhWallet(BaseWallet):
                     'instructions': instructions,
                     'wallet_address': transaction['wallet_address'],
                     'btc_amount': transaction['btc_amount'],
-                    'currency': currency,
-                    'currency_amount': transaction['currency_amount'],
-                    'exchange_rate': transaction['rate']
+                    'currency_amount': format_currency_display(currency, default_currency, transaction['currency_amount']),
+                    'exchange_rate': transaction['rate'],
+                    'currency': default_currency,
+
                 }))
                 count += 1
 

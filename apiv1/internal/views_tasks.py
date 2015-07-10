@@ -19,6 +19,7 @@ def _get_history(user, kwargs):
     data = wallet.get_history(kwargs)
     if data['success']:
         # TODO: fix double wallet issue.... find out what currecny wallet they want
+        # TODO: this is f**** important to fix
         # currency = Wallet.objects.filter(user=user).currency
         currency = "BTC"
 
@@ -61,6 +62,7 @@ def get_temp_wallet(user):
 
 
 def add_transaction(currency, user=None, group=None):
+    import datetime
 
     if group:
         members = group
@@ -131,7 +133,9 @@ def repay_outstanding_loan(_json):
             "note": "Payment through Haedrian Labs",
         }
         res = mifosx_api('loans/{}/transactions'.format(loan_id), params={'command': 'repayment'}, body=json.dumps(body), method='POST')
+
         if res['success']:
+            print '-----success: repay outstanding loan {}: {} -------------'.format(loan_id, body['transactionAmount'])
             return {'success': True, 'message': 'Paid back loan'}
     # something went wrong
-    return res
+    return res['message']

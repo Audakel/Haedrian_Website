@@ -16,6 +16,7 @@ def verify_send_que():
     for q in que:
         history = _get_history(q.user, {'id': q.sent_payment_id})
         if history['success'] and history['transactions'][0]['status'] == 'success':
+            print '----- Found successfull transaction {}, adding transaction------'.format(q)
             if q.group:
                 group = q.group
                 user = None

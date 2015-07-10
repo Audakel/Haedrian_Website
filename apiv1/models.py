@@ -36,4 +36,7 @@ class TransactionQueue(models.Model):
     user = models.ForeignKey(User)
     sent_payment_id = models.CharField(max_length=40)
     group = models.ForeignKey(VerifyGroup, null=True)
+    def __str__(self):
+        return 'user: {} group: {} payment_id: {}'.format(self.user, self.group, self.sent_payment_id)
+
 

@@ -5,7 +5,7 @@ from money import Money as Convert
 
 from apiv1.external.mifosx import mifosx_api
 from haedrian.models import UserData
-from apiv1.models import TransactionQueue
+from apiv1.models import TransactionQueue, VerifyPerson, VerifyGroup
 from Haedrian_Website.celery import app
 from apiv1.internal.views_tasks import _get_history, add_transaction
 
@@ -22,9 +22,21 @@ def verify_send_que():
                 user = None
             else:
                 group = None
-                GroupMember = namedtuple("GroupMember", ["userdata", "amount"])
-                user = GroupMember(q.user.userdata, history['transactions'][0]['amount'])
+                userdata = UserData.objects.filter(user=q.user_id)[0]
+                verify_group = VerifyGroup(size=1,
+                                           buy_order_id=q.sent_payment_id,
+                                           buy_confirmed=True,
+                                           total_payment=history['transactions'][0]['amount'],
+                                           currency=userdata.default_currency,
+                                           created_by=userdata.user)
+
+                user = VerifyPerson(group=verify_group,
+                                    mifos_id=userdata.app_id,
+                                    phone=userdata.phone,
+                                    amount=history['transactions'][0]['amount'])
+
             add_transaction(history['transactions'][0]['currency'], group=group, user=user)
+            # TODO:: uncoment delete after testing
             q.delete()
 
 

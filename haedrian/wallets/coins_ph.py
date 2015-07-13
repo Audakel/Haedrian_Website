@@ -176,7 +176,6 @@ class CoinsPhWallet(BaseWallet):
                     currency = 'PHP'
 
 
-
                 transactions.append(dict({
                     'id': transaction['id'],
                     'status': transaction['status'],

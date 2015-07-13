@@ -65,7 +65,7 @@ def add_transaction(currency, user=None, group=None):
     import datetime
 
     if group:
-        members = group
+        members = VerifyPerson.objects.filter(group_id=group)
     elif user:
         members = [user]
     else:
@@ -78,7 +78,7 @@ def add_transaction(currency, user=None, group=None):
         total_sent_local = Money(amount=total_sent.amount, currency='BTC').to(currency)
         fee_local = Money(amount=amount_fee.amount, currency='BTC').to(currency)
 
-        transaction = Transaction(sender=member.userdata.user,
+        transaction = Transaction(sender=UserData.objects.filter(app_id=member.mifos_id)[0].user,
                                   receiver=get_user_model().objects.get(username='mentors_international'),
                                   amount_btc=total_sent.amount,
                                   amount_btc_currency='BTC',
@@ -90,7 +90,7 @@ def add_transaction(currency, user=None, group=None):
             return {"success": False, "error": str(e)}
 
         repay_outstanding_loan({
-            'clientId': member.userdata.app_id,
+            'clientId': member.mifos_id,
             'transactionId': transaction.id
         })
 

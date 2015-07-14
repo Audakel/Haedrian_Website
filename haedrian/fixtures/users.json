@@ -15,7 +15,6 @@
             "password": "pbkdf2_sha256$15000$uc4mu4Xw8KbO$MzijkpMzFlXDzniLjFzKbu9H1VJHLJMkSvgmme7rFyk=",
             "email": "haedrian@example.com",
             "date_joined": "2015-05-07T16:56:46.588Z"
-
         }
     },
     {
@@ -99,7 +98,7 @@
             "phone": "+12345551212",
             "default_currency": "USD",
             "country": "US",
-            "application": null,
+            "application": "",
             "app_id": null
 
         }
@@ -113,11 +112,8 @@
             "phone": "+12345559898",
             "default_currency": "USD",
             "country": "US",
-            "application": null,
-
+            "application": "",
             "app_id": null
-
-
         }
     },
     {
@@ -129,10 +125,8 @@
             "phone": "+18016905609",
             "default_currency": "USD",
             "country": "US",
-            "application": null,
-
+            "application": "",
             "app_id": null
-
         }
     },
   {
@@ -216,7 +210,7 @@
             "blockchain_address": "1AopccStPDYoUhBDjZmsFQgfvuihZugHdR"
         }
 
-    },
+  },
   {
       "model": "haedrian.wallet",
         "pk": 5,
@@ -231,5 +225,19 @@
             "blockchain_address": "17xzktvufKS731TLPVBvkqPb64BdYSW8gf"
         }
 
+  },
+  {
+    "model" : "apiv1.verifygroup",
+    "pk" : "1",
+    "fields" : {
+      "group_id" : 1,
+      "size" : 4,
+      "created" : "2015-07-14 19:03:46.373732",
+      "total_payment" : 5.00,
+      "buy_order_id" : "adsfasdf",
+      "buy_confirmed" : false,
+      "currency" : "USD",
+      "created_by" : 1
     }
+  }
 ]

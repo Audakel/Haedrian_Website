@@ -1,0 +1,71 @@
+[
+    {
+        "model": "apiv1.transactionqueue",
+        "pk": 1,
+        "fields": {
+          "user" : 1,
+          "sent_payment_id" : 1,
+          "group" : 1
+        }
+    },
+    {
+        "model": "apiv1.verifygroup",
+        "pk": 1,
+        "fields": {
+          "group_id" : 1,
+          "size" : 3,
+          "buy_order_id" : "asdfasdfadsf",
+          "created" : "2015-07-14 19:03:46.373732",
+          "buy_confirmed" : false,
+          "total_payment" : 5.00,
+          "currency" : "USD",
+          "created_by" : 1
+        }
+    },
+    {
+        "model": "apiv1.transactionqueue",
+        "pk": 2,
+        "fields": {
+          "user" : 2,
+          "sent_payment_id" : 2,
+          "group" : 2
+        }
+    },
+    {
+        "model": "apiv1.verifygroup",
+        "pk": 2,
+        "fields": {
+          "group_id" : 2,
+          "size" : 3,
+          "buy_order_id" : "asdfasdfadsf",
+          "created" : "2015-07-13 19:03:46.373732",
+          "buy_confirmed" : false,
+          "total_payment" : 6.00,
+          "currency" : "USD",
+          "created_by" : 1
+        }
+    },
+      {
+        "model": "apiv1.transactionqueue",
+        "pk": 3,
+        "fields": {
+          "user" : 3,
+          "sent_payment_id" : 3,
+          "group" : 3
+        }
+    },
+    {
+        "model": "apiv1.verifygroup",
+        "pk": 3,
+        "fields": {
+          "group_id" : 3,
+          "size" : 3,
+          "buy_order_id" : "asdfasdfadsf",
+          "created" : "2015-07-12 19:03:46.373732",
+          "buy_confirmed" : false,
+          "total_payment" : 7.00,
+          "currency" : "USD",
+          "created_by" : 1
+        }
+    }
+  ]

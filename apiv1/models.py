@@ -11,6 +11,14 @@ class SupportedCurrencies(models.Model):
 
 
 class VerifyGroup(models.Model):
+    PENDING = 1
+    CONFIRMED = 0
+
+    STATUS_TYPE = (
+        (PENDING, 'The transaction is in the queue'),
+        (CONFIRMED, 'The transaction has been confirmed and is out of the queue'),
+    )
+
     group_id = models.CharField(unique=True, max_length=40)
     size = models.IntegerField()
     created = models.DateTimeField(auto_now_add=True)
@@ -22,6 +30,7 @@ class VerifyGroup(models.Model):
     currency = models.CharField(max_length=3, default='USD')
     # creator: Who created the group buy
     created_by = models.ForeignKey(User)
+    status = models.IntegerField(choices=STATUS_TYPE, default=PENDING)
     def __str__(self):
         return self.group_id
 
@@ -33,9 +42,18 @@ class VerifyPerson(models.Model):
     confirmed = models.BooleanField(default=False)
 
 class TransactionQueue(models.Model):
+    PENDING = 1
+    CONFIRMED = 0
+
+    STATUS_TYPE = (
+        (PENDING, 'The transaction is in the queue'),
+        (CONFIRMED, 'The transaction has been confirmed and is out of the queue'),
+    )
+
     user = models.ForeignKey(User)
     sent_payment_id = models.CharField(max_length=40)
     group = models.ForeignKey(VerifyGroup, null=True)
+    status = models.IntegerField(choices=STATUS_TYPE, default=PENDING)
     def __str__(self):
         return 'user: {} group: {} payment_id: {}'.format(self.user, self.group, self.sent_payment_id)
 

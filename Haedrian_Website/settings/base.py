@@ -95,6 +95,16 @@ INSTALLED_APPS = (
     'rapidsms.contrib.messagelog',
     # 'django_google_places',
     'kombu.transport.django',
+    'djangobower',
+    'django_nvd3',
+)
+
+# Specify path to components root (you need to use absolute path)
+BOWER_COMPONENTS_ROOT = os.path.join(PROJECT_APP_ROOT, 'components')
+
+BOWER_INSTALLED_APPS = (
+    'd3#3.3.13',
+    'nvd3#1.7.1',
 )
 
 INSTALLED_BACKENDS = {
@@ -187,6 +197,7 @@ MEDIA_ROOT = os.path.join(PUBLIC_ROOT, 'media')
 
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static'),
+    os.path.join(PROJECT_APP_ROOT, 'components', 'bower_components'),
 )
 
 STATICFILES_FINDERS = (

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% load nvd3_tags %}
+{% block style %}
+    {% include_chart_jscss %}
+    {% load_chart charttype chartdata chartcontainer extra %}
+{% endblock %}
+{% block content %}
+    <div class="row col-sm-offset-1">
+        <h1>Queue</h1>
+        {% include_container chartcontainer 400 600 %}
+    </div>
+{% endblock %}

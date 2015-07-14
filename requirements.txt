@@ -38,5 +38,6 @@ git+https://github.com/Audakel/rapidsms-telerivet.git
 django-kombu
 simplejson
 babel
+django-bower
 python-nvd3
 django-nvd3

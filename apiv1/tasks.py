@@ -25,7 +25,7 @@ def verify_send_que():
                 GroupMember = namedtuple("GroupMember", ["userdata", "amount"])
                 user = GroupMember(q.user.userdata, history['transactions'][0]['amount'])
             add_transaction(history['transactions'][0]['currency'], group=group, user=user)
-            q.delete()
+            q.status = False;
 
 
 

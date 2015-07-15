@@ -2,7 +2,7 @@ import decimal
 
 from money.exchange import BackendBase
 
-from haedrian.models import BitcoinRates
+from haedrian.models import ExchangeRates
 
 
 class BTCExchangeBackend(BackendBase):
@@ -22,7 +22,7 @@ class BTCExchangeBackend(BackendBase):
         if currency == self.base:
             return decimal.Decimal(1)
         # TODO: should it be sell rate or buy rate?
-        return decimal.Decimal(BitcoinRates.objects.get(code=currency).sell_rate)
+        return decimal.Decimal(ExchangeRates.objects.get(code=currency).sell_rate)
         # return self._rates.get(currency, None)
 
     def quotation(self, origin, target):

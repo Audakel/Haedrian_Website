@@ -1,8 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 from django_countries.fields import CountryField
 from djmoney.models.fields import MoneyField
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 class BetaApplicant(models.Model):
     name = models.CharField(max_length=255)
@@ -83,9 +84,11 @@ class Transaction(models.Model):
                             choices=TRANSACTION_TYPE,
                             default=SEND)
 
-class BitcoinRates(models.Model):
-    code = models.CharField(max_length=4)
-    name = models.CharField(max_length=50)
-    buy_rate = models.DecimalField(max_digits=20, decimal_places=10)
-    sell_rate = models.DecimalField(max_digits=20, decimal_places=10)
+class ExchangeRates(models.Model):
+    provider = models.CharField(max_length=50)
+    code_from = models.CharField(max_length=3)
+    code_to = models.CharField(max_length=3)
+    buy = models.DecimalField(max_digits=20, decimal_places=10)
+    sell = models.DecimalField(max_digits=20, decimal_places=10)
+    date = models.DateTimeField(default=timezone.now)
 

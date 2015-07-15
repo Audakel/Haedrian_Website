@@ -231,6 +231,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
+    # 'EXCEPTION_HANDLER': 'apiv1.views.common_exception_handler',
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
 # define the bitcoin currency for python money

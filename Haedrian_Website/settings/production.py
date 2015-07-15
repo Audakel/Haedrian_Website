@@ -1,3 +1,4 @@
+import sys
 from .base import *
 
 
@@ -35,4 +36,7 @@ DATABASES = {
 # it looks like the guest account is enough since this is a local install
 BROKER_URL = 'amqp://guest:guest@localhost:5672//'
 
+MIFOSX_USER = "aquila"
+MIFOSX_PASSWORD = "MifosxSaTeCoCeMuBu1"
+MIFOSX_TENANT = "default"
 MIFOSX_SERVER_URL = "https://mentors.haedrian.io/mifosng-provider/api/v1/"

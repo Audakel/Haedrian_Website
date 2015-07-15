@@ -206,13 +206,13 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
 CELERYBEAT_SCHEDULE = {
-    # 'check-verify-send-que': {
-    #     'task': 'apiv1.tasks.verify_send_que',
-    #     'schedule': timedelta(seconds=30),
-    # },
+    'check-verify-send-que': {
+        'task': 'apiv1.tasks.verify_send_que',
+        'schedule': timedelta(seconds=30),
+    },
     'update-exchange-rates': {
         'task': 'haedrian.tasks.fetch_exchange_rates',
-        'schedule': timedelta(seconds=30),
+        'schedule': timedelta(minutes=30),
     }
 }
 

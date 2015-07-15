@@ -4,41 +4,58 @@ from django.contrib.auth import get_user_model
 from money import Money as Convert
 
 from apiv1.external.mifosx import mifosx_api
-from haedrian.models import UserData
-from apiv1.models import TransactionQueue, VerifyPerson, VerifyGroup
+from haedrian.models import UserData, Transaction
+from apiv1.models import VerifyPerson, VerifyGroup
 from Haedrian_Website.celery import app
-from apiv1.internal.views_tasks import _get_history, add_transaction
+from apiv1.internal.views_tasks import _get_history, repay_outstanding_loan
 
 
 @app.task
 def verify_send_que():
-    que = TransactionQueue.objects.all()
-    for q in que:
-        history = _get_history(q.user, {'id': q.sent_payment_id})
+    transactions = Transaction.objects.filter(payment_confirmed=False)
+    for transaction in transactions:
+        history = _get_history(transaction.sender, {'id': transaction.sent_payment_id}, filter_transactions=False)
         if history['success'] and history['transactions'][0]['status'] == 'success':
-            print '----- Found successfull transaction {}, adding transaction------'.format(q)
-            if q.group:
-                group = q.group
-                user = None
-            else:
-                group = None
-                userdata = UserData.objects.filter(user=q.user_id)[0]
-                verify_group = VerifyGroup(size=1,
-                                           buy_order_id=q.sent_payment_id,
-                                           buy_confirmed=True,
-                                           total_payment=history['transactions'][0]['amount'],
-                                           currency=userdata.default_currency,
-                                           created_by=userdata.user)
+            transaction.payment_confirmed = True
+            transaction.save()
 
-                user = VerifyPerson(group=verify_group,
-                                    mifos_id=userdata.app_id,
-                                    phone=userdata.phone,
-                                    amount=history['transactions'][0]['amount'])
+            import pdb;pdb.set_trace()
 
-            add_transaction(history['transactions'][0]['currency'], group=group, user=user)
-            # TODO:: uncoment delete after testing
-            q.delete()
+            if not transaction.type == Transaction.FEE:
+                if transaction.group:
+                    group = transaction.group
 
+                else:
+                    userdata = UserData.objects.filter(user=transaction.sender)[0]
+                    try:
+                        verify_group = VerifyGroup(size=1,
+                                                   buy_order_id=transaction.sent_payment_id,
+                                                   buy_confirmed=True,
+                                                   total_payment=history['transactions'][0]['amount'],
+                                                   currency=userdata.default_currency,
+                                                   created_by=userdata.user)
+
+                        verify_group.save()
+                        verify_person = VerifyPerson(group=verify_group,
+                                                     mifos_id=userdata.app_id,
+                                                     phone=userdata.phone,
+                                                     amount=history['transactions'][0]['amount'])
+                        verify_person.save()
+                    except Exception as e:
+                        return {'success': False, 'error': e}
+
+                    group = verify_group
+
+
+
+                # Update MIFOS
+                # TODO:: DB rollback
+                members = VerifyPerson.objects.filter(group_id=group)
+                for member in members:
+                    repay_outstanding_loan({
+                        'clientId': member.mifos_id,
+                        'transactionId': transaction.id
+                    })
 
 
 @shared_task
@@ -71,8 +88,9 @@ def fetch_mfi_client(new_user):
     Moved repay_outstanding_loan due to circular dependency
     '''
 
+
 # def repay_outstanding_loan(json):
-#     """Queries the external application to see if there is an outstanding loan for this
+# """Queries the external application to see if there is an outstanding loan for this
 #     user and applies the money from this transaction to that loan
 #
 #     :param clientId: JSON containing the internal (MIFOSX) ID to query the user by

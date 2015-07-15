@@ -2,7 +2,7 @@ import urlparse
 from money import Money as Convert
 import requests
 from django.conf import settings
-from apiv1.internal.format_currency_display import format_currency_display
+from apiv1.internal.utils import format_currency_display
 from haedrian.models import UserData
 
 

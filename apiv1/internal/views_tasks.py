@@ -10,11 +10,13 @@ from haedrian.models import Wallet, Transaction, UserData
 import simplejson as json
 from money import Money as Convert
 
-from format_currency_display import format_currency_display
+from utils import format_currency_display, calculate_fees
+
 __author__ = 'audakel'
 
 
-def _get_history(user, kwargs):
+def _get_history(user, kwargs, filter_transactions=True):
+
     wallet = get_temp_wallet(user)
     data = wallet.get_history(kwargs)
     if data['success']:
@@ -26,19 +28,38 @@ def _get_history(user, kwargs):
         default_currency = user.userdata.default_currency
 
         transactions = []
+        mfi = get_user_model().objects.get(username='mentors_international')
+        mfi_address = Wallet.objects.get(user_id=mfi, currency=settings.COINS_WALLET_TYPE).blockchain_address
+
+        haedrian = get_user_model().objects.get(username='haedrian')
+        haedrian_address = Wallet.objects.get(user_id=haedrian, currency=settings.COINS_WALLET_TYPE).blockchain_address
+
+
         for transaction in data['transactions']:
-            transactions.append(dict({
-                'status': transaction['status'],
-                'fee_amount': format_currency_display(currency, default_currency, transaction['fee_amount']),
-                'entry_type': transaction['entry_type'],
-                'date': transaction['date'],
-                'id': transaction['id'],
-                'amount_display': format_currency_display(currency, default_currency, transaction['amount']),
-                'amount': Convert(transaction['amount'], currency).to(default_currency).amount,
-                'original_target': transaction['original_target'],
-                'original_sender': transaction['original_sender'],
-                'currency': default_currency
-            }))
+            original_target = transaction['original_target']
+            original_sender = transaction['original_sender']
+
+            # Change blockchain address to name of MFI
+            if original_target == mfi_address:
+                original_target = mfi.username
+
+            # Don't show haedrian payment in history
+            # show rules If filter
+            show_transaction = not filter_transactions or (transaction['original_target'] != haedrian_address or user == haedrian)
+
+            if show_transaction:
+                transactions.append(dict({
+                    'status': transaction['status'],
+                    'fee_amount': format_currency_display(currency, default_currency, transaction['fee_amount']),
+                    'entry_type': transaction['entry_type'],
+                    'date': transaction['date'],
+                    'id': transaction['id'],
+                    'amount_display': format_currency_display(currency, default_currency, transaction['amount']),
+                    'amount': Convert(transaction['amount'], currency).to(default_currency).amount,
+                    'original_target': original_target,
+                    'original_sender': original_sender,
+                    'currency': default_currency
+                }))
         return {
             'transaction_count': data['transaction_count'],
             'success': True,
@@ -59,50 +80,6 @@ def get_temp_wallet(user):
     met = getattr(mod, m)
 
     return met(user)
-
-
-def add_transaction(currency, user=None, group=None):
-    import datetime
-
-    if group:
-        members = VerifyPerson.objects.filter(group_id=group)
-    elif user:
-        members = [user]
-    else:
-        return {"success": False, "error": "Either User or Group needs to be provided"}
-    # TODO:: DB rollback
-    for member in members:
-        amount_btc = Money(amount=member.amount, currency=currency).to('BTC')
-        amount_fee = amount_btc * settings.FEE_AMOUNT
-        total_sent = amount_btc - amount_fee
-        total_sent_local = Money(amount=total_sent.amount, currency='BTC').to(currency)
-        fee_local = Money(amount=amount_fee.amount, currency='BTC').to(currency)
-
-        transaction = Transaction(sender=UserData.objects.filter(app_id=member.mifos_id)[0].user,
-                                  receiver=get_user_model().objects.get(username='mentors_international'),
-                                  amount_btc=total_sent.amount,
-                                  amount_btc_currency='BTC',
-                                  amount_local=total_sent_local.amount,
-                                  amount_local_currency=total_sent_local.currency)
-        try:
-            transaction.save()
-        except DatabaseError as e:
-            return {"success": False, "error": str(e)}
-
-        repay_outstanding_loan({
-            'clientId': member.mifos_id,
-            'transactionId': transaction.id
-        })
-
-    # ret_val = wallet.lsend(haedrian_account, round(amount_fee.amount, 8), send_data.data['target_address'])
-    # if ret_val['success']:
-    # fee = Transaction(sender=sender, receiver=haedrian_account,
-    # amount_btc=amount_fee.amount, amount_btc_currency='BTC',
-    #                       amount_local=fee_local.amount, amount_local_currency=fee_local.currency)
-    #     try:
-    #         fee.save()
-    #     except DatabaseError as e:
-    #         return {"success": False, "error": e.message}
 
 
 @shared_task
@@ -135,7 +112,6 @@ def repay_outstanding_loan(_json):
         res = mifosx_api('loans/{}/transactions'.format(loan_id), params={'command': 'repayment'}, body=json.dumps(body), method='POST')
 
         if res['success']:
-            print '-----success: repay outstanding loan {}: {} -------------'.format(loan_id, body['transactionAmount'])
             return {'success': True, 'message': 'Paid back loan'}
     # something went wrong
     return res['message']

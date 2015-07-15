@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django_countries.fields import CountryField
 from djmoney.models.fields import MoneyField
 from django.utils.translation import ugettext as _
+from apiv1.models import VerifyGroup
 
 class BetaApplicant(models.Model):
     name = models.CharField(max_length=255)
@@ -73,15 +74,20 @@ class Transaction(models.Model):
     amount_btc = MoneyField(max_digits=32, decimal_places=16, default_currency='BTC')
     amount_local = MoneyField(max_digits=32, decimal_places=16)
     date_modified = models.DateTimeField(auto_now_add=True)
+    payment_confirmed = models.BooleanField(default=False)
+    sent_payment_id = models.CharField(max_length=40)
+    group = models.ForeignKey(VerifyGroup, null=True)
     REPAYMENT = 'Re'
-    SEND = 'Sd'
+    SEND = 'Se'
+    FEE = 'Fe'
     TRANSACTION_TYPE= (
         (REPAYMENT, 'Loan Repayment'),
         (SEND, 'Send'),
+        (FEE, 'Fee'),
     )
     type = models.CharField(max_length=2,
                             choices=TRANSACTION_TYPE,
-                            default=SEND)
+                            default=REPAYMENT)
 
 class BitcoinRates(models.Model):
     code = models.CharField(max_length=4)

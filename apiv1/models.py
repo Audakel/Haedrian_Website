@@ -1,6 +1,7 @@
+from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
-from haedrian.models import UserData
+from django.contrib.auth import get_user_model
+
 
 
 class SupportedCurrencies(models.Model):
@@ -23,7 +24,7 @@ class VerifyGroup(models.Model):
     # currency = models.ForeignKey(SupportedCurrencies, default=3)
     currency = models.CharField(max_length=3, default='USD')
     # creator: Who created the group buy
-    created_by = models.ForeignKey(User)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL)
     def __str__(self):
         return self.group_id
 
@@ -34,11 +35,6 @@ class VerifyPerson(models.Model):
     amount = models.DecimalField(max_digits=30, decimal_places=10)
     confirmed = models.BooleanField(default=False)
 
-class TransactionQueue(models.Model):
-    user = models.ForeignKey(User)
-    sent_payment_id = models.CharField(max_length=40)
-    group = models.ForeignKey(VerifyGroup, null=True)
-    def __str__(self):
-        return 'user: {} group: {} payment_id: {}'.format(self.user, self.group, self.sent_payment_id)
+
 
 

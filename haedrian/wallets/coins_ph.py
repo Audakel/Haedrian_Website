@@ -1,11 +1,13 @@
 import re
-from apiv1.internal.format_currency_display import format_currency_display
+from decimal import Decimal, ROUND_DOWN
+import urlparse
+from apiv1.internal.utils import format_currency_display
 
 __author__ = 'audakel'
 import hashlib
 import hmac
 import time
-import json
+import simplejson as json
 
 import requests
 from django.conf import settings
@@ -19,13 +21,90 @@ xrates.install('apiv1.btc_exchange_rate.BTCExchangeBackend')
 
 
 """
-# send
+GET
+    get_pending_balance
+    get_balance
+    get_wallet_info
+    get_address
+    get_exchanges
+    get_locations
+    get_history
+    get_buy_history
+    get_id
+    get_exchange_rate
+    get_groups
+    group_payment
+    currency
+    create_wallet
+    get_exchange_fees
+    get_exchange_types
+    get_home_screen
+
+POST
+    send
+    new_user
+    buy
+    group_verify
+
+
+
+
+# SEND (individual or as group)
+# Optional param - payment_id (include for group repayments)
 {
     "send_to": "mentors_international",
     "amount_local": 10,
     "currency": "PHP",
-    "send_method": "username"
+    "send_method": "username",
+    "payment_id": 23
 }
+
+# NEW USER - CREATE
+# Optional params - application and app_id
+{
+        "username": "jmonkey1",
+        "email": "jmonkey1@mailinator.com",
+        "password1": "password123",
+        "phone": "+14105521258",
+        "country": "US",
+        "application": "MENTORS",
+        "app_id": 4
+}
+
+# BUY
+# Common error : "This order exceeds your remaining daily limit."
+# optional param - group_repayment_id include if group repayment
+{
+    "amount_local": 100,
+    "payment_method": "bdo_deposit"
+}
+
+# GROUP VERIFY
+{
+    "group_id": 2,
+    "group_members": [
+        {
+            "amount": 12,
+            "id": 34,
+            "phone": "+14105521082",
+            "first_name": "bob"
+
+        },
+        {
+            "amount": 12,
+            "id": 20,
+            "phone": "+14105521082",
+            "first_name": "randy"
+
+        }
+    ]
+}
+
+=====================================================
+
+
+
+
 
 {
     "email": "austin.harrison@byu.net",
@@ -38,22 +117,12 @@ xrates.install('apiv1.btc_exchange_rate.BTCExchangeBackend')
     "password":"testingthisthingout"
 }
 
-# create user
-{
-        "username": "jmonkey1",
-        "email": "jmonkey1@mailinator.com",
-        "password1": "password123",
-        "phone": "+14105521258",
-        "country": "US"
-}
 
-# buy order -- have to manualy verify email right now
-{
-    "currency": "PHP",
-    "currency_amount": 100,
-    "payment_method": "bdo_deposit",
-    "target_account_id": "9453c497127f4f089dfdb44a1bf20948"
-}
+
+
+
+
+
 
 {'username': u'bob5', 'password1': u'testestest', 'password2': u'testestest', 'country': u'US', 'phone': u'+18016905609', 'email': u'loganbentley22@gmail.com'}
 
@@ -76,7 +145,9 @@ class CoinsPhWallet(BaseWallet):
         return "{}'s CoinsPhWallet".format(self.user)
 
     def verify_buy(self, data):
-        url = 'https://sandbox.coins.ph/api/v2/buyorder/' + data['order_id']
+        endpoint = '/api/v2/buyorder/' + data['order_id']
+        url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
+
         data = make_oauth_request(url, self.user, put=True, content_type=False)
         if data['success']:
             if data.get('order_id', ''):
@@ -88,7 +159,9 @@ class CoinsPhWallet(BaseWallet):
 
     def buy(self, kwargs):
         default_currency = self.user.userdata.default_currency
-        url = 'https://sandbox.coins.ph/api/v2/buyorder'
+        endpoint = '/api/v2/buyorder'
+        url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
+
         # input_data = CoinsphBuySerializer(data=data)
         # if input_data.is_valid():
         #     data = make_oauth_request(url, self.user, input_data.validated_data)
@@ -154,7 +227,9 @@ class CoinsPhWallet(BaseWallet):
 
     def buy_history(self, kwargs):
 
-        url = 'https://sandbox.coins.ph/api/v2/buyorder'
+        endpoint = '/api/v2/buyorder'
+        url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
+
         data = make_oauth_request(url, self.user, content_type=False)
         if data['success']:
             transactions = []
@@ -203,7 +278,9 @@ class CoinsPhWallet(BaseWallet):
 
 
     def get_history(self, kwargs):
-        url = 'https://sandbox.coins.ph/api/v3/crypto-payments/'
+        endpoint = '/api/v3/crypto-payments/'
+        url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
+
         if kwargs.get('id', ''):
             url += kwargs['id']
             data = make_oauth_request(url, self.user)
@@ -249,7 +326,9 @@ class CoinsPhWallet(BaseWallet):
             return data
 
     def get_wallet_info(self, kwargs):
-        url = 'https://sandbox.coins.ph/api/v3/crypto-accounts/'
+        endpoint = '/api/v3/crypto-accounts/'
+        url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
+
         data = make_oauth_request(url, self.user)
         if data['success']:
             _data = data
@@ -261,7 +340,9 @@ class CoinsPhWallet(BaseWallet):
 
 
     def get_pending_balance(self):
-        url = 'https://sandbox.coins.ph/api/v3/crypto-accounts/'
+        endpoint = '/api/v3/crypto-accounts/'
+        url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
+
         _data = make_oauth_request(url, self.user)['crypto-accounts'][0]
         data = {
             "pending": _data['pending_balance'],
@@ -272,32 +353,18 @@ class CoinsPhWallet(BaseWallet):
     def send_to_user(self, amount_btc, address):
 
         pass
-    #     url = 'https://sandbox.coins.ph/api/v3/transfers/'
-    #     body = {
-    #         'amount': amount_btc,
-    #         'account': user,
-    #         'target_address': address
-    #     }
-    #     try:
-    #         _data = make_request(url, body)
-    #         data = {
-    #             "status": _data["transfer"]['status'],
-    #             "fee": 0.00000,
-    #             "target": _data["transfer"]['target_address'],
-    #             "amount": _data["transfer"]['amount'],
-    #             "currency": currency[0]
-    #         }
-    #     except:
-    #         data = _data['errors']
-    #
-    #     return data
+
 
     def send(self, receiver, currency, amount_btc, amount_local, target_address):
-        url = 'https://sandbox.coins.ph/api/v3/crypto-payments/'
-        user_wallet = Wallet.objects.filter(user_id=self.user)[0]
+        endpoint = '/api/v3/crypto-payments/'
+        url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
+
+        user_wallet = Wallet.objects.get(user_id=self.user, currency='BTC')
         body = {
             # 'amount': amount_local,
-            'amount': round(amount_btc, 8),
+            # https://en.wikipedia.org/wiki/Rounding#Round_half_down
+            # TODO:: Need to look at what the best rounding option is
+            'amount': amount_btc.quantize(Decimal('.00000001'), rounding=ROUND_DOWN),
             'account': user_wallet.provider_wallet_id,
             'target_address': target_address
         }
@@ -322,7 +389,9 @@ class CoinsPhWallet(BaseWallet):
 
     def get_balance(self, kwargs):
         # TODO:: fix hard code
-        url = 'https://sandbox.coins.ph/api/v3/crypto-accounts/'
+        endpoint = '/api/v3/crypto-accounts/'
+        url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
+
         balance = make_oauth_request(url, self.user)
         if balance['success']:
             # TODO:: fix crypto default to PHP instead of bitcoin
@@ -338,7 +407,9 @@ class CoinsPhWallet(BaseWallet):
             return balance
 
     def get_address(self):
-        url = 'https://sandbox.coins.ph/api/v3/crypto-accounts/'
+        endpoint = '/api/v3/crypto-accounts/'
+        url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
+
         _data = make_oauth_request(url, self.user)['crypto-accounts'][0]
         data = {
             "default_address": _data['default_address'],
@@ -370,17 +441,19 @@ class CoinsPhWallet(BaseWallet):
                     })
         return locations
 
-        url = 'https://sandbox.coins.ph/d/api/payin-outlets/'
-        _data = make_oauth_request(url, self.user)["payin-outlets"]
-        data = []
-        for i in _data:
-            if i['amount_limits'][0]['currency'] == 'PHP':
-                data.append(i)
-        return data
+        # url = 'https://sandbox.coins.ph/d/api/payin-outlets/'
+        #
+        # _data = make_oauth_request(url, self.user)["payin-outlets"]
+        # data = []
+        # for i in _data:
+        #     if i['amount_limits'][0]['currency'] == 'PHP':
+        #         data.append(i)
+        # return data
 
 
     def get_exchange_fees(self, kwargs):
-        url = 'https://sandbox.coins.ph/d/api/payin-outlet-fees/'
+        endpoint = '/d/api/payin-outlet-fees/'
+        url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
         data = make_oauth_request(url, self.user)
         if data['success']:
             outlet_fees = []
@@ -392,7 +465,8 @@ class CoinsPhWallet(BaseWallet):
         return data
 
     def get_exchange_types(self, data=''):
-        url = 'https://sandbox.coins.ph/d/api/payin-outlet-categories/'
+        endpoint = '/d/api/payin-outlet-categories/'
+        url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
         _data = make_oauth_request(url, self.user)
         # Bank, gCash, online banking, pre paid load - just for PH
         exclude_foreign = ['atm_transfer_deposit', 'online_bank_transfer_deposit', 'over_the_counter_deposit',
@@ -423,8 +497,8 @@ class CoinsPhWallet(BaseWallet):
             return _data
 
     def create_wallet(self, user, data):
-
-        url = 'https://sandbox.coins.ph/api/v2/user'
+        endpoint = '/api/v2/user'
+        url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
         # url = 'https://sandbox.coins.ph/api/v2/user'
         body = {
             'email': data['email'],
@@ -499,7 +573,8 @@ API_SECRET = settings.COINS_SECRET  # Replace this with your API secret
 # TODO:: fix this internal rewrite
 def get_extra_wallet_info(user):
 
-    url = 'https://sandbox.coins.ph/api/v3/crypto-accounts/'
+    endpoint = '/api/v3/crypto-accounts/'
+    url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
     _data = make_oauth_request(url, user)['crypto-accounts']
     data = {
         'blockchain_address': _data[0]['default_address'],
@@ -566,7 +641,7 @@ def make_oauth_request(url, user, body={}, put=False, headers="", content_type=T
             try:
                 error_result['error'] = error_result['error']['target_address'][0]
             except:
-                error_result['error'] = 'New error from coins.ph'
+                error_result['error'] = error_result['error']
         else:
             error_result['error'] = error_result['error'][0]
         return error_result
@@ -629,7 +704,8 @@ def get_user_token(user):
         return {'success': True, 'token': token}
 
     else:
-        url = 'https://sandbox.coins.ph/user/oauthtoken'
+        endpoint = '/user/oauthtoken'
+        url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
         data = {
             'client_id': settings.COINS_API_KEY,
             'client_secret': settings.COINS_SECRET,

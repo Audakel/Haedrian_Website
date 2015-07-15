@@ -14,17 +14,17 @@ from rest_framework.authtoken.models import Token
 import requests
 from rapidsms.router import send, lookup_connections
 
-from apiv1.internal.format_currency_display import format_currency_display
+from apiv1.internal.utils import format_currency_display, calculate_fees
 from apiv1.internal.views_tasks import _get_history, get_temp_wallet, repay_outstanding_loan
 from apiv1.serializers import SendSerializer
 from haedrian.forms import NewUserForm, EmailUserForm
 from haedrian.models import UserData, Transaction, Wallet
-from apiv1.models import VerifyGroup, VerifyPerson, TransactionQueue
+from apiv1.models import VerifyGroup, VerifyPerson
 from haedrian.views import _create_account
 from haedrian.wallets.coins_ph import CoinsPhWallet
 from apiv1.tasks import get_group_members, verify_send_que
 from apiv1.external.mifosx import mifosx_loan, mifosx_api
-from money import Money as Convert
+from money import Money as Convert, Money
 
 __author__ = 'audakel'
 
@@ -62,7 +62,7 @@ def _new_user(kwargs):
             get_user_model().objects.get(username=kwargs['username']).delete()
             return {
                 'success': False,
-                'error': e.message
+                'error': e
             }
         if my_wallet['success']:
             # All is good, no errors
@@ -97,7 +97,7 @@ def _get_exchanges(user, kwargs):
 
         return data
     except Exception as e:
-        return e.message
+        return e
 
 
 def _get_exchange_fees(user, kwargs):
@@ -106,7 +106,7 @@ def _get_exchange_fees(user, kwargs):
         data = wallet.get_exchange_fees(kwargs)
         return data
     except Exception as e:
-        return "#fail " + e.message
+        return "#fail " + e
 
 
 def _get_exchange_types(user, kwargs):
@@ -135,79 +135,127 @@ def _send(user, kwargs):
 
     wallet = get_temp_wallet(user)
     UserModel = get_user_model()
-    haedrian_account = UserModel.objects.get(username='haedrian')
+    # TODO:: 1% fee
 
     send_data = SendSerializer(data=kwargs)
 
-    if send_data.is_valid():
-        sender = user
-        # TODO figure out whether this is a handle, phone number or email.
-        # receiver = UserModel.objects.get(username=send_data.data['receiver'])
-        if send_data.data['send_method'] == 'username':
-            try:
-                receiver = UserModel.objects.get(username=send_data.data['send_to'])
-            except ObjectDoesNotExist as e:
-                return {"success": False, "error": e.message}
-        else:
-            return {"success": False, "error": 'Please choose a user to send to'}
+    if not send_data.is_valid():
+        return {'success': False, 'error': send_data.errors}
 
-        # TODO:: fix to look at user preference
-        # currency = UserData.objects.get(user_id=sender.id).default_currency
-        currency = user.userdata.default_currency
-        amount_btc = Convert(amount=send_data.data['amount_local'], currency=currency).to('BTC')
-        amount_fee = amount_btc * settings.FEE_AMOUNT
-        total_sent = amount_btc - amount_fee
-        total_sent_local = Convert(amount=total_sent.amount, currency='BTC').to(currency)
-        fee_local = Convert(amount=amount_fee.amount, currency='BTC').to(currency)
+    # TODO figure out whether this is a handle, phone number or email.
+    # receiver = UserModel.objects.get(username=send_data.data['receiver'])
+    if send_data.data['send_method'] == 'username':
+        try:
+            receiver = UserModel.objects.get(username=send_data.data['send_to'])
+        except ObjectDoesNotExist as e:
+            return {"success": False, "error": e}
+    else:
+        return {"success": False, "error": 'Please choose a user to send to'}
 
-        # TODO:: put logic in to find bitcoin address and redo local currency !!!
-        # TODO:: change currency to PHP
-        target_address = Wallet.objects.get(user_id=receiver.id, currency='BTC').blockchain_address
+    # amount_btc = Convert(amount=send_data.data['amount_local'], currency=currency).to('BTC')
+    # amount_fee = amount_btc * settings.FEE_AMOUNT
+    # total_sent = amount_btc - amount_fee
+    # total_sent_local = Convert(amount=total_sent.amount, currency='BTC').to(currency)
+    # fee_local = Convert(amount=amount_fee.amount, currency='BTC').to(currency)
 
-        data = wallet.send(receiver=receiver,
+    # ================
+    currency = user.userdata.default_currency
+    calc_fees = calculate_fees(currency, send_data.data['amount_local'])
+
+    # TODO:: put logic in to find bitcoin address from coins.ph
+    target_address = Wallet.objects.get(user_id=receiver.id, currency=settings.COINS_WALLET_TYPE).blockchain_address
+
+    # Send to MFI
+    mfi_data = wallet.send(receiver=receiver,
                            currency=currency,
-                           amount_btc=total_sent.amount,
-                           amount_local=total_sent_local.amount,
+                           amount_btc=calc_fees['amount_btc'].amount,
+                           amount_local=calc_fees['total_sent_local'].amount,
                            target_address=target_address)
 
-        if data['success']:
-            q = add_to_que(user, data['id'], kwargs.get('payment_id', None))
-            if q['success']:
-                currency = data['currency']
-                default_currency = user.userdata.default_currency
-                return {
-                    "status": data['status'],
-                    "fee": format_currency_display(currency, default_currency, data['fee']),
-                    "target": data['target'],
-                    "success": data['success'],
-                    "currency": default_currency,
-                    "amount": format_currency_display(currency, default_currency, data['amount']),
-                    "id": data['id']
-                }
-            else:
-                return q
-        else:
-            return data
-    return {'success': False, 'error': send_data.errors}
+    if not mfi_data['success']:
+        return mfi_data
+
+    group_id = kwargs.get('payment_id', None)
+    group = VerifyGroup.objects.get(id=group_id) if group_id else None
+
+    mfi_transaction = Transaction(sender=user,
+                                  receiver=receiver,
+                                  amount_btc=calc_fees['amount_btc'].amount,
+                                  amount_local=calc_fees['total_sent_local'].amount,
+                                  amount_local_currency=currency,
+                                  sent_payment_id=mfi_data['id'],
+                                  group=group)
+    try:
+        mfi_transaction.save()
+    except Exception as e:
+        return {'success': False, 'error': e}
 
 
-def add_to_que(user, send_id, group_id=None):
-    data = _get_history(user, {'id': send_id})
-    if data['success']:
-        if group_id:
-            que = TransactionQueue(user=user, sent_payment_id=send_id,
-                                   group=VerifyGroup.objects.get(id=group_id))
-        else:
-            que = TransactionQueue(user=user, sent_payment_id=send_id)
+    # Do we even need a transactionQueue anymore? Just use Transactions with a flag
+    # q = queue_repayment(user, mfi_data['id'], kwargs.get('payment_id', None))
+    # # Coins.ph: Ensure this value is greater than or equal to 0.0001
+    #
+    # if not q['success']:
+    # return q
+
+    if not calc_fees['amount_too_small']:
+        # Send Haedrian payment
+        haedrian_account = UserModel.objects.get(username='haedrian')
+        haedrian_target_address = Wallet.objects.get(user_id=haedrian_account,
+                                                     currency=settings.COINS_WALLET_TYPE).blockchain_address
+        haedrian_data = wallet.send(receiver=haedrian_account,
+                                    currency=currency,
+                                    amount_btc=calc_fees['amount_fee_btc'].amount,
+                                    amount_local=calc_fees['amount_fee'].amount,
+                                    target_address=haedrian_target_address)
+
+        if not haedrian_data['success']:
+            return haedrian_data
+
+        haedrian_transaction = Transaction(sender=user,
+                                           receiver=haedrian_account,
+                                           amount_btc=calc_fees['amount_fee_btc'].amount,
+                                           amount_local=calc_fees['amount_fee'].amount,
+                                           amount_local_currency=currency,
+                                           sent_payment_id=haedrian_data['id'],
+                                           type=Transaction.FEE)
 
         try:
-            que.save()
-            return {'success': True}
+            haedrian_transaction.save()
         except Exception as e:
-            return {'success': False, 'error': e.message}
+            return {'success': False, 'error': e}
 
-    # add_transaction(user, send_id)
-    return data
+    currency = mfi_data['currency']
+
+    return {
+        "status": mfi_data['status'],
+        "fee": format_currency_display(currency, currency, mfi_data['fee']),
+        "target": mfi_data['target'],
+        "success": mfi_data['success'],
+        "currency": currency,
+        "amount": format_currency_display(currency, currency, mfi_data['amount']),
+        "id": mfi_data['id'],
+        'haedrian_fee': not calc_fees['amount_too_small']
+    }
+
+
+# def queue_repayment(user, send_id, group_id=None):
+#     data = _get_history(user, {'id': send_id})
+#     if data['success']:
+#         if group_id:
+#             que = TransactionQueue(user=user, sent_payment_id=send_id,
+#                                    group=VerifyGroup.objects.get(id=group_id))
+#         else:
+#             que = TransactionQueue(user=user, sent_payment_id=send_id)
+#
+#         try:
+#             que.save()
+#             return {'success': True}
+#         except Exception as e:
+#             return {'success': False, 'error': e}
+#
+#     # add_transaction(user, send_id)
+#     return data
 
 
 def _get_pending_balance(user, kwargs):
@@ -291,7 +339,7 @@ def _buy(user, kwargs):
         data = wallet.buy(kwargs)
         return data
     except Exception as e:
-        return {'success': False, 'error': e.message}
+        return {'success': False, 'error': e}
 
 
 def _verify_buy(user, kwargs):
@@ -304,11 +352,11 @@ def _verify_buy(user, kwargs):
             try:
                 vg[0].save()
             except Exception as e:
-                return {'success': False, 'error': e.message}
+                return {'success': False, 'error': e}
 
         return data
     except Exception as e:
-        return {'success': False, 'error': e.message}
+        return {'success': False, 'error': e}
 
 
 def _get_buy_history(user, kwargs):
@@ -319,7 +367,7 @@ def _get_buy_history(user, kwargs):
             pass
         return data
     except Exception as e:
-        return e.message
+        return e
 
 
 def _get_id(user, kwargs):
@@ -339,7 +387,7 @@ def _get_exchange_rate(user, kwargs):
     try:
         response = requests.get(url)
     except Exception as e:
-        return {"success": False, "error": e.message}
+        return {"success": False, "error": e}
     return response.json()
 
 
@@ -365,7 +413,7 @@ def _get_groups(user, kwargs):
     try:
         return get_group_members({'clientId': UserData.objects.get(user_id=user).app_id})
     except Exception as e:
-        return {'success': False, 'error': e.message}
+        return {'success': False, 'error': e}
 
 
 def _group_verify(user, kwargs):
@@ -383,7 +431,7 @@ def _group_verify(user, kwargs):
 
     # TODO:: check for old group buy orders - should we delete them?
     # if VerifyGroup.objects.filter(group_id=kwargs['group_id']).exists():
-    #     VerifyGroup.objects.get(group_id=kwargs['group_id']).delete()
+    # VerifyGroup.objects.get(group_id=kwargs['group_id']).delete()
 
     group_total = 0
     for member in kwargs['group_members']:
@@ -397,7 +445,7 @@ def _group_verify(user, kwargs):
                             size=len(kwargs['group_members']))
         group.save()
     except Exception as e:
-        return {'success': False, 'error': "Try again - Couldn't save to group database: {}".format(e.message)}
+        return {'success': False, 'error': "Try again - Couldn't save to group database: {}".format(e)}
 
     for member in kwargs['group_members']:
         person = VerifyPerson(group=group,
@@ -405,17 +453,17 @@ def _group_verify(user, kwargs):
                               phone=member['phone'],
                               amount=decimal.Decimal(member['amount']))
 
-    # group = models.ForeignKey(VerifyGroup)
-    # userdata = models.ForeignKey(UserData)
-    # phone = models.CharField(max_length=30)
-    # amount = models.DecimalField(max_digits=30, decimal_places=10)
-    # confirmed = models.BooleanField(default=False)
+        # group = models.ForeignKey(VerifyGroup)
+        # userdata = models.ForeignKey(UserData)
+        # phone = models.CharField(max_length=30)
+        # amount = models.DecimalField(max_digits=30, decimal_places=10)
+        # confirmed = models.BooleanField(default=False)
 
         try:
             person.save()
         except Exception as e:
             VerifyGroup.objects.get(group_id=kwargs['group_id']).delete()
-            return {'success': False, 'error': "Couldn't save to member database: {}".format(e.message)}
+            return {'success': False, 'error': "Couldn't save to member database: {}".format(e)}
 
     try:
         for member in kwargs['group_members']:
@@ -423,7 +471,7 @@ def _group_verify(user, kwargs):
             send(message(member['first_name'], user.first_name, member['amount'], 'Mentors International'), connection)
     except Exception as e:
         VerifyGroup.objects.get(group_id=kwargs['group_id']).delete()
-        return {'error': 'Messages not sent, retry. Details: {}'.format(e.message), 'success': False}
+        return {'error': 'Messages not sent, retry. Details: {}'.format(e), 'success': False}
 
     return {
         'success': True,
@@ -432,11 +480,13 @@ def _group_verify(user, kwargs):
 
 
 def _group_payment(user, kwargs):
-    payments = VerifyGroup.objects.filter(created_by=user).order_by('created')
+    time_delta = datetime.datetime.now() - datetime.timedelta(days=14)
+    payments = VerifyGroup.objects.filter(created_by=user, buy_confirmed=True,
+                                          created__gte=time_delta).order_by('created')
     payment_list = []
     default_currency = user.userdata.default_currency
 
-    for payment in payments:
+    for payment in payments[:3]:
         payment_list.append({
             'total_payment': Convert(payment.total_payment, payment.currency).to(user.userdata.default_currency).amount,
             'total_payment_display': format_currency_display(payment.currency, user.userdata.default_currency,
@@ -452,7 +502,6 @@ def _group_payment(user, kwargs):
 
 
 def _get_home_screen(user, kwargs=''):
-
     default_currency = user.userdata.default_currency
     balance = _get_balance(user)
 
@@ -501,7 +550,7 @@ def _update_currency(user, currency='', locale=''):
         u.default_currency = currency
         u.save()
     except Exception as e:
-        return {'success': False, 'error': e.message}
+        return {'success': False, 'error': e}
 
     return {'success': True, 'new_currency': user.userdata.default_currency}
 
@@ -511,15 +560,15 @@ def _get_currencies(user, data):
 
 
 def _get_next_repayment(user, data=''):
-
-
     clientId = UserData.objects.get(user=user).app_id
     res = mifosx_api('loans',
                      method='GET',
                      params={
                          'associations': 'all',
                          'tenantIdentifier': 'default',
-                         "sqlSearch": "l.client_id={}".format(clientId)
+                         'associations': 'all',
+                         'exclude': 'guarantors',
+                         'sqlSearch': 'l.client_id={}'.format(clientId)
                      },
                      baseurl=settings.MIFOSX_SERVER_URL,
                      tenant="default")
@@ -528,70 +577,34 @@ def _get_next_repayment(user, data=''):
         return res
 
     res = res['response']['pageItems'][0]
-
-    # Format all the dates in required format && fix bug with loanType
-    # "2 July 2015"
-    submitted_on_date = '{} {} {}'.format(
-        res['timeline']['submittedOnDate'][2],
-        month_name[res['timeline']['submittedOnDate'][1]],
-        res['timeline']['submittedOnDate'][0]
-    )
-    expected_disbursement_date = '{} {} {}'.format(
-        res['timeline']['expectedDisbursementDate'][2],
-        month_name[res['timeline']['submittedOnDate'][1]],
-        res['timeline']['expectedDisbursementDate'][0]
-    )
-    # 1 - individual
-    # 2 - Group
-    # 3 - JLG
-    # TODO:: fix loanType bug in mifos
-    loanType = 'individual'
-
-
-    body = {
-        "dateFormat": "dd MMMM yyyy",
-        "locale": "en_US",
-        "productId": res['loanProductId'],
-        "principal": res['principal'],
-        "loanTermFrequency": res['termFrequency'],
-        "loanTermFrequencyType": res['termPeriodFrequencyType']['id'],
-        "numberOfRepayments": res['numberOfRepayments'],
-        "repaymentEvery": res['repaymentEvery'],
-        "repaymentFrequencyType": res['repaymentFrequencyType']['id'],
-        "interestRatePerPeriod": res['interestRatePerPeriod'],
-        "amortizationType": res['amortizationType']['id'],
-        "interestType": res['interestType']['id'],
-        "interestCalculationPeriodType": res['interestCalculationPeriodType']['id'],
-        "expectedDisbursementDate": expected_disbursement_date,  # "2 July 2015",
-        "transactionProcessingStrategyId": res['transactionProcessingStrategyId'],
-        'submittedOnDate': submitted_on_date,  # "2 July 2015",
-        'loanType': loanType, #res['loanType']['value'].lower(),  # res['loanType']['id']
-        'clientId': clientId
-    }
-    # Days to payment calculation
-    total_balance_outstanding = res['summary']['totalOutstanding']
-    loan_total = 0
-    repayments = 0
-    each_repayment = 0
-
+    loan_id = res['id']
 
     response = mifosx_api(
-        endpoint='loans',
-        method='POST',
-        body=json.dumps(body),
-        params={'command': 'calculateLoanSchedule'},
+        endpoint='loans/{}'.format(loan_id),
+        method='GET',
+        params={'associations': 'all', 'exclude': 'guarantors'},
         baseurl=settings.MIFOSX_SERVER_URL,
         tenant="default"
     )
     res = response['response']
-    total_repay = res['totalRepaymentExpected']
+    periods = res['repaymentSchedule']['periods']
 
-    what_repayment_number = 2
+    for i, period in enumerate(periods):
+        if i == 0:
+            continue
+        if not period['complete']:
+            due = period['dueDate']
+            currency = res['currency']['code']
+            default_currency = user.userdata.default_currency
+            total_due = period['totalDueForPeriod']
+            break
 
-    period = res['periods'][what_repayment_number]
-    due = period['dueDate']
-    currency = res['currency']['code']
-    default_currency = user.userdata.default_currency
+
+
+    # period = res['periods'][what_repayment_number]
+    # due = period['dueDate']
+    # currency = res['currency']['code']
+    # default_currency = user.userdata.default_currency
 
     return {
         'success': True,
@@ -599,19 +612,19 @@ def _get_next_repayment(user, data=''):
         'date': datetime.date(due[0], due[1], due[2]),
         'amount': Convert(period['totalOriginalDueForPeriod'], currency).to(default_currency).amount,
         'amount_display': format_currency_display(currency, default_currency,
-                                                               period['totalOriginalDueForPeriod'])
+                                                  total_due)
     }
 
 
 def _testing(user, data=''):
     from apiv1.tasks import verify_send_que
-    # return verify_send_que()
+    return verify_send_que()
     return _get_next_repayment(29)
 
     # transaction = Transaction(sender=user,
     # receiver=get_user_model().objects.get(username='mentors_international'),
-    #                           amount_btc=2.568,
-    #                           amount_btc_currency='BTC',
+    # amount_btc=2.568,
+    # amount_btc_currency='BTC',
     #                           amount_local=568,
     #                           amount_local_currency='USD')
     # try:
@@ -623,6 +636,7 @@ def _testing(user, data=''):
     #     'clientId': user.userdata.app_id,
     #     'transactionId': transaction.id
     # })
+
 
 def _aub_test(user, data):
     transaction = Transaction(

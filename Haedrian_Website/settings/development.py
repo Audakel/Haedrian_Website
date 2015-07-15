@@ -8,6 +8,8 @@ MANAGERS = ADMINS
 
 SECRET_KEY = 'TEST'
 
+COINS_BASE_URL = 'https://sandbox.coins.ph'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

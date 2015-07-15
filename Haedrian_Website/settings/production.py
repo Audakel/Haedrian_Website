@@ -6,6 +6,8 @@ EMAIL_HOST_USER = 'aquila@haedrian.io'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
+COINS_BASE_URL = 'https://coins.ph'
+
 try:
     EMAIL_HOST_PASSWORD = os.environ["DJANGO_EMAIL_PASSWORD"]
 except KeyError:

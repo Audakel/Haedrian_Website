@@ -31,7 +31,7 @@ def mifosx_loan(user):
             starting_balance_display = format_currency_display(currency, default_currency, l['summary'].get(
                 'principalDisbursed', -1))
             current_balance_display = format_currency_display(currency, default_currency, l['summary'].get(
-                'principalOutstanding', -1))
+                'totalOutstanding', -1))
             loan_cost_display = format_currency_display(currency, default_currency, l['summary'].get(
                 'totalExpectedCostOfLoan', -1))
 
@@ -45,7 +45,7 @@ def mifosx_loan(user):
 
             # For graphs - use actual converted currency w/o formatting
             starting_balance = Convert(amount=l['summary'].get('principalDisbursed', -1),currency=currency).to(default_currency).amount
-            current_balance = Convert(amount=l['summary'].get('principalOutstanding', -1),currency=currency).to(default_currency).amount
+            current_balance = Convert(amount=l['summary'].get('totalOutstanding', -1),currency=currency).to(default_currency).amount
             total_estimated_loan_cost = Convert(amount=l['summary'].get('totalExpectedCostOfLoan', -1),currency=currency).to(default_currency).amount
 
             # Other general formating

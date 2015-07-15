@@ -381,8 +381,9 @@ def _group_verify(user, kwargs):
                'If there has been an error please talk to your representitive at {}. Remember - {}'.format(
             member, group_leader, amount, mfi, mfi, nice_message())
 
-    if VerifyGroup.objects.filter(group_id=kwargs['group_id']).exists():
-        VerifyGroup.objects.get(group_id=kwargs['group_id']).delete()
+    # TODO:: check for old group buy orders - should we delete them?
+    # if VerifyGroup.objects.filter(group_id=kwargs['group_id']).exists():
+    #     VerifyGroup.objects.get(group_id=kwargs['group_id']).delete()
 
     group_total = 0
     for member in kwargs['group_members']:
@@ -437,7 +438,7 @@ def _group_payment(user, kwargs):
 
     for payment in payments:
         payment_list.append({
-            'total_payment': Convert(payment.total_payment, payment.currency).to(user.userdata.default_currency),
+            'total_payment': Convert(payment.total_payment, payment.currency).to(user.userdata.default_currency).amount,
             'total_payment_display': format_currency_display(payment.currency, user.userdata.default_currency,
                                                              payment.total_payment),
             'deposit_confirmed': payment.buy_confirmed,
@@ -451,6 +452,7 @@ def _group_payment(user, kwargs):
 
 
 def _get_home_screen(user, kwargs=''):
+
     default_currency = user.userdata.default_currency
     balance = _get_balance(user)
 
@@ -509,6 +511,8 @@ def _get_currencies(user, data):
 
 
 def _get_next_repayment(user, data=''):
+
+
     clientId = UserData.objects.get(user=user).app_id
     res = mifosx_api('loans',
                      method='GET',
@@ -564,6 +568,12 @@ def _get_next_repayment(user, data=''):
         'loanType': loanType, #res['loanType']['value'].lower(),  # res['loanType']['id']
         'clientId': clientId
     }
+    # Days to payment calculation
+    total_balance_outstanding = res['summary']['totalOutstanding']
+    loan_total = 0
+    repayments = 0
+    each_repayment = 0
+
 
     response = mifosx_api(
         endpoint='loans',
@@ -574,6 +584,8 @@ def _get_next_repayment(user, data=''):
         tenant="default"
     )
     res = response['response']
+    total_repay = res['totalRepaymentExpected']
+
     what_repayment_number = 2
 
     period = res['periods'][what_repayment_number]
@@ -593,7 +605,8 @@ def _get_next_repayment(user, data=''):
 
 def _testing(user, data=''):
     from apiv1.tasks import verify_send_que
-    verify_send_que()
+    # return verify_send_que()
+    return _get_next_repayment(29)
 
     # transaction = Transaction(sender=user,
     # receiver=get_user_model().objects.get(username='mentors_international'),

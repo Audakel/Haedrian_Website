@@ -11,7 +11,9 @@ class SupportedCurrencies(models.Model):
 
 
 class VerifyGroup(models.Model):
-    group_id = models.CharField(unique=True, max_length=40)
+    # TODO:: should we allow multiple group repayments to exist at the same time for 1 group?
+    # group_id = models.CharField(unique=True, max_length=40)
+    group_id = models.CharField(max_length=40, null=True)
     size = models.IntegerField()
     created = models.DateTimeField(auto_now_add=True)
     buy_order_id = models.CharField(max_length=60, default="")

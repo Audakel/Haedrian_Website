@@ -14,23 +14,23 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(PROJECT_ROOT, 'db.sqlite3'),
-    }
-    # 'mambu': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'phillipines',
-    #     'USER': 'root',
-    #     'PASSWORD': 'password',
-    #     'HOST': 'localhost',
-    #     'PORT': '3306',
-    # },
-    # 'mifosx': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'mifostenant-testing',
-    #     'USER': 'root',
-    #     'PASSWORD': 'password',
-    #     'HOST': 'localhost',
-    #     'PORT': '3306',
-    # }
+    },
+    'mambu': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'phillipines',
+        'USER': 'root',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': '3306',
+    },
+    'mifosx': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'mifostenant-testing',
+        'USER': 'root',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': '3306',
+    },
 }
 
 INSTALLED_APPS = INSTALLED_APPS + ('debug_toolbar', 'djcelery')
@@ -46,6 +46,7 @@ GEM_ADMIN_TOKEN = "WdSRt2giHhuK13aicW173cgtcGV36TPm6uk1dOj9SJA"
 BROKER_URL = 'django://'
 CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 
-# hit the vagrant box for development
-# MIFOSX_SERVER_URL = "https://192.168.33.10:8443/mifosng-provider/api/v1/"
+MIFOSX_USER = "aquila"
+MIFOSX_PASSWORD = "MifosxSaTeCoCeMuBu1"
+MIFOSX_TENANT = "test"
 MIFOSX_SERVER_URL = "https://mentors.haedrian.io/mifosng-provider/api/v1/"

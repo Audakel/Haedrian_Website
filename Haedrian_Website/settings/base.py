@@ -211,8 +211,12 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERYBEAT_SCHEDULE = {
     'check-verify-send-que': {
         'task': 'apiv1.tasks.verify_send_que',
-        'schedule': timedelta(seconds=30), # crontab(hour=7, minute=30, day_of_week=1),
+        'schedule': timedelta(seconds=30),
     },
+    'update-exchange-rates': {
+        'task': 'haedrian.tasks.fetch_exchange_rates',
+        'schedule': timedelta(minutes=30),
+    }
 }
 
 # countries conf
@@ -234,6 +238,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
+    # 'EXCEPTION_HANDLER': 'apiv1.views.common_exception_handler',
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
 # define the bitcoin currency for python money
@@ -292,6 +298,11 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
         },
+        'celery': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(PROJECT_ROOT, 'celery.log'),
+        },
         'error_log': {
             'level': 'ERROR',
             'class': 'logging.FileHandler',
@@ -329,15 +340,9 @@ LOGGING = {
             'propagate': True,
             'level': 'DEBUG',
         },
+        'celery': {
+            'handlers': ['celery', 'console'],
+            'level': 'ERROR',
+        },
     }
 }
-
-# ROOT_URLCONF = 'Haedrian_Website.urls'
-
-# SUBDOMAIN_URLCONFS = {
-    # None: 'Haedrian_Website.urls',  # no subdomain, e.g. ``example.com``
-    # 'www': 'Haedrian_Website.urls',
-    # 'api': 'Haedrian_Website.urls.api',
-    # 'mfi': 'Haedrian_Website.urls.mfi',
-    # 'users': 'Haedrian_Website.urls.users',
-# }

@@ -17,7 +17,7 @@ authurls = patterns('django.contrib.auth.views',
 )
 
 urlpatterns = patterns('',
-    url(r'^v1/', include('apiv1.urls')),
+    url(r'^v1/', include('apiv1.urls', namespace='apiv1')),
     url(r'^sms/', include('sms.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^account/', include(authurls)),

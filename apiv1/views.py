@@ -13,7 +13,6 @@ from apiv1.serializers import PlacesSerializer
 from haedrian.google.places import GooglePlaces
 
 
-xrates.install('apiv1.btc_exchange_rate.BTCExchangeBackend')
 
 class OncePerDayUserThrottle(UserRateThrottle):
         rate = '10/day'

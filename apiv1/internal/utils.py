@@ -6,6 +6,7 @@ from money import Money as Convert
 from moneyed import Money
 
 def format_currency_display(in_currency, out_currency, amount):
+
     in_currency = "PHP" if in_currency == "PBTC" else in_currency
 
     convert_data = CurrencySerializer(data={

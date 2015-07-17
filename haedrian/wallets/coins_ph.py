@@ -15,9 +15,7 @@ from django.conf import settings
 from haedrian.models import Wallet
 from wallet import BaseWallet
 from apiv1.models import VerifyGroup, VerifyPerson
-from money import xrates
 from money import Money as Convert
-xrates.install('apiv1.btc_exchange_rate.BTCExchangeBackend')
 
 
 """

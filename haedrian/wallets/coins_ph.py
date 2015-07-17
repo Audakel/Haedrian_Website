@@ -614,14 +614,15 @@ def make_hmac_request(url, body=''):
     else:
         error_result = {}
         error_result['success'] = False
-        if isinstance(result['errors'], str):
-            error_result['error'] = error_result['error']
+
+        if 'errors' in result:
+            if isinstance(result['errors'], str):
+                error_result['error'] = result['errors']
+            else:
+                error_result['error'] = result['errors'][0]
         else:
-            error_result['error'] = result['errors'][0]
+            error_result['error'] = "Could not find correct error message from COINSPH. Here is it all {}".format(str(result))
         return error_result
-
-
-
 
 def get_user_token(user):
     user_wallet = Wallet.objects.filter(user_id=user)[0]

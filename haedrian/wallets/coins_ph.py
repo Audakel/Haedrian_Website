@@ -555,8 +555,10 @@ class CoinsPhWallet(BaseWallet):
             error_message = {'success': False}
             if 'error' in _data:
                 error_message['error'] = _data['error']
-            else:
+            elif 'errors' in _data:
                 error_message['error'] = _data['errors']
+            else:
+                error_message['error'] = "Could not find the error. Look for yourself {}".format(str(_data))
             return error_message
 
 

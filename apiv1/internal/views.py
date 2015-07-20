@@ -589,6 +589,11 @@ def _get_next_repayment(user, data=''):
     res = response['response']
     periods = res['repaymentSchedule']['periods']
 
+    due = None
+    default_currency = user.userdata.default_currency
+    currency = default_currency
+    total_due = 0
+
     for i, period in enumerate(periods):
         if i == 0:
             continue
@@ -609,7 +614,7 @@ def _get_next_repayment(user, data=''):
     return {
         'success': True,
         # 'total_term_days': res['loanTermInDays'],
-        'date': datetime.date(due[0], due[1], due[2]),
+        'date': 0 if not due else datetime.date(due[0], due[1], due[2]),
         'amount': Convert(period['totalOriginalDueForPeriod'], currency).to(default_currency).amount,
         'amount_display': format_currency_display(currency, default_currency,
                                                   total_due)
@@ -618,8 +623,9 @@ def _get_next_repayment(user, data=''):
 
 def _testing(user, data=''):
     from apiv1.tasks import verify_send_que
+    user=get_user_model().objects.get(username='davidtorio1')
     return verify_send_que()
-    return _get_next_repayment(29)
+    # return _get_next_repayment(user)
 
     # transaction = Transaction(sender=user,
     # receiver=get_user_model().objects.get(username='mentors_international'),

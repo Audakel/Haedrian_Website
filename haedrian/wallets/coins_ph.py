@@ -694,7 +694,7 @@ def make_hmac_request(url, body=''):
             else:
                 error_result['error'] = result['errors'][0]
         else:
-            error_result['error'] = "Could not find correct error message from COINSPH({}). Here is it all {}".format(url, str(result))
+            error_result['error'] = "Could not find correct error message from COINSPH - {}. Here is it all {}".format(url, str(result))
         return error_result
 
 def get_user_token(user):

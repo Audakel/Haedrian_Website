@@ -19,7 +19,6 @@ def verify_send_que():
             transaction.payment_confirmed = True
             transaction.save()
 
-            import pdb;pdb.set_trace()
 
             if not transaction.type == Transaction.FEE:
                 if transaction.group:

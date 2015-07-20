@@ -96,6 +96,8 @@ def repay_outstanding_loan(_json):
     # user = UserData.objects.get(app_interal_id=id)
     trans = Transaction.objects.get(id=tr)
     res = mifosx_api('loans/', params={"sqlSearch": "l.client_id={}".format(id)})
+    # TODO:: Support multiple loans
+    loan_currency = res['response']['pageItems'][0]['currency']['code']
 
     if res['success']:
         # TODO: assumed their loan is the first one
@@ -105,7 +107,7 @@ def repay_outstanding_loan(_json):
             "dateFormat": "dd MMMM yyyy",
             "locale": "en",
             "transactionDate": trans.date_modified.strftime("%d %B %Y"),
-            "transactionAmount": trans.amount_local.amount,
+            "transactionAmount": Convert(trans.amount_local.amount, trans.amount_local_currency).to(loan_currency).amount,
             "paymentTypeId": "1",
             "note": "Payment through Haedrian Labs",
         }

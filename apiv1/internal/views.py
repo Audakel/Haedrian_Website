@@ -2,10 +2,11 @@ import decimal
 import datetime
 from calendar import month_name
 import copy
+from rest_framework.exceptions import ParseError
 import simplejson as json
 import random
 
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.http import HttpResponseRedirect
@@ -38,6 +39,8 @@ def _create_wallet(user, kwargs):
 
 
 def _new_user(kwargs):
+    # TODO: Make a new user Serializer to validate that all the fields are here
+    # so it doesn't throw a key error when bad input comes in
     new_data = {
         "username": kwargs['username'],
         "email": kwargs['email'],
@@ -52,31 +55,27 @@ def _new_user(kwargs):
     if account['success']:
         user = get_user_model().objects.get(username=kwargs['username'])
         token = Token.objects.create(user=user)
-        _data = {
-            "success": True,
-            "token": token.key
-        }
         try:
             my_wallet = _create_wallet(user, kwargs)
         except Exception as e:
             get_user_model().objects.get(username=kwargs['username']).delete()
-            return {
-                'success': False,
-                'error': e
-            }
+            raise ParseError(detail=str(e))
         if my_wallet['success']:
-            # All is good, no errors
-            # Set default currency
-            currency_update = _update_currency(user, locale=new_data['country'])
-            if not currency_update['success']:
-                return currency_update
-            return _data
+            try:
+                _update_currency(user, locale=new_data['country'])
+            except:
+                raise ParseError(detail="Currency could not be updated to match the locale")
+            return {
+                "success": True,
+                "token": token.key,
+            }
         else:
-            get_user_model().objects.filter(username=kwargs['username']).delete()
-            Token.objects.filter(user_id=user).delete()
-            return my_wallet
+            get_user_model().objects.get(username=kwargs['username']).delete()
+            # The Token is deleted in cascade https://docs.djangoproject.com/en/1.8/topics/db/queries/#topics-db-queries-delete
+            # Token.objects.get(user=user).delete()
+            raise ParseError(detail=my_wallet['error'])
     else:
-        return account
+        raise ParseError(detail=account)
 
 
 def _get_exchanges(user, kwargs):
@@ -135,10 +134,8 @@ def _send(user, kwargs):
 
     wallet = get_temp_wallet(user)
     UserModel = get_user_model()
-    # TODO:: 1% fee
 
     send_data = SendSerializer(data=kwargs)
-
     if not send_data.is_valid():
         return {'success': False, 'error': send_data.errors}
 
@@ -152,13 +149,6 @@ def _send(user, kwargs):
     else:
         return {"success": False, "error": 'Please choose a user to send to'}
 
-    # amount_btc = Convert(amount=send_data.data['amount_local'], currency=currency).to('BTC')
-    # amount_fee = amount_btc * settings.FEE_AMOUNT
-    # total_sent = amount_btc - amount_fee
-    # total_sent_local = Convert(amount=total_sent.amount, currency='BTC').to(currency)
-    # fee_local = Convert(amount=amount_fee.amount, currency='BTC').to(currency)
-
-    # ================
     currency = user.userdata.default_currency
     calc_fees = calculate_fees(currency, send_data.data['amount_local'])
 
@@ -190,40 +180,33 @@ def _send(user, kwargs):
     except Exception as e:
         return {'success': False, 'error': e}
 
-
-    # Do we even need a transactionQueue anymore? Just use Transactions with a flag
-    # q = queue_repayment(user, mfi_data['id'], kwargs.get('payment_id', None))
-    # # Coins.ph: Ensure this value is greater than or equal to 0.0001
+    # TODO: Rework the 1% fee
+    # if not calc_fees['amount_too_small']:
+    #     # Send Haedrian payment
+    #     haedrian_account = UserModel.objects.get(username='haedrian')
+    #     haedrian_target_address = Wallet.objects.get(user_id=haedrian_account,
+    #                                                  currency=settings.COINS_WALLET_TYPE).blockchain_address
+    #     haedrian_data = wallet.send(receiver=haedrian_account,
+    #                                 currency=currency,
+    #                                 amount_btc=calc_fees['amount_fee_btc'].amount,
+    #                                 amount_local=calc_fees['amount_fee'].amount,
+    #                                 target_address=haedrian_target_address)
     #
-    # if not q['success']:
-    # return q
-
-    if not calc_fees['amount_too_small']:
-        # Send Haedrian payment
-        haedrian_account = UserModel.objects.get(username='haedrian')
-        haedrian_target_address = Wallet.objects.get(user_id=haedrian_account,
-                                                     currency=settings.COINS_WALLET_TYPE).blockchain_address
-        haedrian_data = wallet.send(receiver=haedrian_account,
-                                    currency=currency,
-                                    amount_btc=calc_fees['amount_fee_btc'].amount,
-                                    amount_local=calc_fees['amount_fee'].amount,
-                                    target_address=haedrian_target_address)
-
-        if not haedrian_data['success']:
-            return haedrian_data
-
-        haedrian_transaction = Transaction(sender=user,
-                                           receiver=haedrian_account,
-                                           amount_btc=calc_fees['amount_fee_btc'].amount,
-                                           amount_local=calc_fees['amount_fee'].amount,
-                                           amount_local_currency=currency,
-                                           sent_payment_id=haedrian_data['id'],
-                                           type=Transaction.FEE)
-
-        try:
-            haedrian_transaction.save()
-        except Exception as e:
-            return {'success': False, 'error': e}
+    #     if not haedrian_data['success']:
+    #         return haedrian_data
+    #
+    #     haedrian_transaction = Transaction(sender=user,
+    #                                        receiver=haedrian_account,
+    #                                        amount_btc=calc_fees['amount_fee_btc'].amount,
+    #                                        amount_local=calc_fees['amount_fee'].amount,
+    #                                        amount_local_currency=currency,
+    #                                        sent_payment_id=haedrian_data['id'],
+    #                                        type=Transaction.FEE)
+    #
+    #     try:
+    #         haedrian_transaction.save()
+    #     except Exception as e:
+    #         return {'success': False, 'error': e}
 
     currency = mfi_data['currency']
 
@@ -543,16 +526,13 @@ def _update_currency(user, currency='', locale=''):
     if locale == 'US':
         currency = 'USD'
     if locale == 'PH':
-        currency == 'PHP'
+        currency = 'PHP'
 
-    try:
-        u = user.userdata
-        u.default_currency = currency
-        u.save()
-    except Exception as e:
-        return {'success': False, 'error': e}
+    u = user.userdata
+    u.default_currency = currency
+    u.save()
 
-    return {'success': True, 'new_currency': user.userdata.default_currency}
+    return {'new_currency': user.userdata.default_currency}
 
 
 def _get_currencies(user, data):

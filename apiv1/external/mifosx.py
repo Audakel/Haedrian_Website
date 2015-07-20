@@ -5,14 +5,6 @@ from django.conf import settings
 from apiv1.internal.utils import format_currency_display
 from haedrian.models import UserData
 
-
-# TODO: get a new account to the API
-mifosx_username = 'aquila'
-mifosx_password = 'MifosxSaTeCoCeMuBu1'
-
-# mifosx_username = 'mifos'
-# mifosx_password = 'password'
-
 def mifosx_loan(user):
     params = {"sqlSearch": "l.client_id={}".format(UserData.objects.get(user=user).app_id)}
     loan = mifosx_api('loans/', params=params)
@@ -72,7 +64,7 @@ def mifosx_loan(user):
 
     return {'success': True, 'loans': loans}
 
-def mifosx_auth(username=mifosx_username, password=mifosx_password, baseurl=settings.MIFOSX_SERVER_URL, tenant="default"):
+def mifosx_auth(username=settings.MIFOSX_USER, password=settings.MIFOSX_PASSWORD, baseurl=settings.MIFOSX_SERVER_URL, tenant="default"):
     headers ={
         "X-Mifos-Platform-TenantId": tenant,
     }
@@ -111,17 +103,14 @@ def mifosx_api(endpoint, method='GET', params={}, body=None, baseurl=settings.MI
                 verify=ssl_cert_check,
             )
         elif method.lower() == 'post':
-            try:
-                response = requests.post(
-                    urlparse.urljoin(baseurl, endpoint),
-                    # "https://mentors.haedrian.io/mifosng-provider/api/v1/clients/{}".format(data['client_id']),
-                    params=params,
-                    headers=headers,
-                    verify=ssl_cert_check,
-                    data=body,
-                )
-            except Exception as e:
-                return e.message
+            response = requests.post(
+                urlparse.urljoin(baseurl, endpoint),
+                # "https://mentors.haedrian.io/mifosng-provider/api/v1/clients/{}".format(data['client_id']),
+                params=params,
+                headers=headers,
+                verify=ssl_cert_check,
+                data=body,
+            )
         else:
             return {'message': "Cannot send api call with method {}".format(method), 'success': False}
 

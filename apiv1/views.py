@@ -1,9 +1,10 @@
 from rest_framework.response import Response
 from rest_framework import authentication
-from rest_framework.decorators import permission_classes
 from rest_framework.throttling import UserRateThrottle
 from rest_framework.permissions import AllowAny
-from rest_framework.decorators import api_view, authentication_classes
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.exceptions import APIException
+from rest_framework.views import exception_handler
 from django.conf import settings
 from money import xrates
 
@@ -20,89 +21,85 @@ class OncePerDayUserThrottle(UserRateThrottle):
 default_response_200 = {}
 default_response_400 = {"success": False, "error": ""}
 
+if settings.DEBUG:
+    auth_classes = (authentication.BasicAuthentication, authentication.TokenAuthentication,)
+else:
+    auth_classes = (authentication.TokenAuthentication,)
+
+class ServiceUnavailable(APIException):
+    status_code = 503
+    default_detail = 'Service temporarily unavailable, try again later.'
+
+# def common_exception_handler(exc, context):
+#     """
+#     Overrides the main exception handler to customize the json in our error messages as needed
+#     """
+#     response = exception_handler(exc, context)
+#     import pdb; pdb.set_trace()
+#     # Now add the HTTP status code to the response.
+#     if response is not None:
+#         response.data['status_code'] = response.status_code
+#     return response
 
 @api_view(http_method_names=['POST'])
 @permission_classes((AllowAny,))
-# @throttle_classes([OncePerDayUserThrottle])
 def new_user(request):
-    try:
-        data = internal._new_user(request.data)
-        return Response(data)
-    except Exception as e:
-        return Response(({'success': False, 'error': e.message}), status=400)
+    data = internal._new_user(request.data)
+    if data['success']:
+        return Response(data, status=201)
+    else:
+        return Response(data, status=412)
 
 
 @api_view(http_method_names=['GET'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+@authentication_classes(auth_classes)
 def get_exchanges(request):
-    try:
-        data = internal._get_exchanges(request.user, request.query_params)
-        return Response(data=data)
-    except Exception as e:
-        return Response(({'success': False, 'error': e.message}), status=400)
+    data = internal._get_exchanges(request.user, request.query_params)
+    return Response(data=data)
 
 
 @api_view(http_method_names=['GET'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+@authentication_classes(auth_classes)
 def get_exchange_fees(request):
-    try:
-        data = internal._get_exchange_fees(request.user, request.data)
-        return Response(data)
-    except Exception as e:
-        return Response(({'success': False, 'error': e.message}), status=400)
+    data = internal._get_exchange_fees(request.user, request.data)
+    return Response(data)
 
 
 @api_view(http_method_names=['GET'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+@authentication_classes(auth_classes)
 def get_exchange_types(request):
-    try:
-        data = internal._get_exchange_types(request.user, request.query_params)
-        return Response(data)
-    except Exception as e:
-        return Response(({'success': False, 'error': e.message}), status=400)
+    data = internal._get_exchange_types(request.user, request.query_params)
+    return Response(data)
 
 @api_view(http_method_names=['GET'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+@authentication_classes(auth_classes)
 def get_address(request):
-    try:
-        data = internal._get_address(request.user, request.data)
-        return Response(data)
-    except Exception as e:
-        return Response(({'success': False, 'error': e.message}), status=400)
+    data = internal._get_address(request.user, request.data)
+    return Response(data)
 
 
 @api_view(http_method_names=['GET'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+@authentication_classes(auth_classes)
 def get_wallet_info(request):
-    try:
-        data = internal._get_wallet_info(request.user, request.data)
-        return Response(data=data)
-    except Exception as e:
-        return Response(({'success': False, 'error': e.message}), status=400)
+    data = internal._get_wallet_info(request.user, request.data)
+    return Response(data=data)
 
 
 @api_view(http_method_names=['GET'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+@authentication_classes(auth_classes)
 def get_balance(request):
-    try:
-        data = internal._get_balance(request.user, request.data)
-        return Response(data)
-    except Exception as e:
-        return Response(({'success': False, 'error': e.message}), status=400)
+    data = internal._get_balance(request.user, request.data)
+    return Response(data)
 
 @api_view(http_method_names=['GET'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+@authentication_classes(auth_classes)
 def get_pending_balance(request):
-    try:
-        # data = _get_pending_balance(global_user, request.data)
-        data = internal._get_pending_balance(request.user, request.data)
-        return Response(default_response_200.update(data=data))
-    except Exception as e:
-        return Response(({'success': False, 'error': e.message}), status=400)
+    data = internal._get_pending_balance(request.user, request.data)
+    return Response(default_response_200.update(data=data))
 
 
 @api_view(http_method_names=['POST'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+@authentication_classes(auth_classes)
 def send(request):
     try:
         # data = _send(global_user, request.data)
@@ -112,18 +109,18 @@ def send(request):
         return Response(({'success': False, 'error': e.message}), status=400)
 
 
-@api_view(http_method_names=['POST'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
-def send_to_user_handle(request):
-    try:
-        data = internal._send_to_user_handle(request.user, request.data)
-        return Response(default_response_200.update(data=data))
-    except Exception as e:
-        return Response(({'success': False, 'error': e.message}), status=400)
+# @api_view(http_method_names=['POST'])
+# @authentication_classes(auth_classes)
+# def send_to_user_handle(request):
+#     try:
+#         data = internal._send_to_user_handle(request.user, request.data)
+#         return Response(default_response_200.update(data=data))
+#     except Exception as e:
+#         return Response(({'success': False, 'error': e.message}), status=400)
 
 
 @api_view(http_method_names=['POST'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+@authentication_classes(auth_classes)
 def create_wallet(request):
     try:
         data = internal._create_wallet(request.user, request.data)
@@ -133,7 +130,7 @@ def create_wallet(request):
 
 
 @api_view(http_method_names=['GET'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+@authentication_classes(auth_classes)
 def get_locations(request):
     input_data = PlacesSerializer(data=request.GET)
     if input_data.is_valid():
@@ -161,7 +158,7 @@ def get_locations(request):
 
 
 @api_view(http_method_names=['GET'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+@authentication_classes(auth_classes)
 def get_history(request):
     try:
         data = _get_history(request.user, request.data)
@@ -171,7 +168,7 @@ def get_history(request):
 
 
 @api_view(http_method_names=['POST', 'PUT'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+@authentication_classes(auth_classes)
 def buy(request):
     try:
         if request.method == 'POST':
@@ -183,7 +180,7 @@ def buy(request):
         return Response(({'success': False, 'error': e.message}), status=400)
 
 @api_view(http_method_names=['GET'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+@authentication_classes(auth_classes)
 def get_buy_history(request):
     try:
         data = internal._get_buy_history(request.user, request.data)
@@ -192,7 +189,7 @@ def get_buy_history(request):
         return Response(({'success': False, 'error': e.message}), status=400)
 
 @api_view(http_method_names=['GET'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+@authentication_classes(auth_classes)
 def get_id(request):
     try:
         data = internal._get_id(request.user, request.data)
@@ -202,7 +199,7 @@ def get_id(request):
 
 
 @api_view(http_method_names=['GET'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+@authentication_classes(auth_classes)
 def get_exchange_rate(request):
     try:
         data = internal._get_exchange_rate(request.user, request.query_params)
@@ -211,7 +208,7 @@ def get_exchange_rate(request):
         return Response(({'success': False, 'error': e.message}), status=400)
 
 @api_view(http_method_names=['GET'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+@authentication_classes(auth_classes)
 def get_groups(request):
     try:
         data = internal._get_groups(request.user, request.data)
@@ -221,7 +218,7 @@ def get_groups(request):
 
 
 @api_view(http_method_names=['POST'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+@authentication_classes(auth_classes)
 def group_verify(request):
     try:
         data = internal._group_verify(request.user, request.data)
@@ -230,7 +227,7 @@ def group_verify(request):
         return Response(({'success': False, 'error': e.message}), status=400)
 
 @api_view(http_method_names=['GET'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+@authentication_classes(auth_classes)
 def get_home_screen(request):
     try:
         data = internal._get_home_screen(request.user, request.data)
@@ -240,7 +237,7 @@ def get_home_screen(request):
 
 
 @api_view(http_method_names=['GET'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+@authentication_classes(auth_classes)
 def group_payment(request):
     try:
         data = internal._group_payment(request.user, request.query_params)
@@ -250,7 +247,7 @@ def group_payment(request):
 
 
 @api_view(http_method_names=['POST', 'GET'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+@authentication_classes(auth_classes)
 def currency(request):
     try:
         if request.method == 'POST':
@@ -263,7 +260,7 @@ def currency(request):
 
 
 @api_view(http_method_names=['GET'])
-@authentication_classes((authentication.BasicAuthentication, authentication.TokenAuthentication,))
+@authentication_classes(auth_classes)
 def testing(request):
     try:
         data = internal._testing(request.user, request.data)

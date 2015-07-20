@@ -71,4 +71,5 @@ class AccountTests(APITestCase):
         pass
 
 class WalletTests(APITestCase):
-    pass
+    def test_send(self):
+        pass

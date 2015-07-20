@@ -137,6 +137,14 @@ def get_group_members(json):
     groups = client['response']['groups']
 
     # TODO:: fix dis shiz (assuming that clients can only be in one group....)
+    if len(groups) == 0:
+        return {
+            'success': True,
+            'group_id': 'Not in a group',
+            'office': 'Not a group member',
+            'group_members': []
+        }
+
     group = groups[0]
     res = mifosx_api('groups/{}'.format(group['id']), params='associations=activeClientMembers&clientId={}'.format(id))
     if res['success']:

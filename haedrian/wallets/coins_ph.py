@@ -586,7 +586,6 @@ def get_extra_wallet_info(user):
 
 
 def make_oauth_request(url, user, body={}, put=False, headers="", content_type=True, get_params={}):
-
     user_token = get_user_token(user)
     if user_token['success']:
         TOKEN = user_token['token']
@@ -623,7 +622,14 @@ def make_oauth_request(url, user, body={}, put=False, headers="", content_type=T
         except Exception as e:
             return {"success": False, "error": e.message}
 
+    if response.status_code == 503:
+        return {
+            'success': False,
+            'error': response.reason
+        }
+
     result = response.json()
+
     if response.ok and (response.status_code == 200 or response.status_code == 201):
         result['success'] = True
         return result
@@ -680,6 +686,13 @@ def make_hmac_request(url, body=''):
             response = requests.get(url, headers=headers)
         except Exception as e:
             return {"success": False, "error": e.message}
+
+    if response.status_code == 503:
+        return {
+            'success': False,
+            'error': response.reason
+        }
+
     result = response.json()
 
     if result['success'] and response.status_code == 201:

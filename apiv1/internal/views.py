@@ -394,7 +394,7 @@ def create_account(request):
 def _get_groups(user):
     # TODO :: fix hard coded user when we have more real users
     try:
-        return get_group_members({'clientId': UserData.objects.get(user_id=user).app_id})
+        return get_group_members(user)
     except Exception as e:
         return {'success': False, 'error': e}
 

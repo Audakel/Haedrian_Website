@@ -7,7 +7,6 @@ EMAIL_HOST_USER = 'aquila@haedrian.io'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-# TODO:: this needs to go back to non sandbox for live, also the api keys are still for testing...
 COINS_BASE_URL = 'https://coins.ph'
 COINS_API_KEY = "09Wvsxce4IVBYfW1yIn4OnvlstObgTXNEeV0i7jY"
 COINS_SECRET = "8PLwxbZpB3nW2N7kqRaIfkgja5kLTMO6VYUaJMLQ3Aea2yfv4K"

@@ -64,7 +64,6 @@ class AccountTests(APITestCase):
         data['phone'] = "+17066284548"
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        import pdb; pdb.set_trace()
         self.assertDictEqual(json.loads(response.body), {})
 
     def test_get_history(self):

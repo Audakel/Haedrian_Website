@@ -132,13 +132,13 @@ POST
 """
 
 
-
-
 class CoinsPhWallet(BaseWallet):
     def __str__(self):
         return "{}'s CoinsPhWallet".format(self.user)
+
     def __repr__(self):
         return "{}'s CoinsPhWallet".format(self.user)
+
     def __unicode__(self):
         return "{}'s CoinsPhWallet".format(self.user)
 
@@ -162,11 +162,12 @@ class CoinsPhWallet(BaseWallet):
 
         # input_data = CoinsphBuySerializer(data=data)
         # if input_data.is_valid():
-        #     data = make_oauth_request(url, self.user, input_data.validated_data)
+        # data = make_oauth_request(url, self.user, input_data.validated_data)
         #     return data
 
+
         group_repayment_flag = False
-        if kwargs.get('group_repayment_id', "") != "":
+        if kwargs.get('group_repayment_id', None) is not None:
             group_repayment_flag = True
 
         amount_btc = Convert(amount=kwargs["amount_local"], currency=default_currency).to('BTC')
@@ -186,9 +187,19 @@ class CoinsPhWallet(BaseWallet):
             instructions = data['instructions']
             pattern = re.compile("(PHP) (\d*[,.][0-9]{1,2})(?=</strong>)")
             match = pattern.search(instructions)
-            php_amount = match.group(2)
-            new_amount = format_currency_display('PHP', default_currency, php_amount)
-            instructions = pattern.sub(new_amount, instructions)
+            if match:
+                php_amount = match.group(2)
+                new_amount = format_currency_display('PHP', default_currency, php_amount)
+                instructions = pattern.sub(new_amount, instructions)
+
+            else:
+                pattern = re.compile("(\d*[,.]?[0-9]{,2}) (PHP)(?=</strong>)")
+                match = pattern.search(instructions)
+                if match:
+                    php_amount = match.group(1)
+                    new_amount = format_currency_display('PHP', default_currency, php_amount)
+                    instructions = pattern.sub(new_amount, instructions)
+
 
             order = {
                 "status": data['status'],
@@ -239,15 +250,13 @@ class CoinsPhWallet(BaseWallet):
                 instructions = transaction['instructions']
                 pattern = re.compile("(PHP) (\d*[,.][0-9]{1,2})(?=</strong>)")
                 match = pattern.search(instructions)
-                if not match == None:
+                if match:
                     php_amount = match.group(2)
                     currency = match.group(1)
                     new_amount = format_currency_display(currency, default_currency, php_amount)
                     instructions = pattern.sub(new_amount, instructions)
                 else:
-                    php_amount = 0
                     currency = 'PHP'
-
 
                 transactions.append(dict({
                     'id': transaction['id'],
@@ -259,7 +268,8 @@ class CoinsPhWallet(BaseWallet):
                     'instructions': instructions,
                     'wallet_address': transaction['wallet_address'],
                     'btc_amount': transaction['btc_amount'],
-                    'currency_amount': format_currency_display(currency, default_currency, transaction['currency_amount']),
+                    'currency_amount': format_currency_display(currency, default_currency,
+                                                               transaction['currency_amount']),
                     'exchange_rate': transaction['rate'],
                     'currency': default_currency,
 
@@ -429,7 +439,7 @@ class CoinsPhWallet(BaseWallet):
         i = 0
         for id in fees:
             fee_ids[id['outlet']] = i
-            i+=1
+            i += 1
 
         for outlet in locations['locations']:
             for name in outlet['outlets']:
@@ -444,7 +454,7 @@ class CoinsPhWallet(BaseWallet):
         # _data = make_oauth_request(url, self.user)["payin-outlets"]
         # data = []
         # for i in _data:
-        #     if i['amount_limits'][0]['currency'] == 'PHP':
+        # if i['amount_limits'][0]['currency'] == 'PHP':
         #         data.append(i)
         # return data
 
@@ -458,7 +468,7 @@ class CoinsPhWallet(BaseWallet):
             for outlet in data["payin-outlet-fees"]:
                 if outlet['currency'] == "PHP":
                     outlet_fees.append(outlet)
-            
+
             return outlet_fees
         return data
 
@@ -484,7 +494,6 @@ class CoinsPhWallet(BaseWallet):
                             'name': outlet.replace("_", " ").replace('-', ' ').title(),
                             'id': outlet
                         })
-
 
                     exchange_list.append(dict({'name': outlet_name, 'outlets': outlet_locations}))
             return {
@@ -572,7 +581,6 @@ API_SECRET = settings.COINS_SECRET  # Replace this with your API secret
 
 # TODO:: fix this internal rewrite
 def get_extra_wallet_info(user):
-
     endpoint = '/api/v3/crypto-accounts/'
     url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
     _data = make_oauth_request(url, user)['crypto-accounts']
@@ -639,7 +647,7 @@ def make_oauth_request(url, user, body={}, put=False, headers="", content_type=T
         try:
             error_result['error'] = result['errors']['non_field_errors']
         except:
-           error_result['error'] = result.get('errors', response.reason)
+            error_result['error'] = result.get('errors', response.reason)
 
         if isinstance(error_result['error'], str):
             error_result['error'] = error_result['error']
@@ -652,7 +660,8 @@ def make_oauth_request(url, user, body={}, put=False, headers="", content_type=T
             error_result['error'] = error_result['error'][0]
         return error_result
 
-    # Use requests.get instead of POST for GET requests, without the data kwarg
+        # Use requests.get instead of POST for GET requests, without the data kwarg
+
 
 def make_hmac_request(url, body=''):
     """Make a HMAC request to coins"""
@@ -674,7 +683,6 @@ def make_hmac_request(url, body=''):
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     }
-
 
     if body:
         try:
@@ -707,8 +715,10 @@ def make_hmac_request(url, body=''):
             else:
                 error_result['error'] = result['errors'][0]
         else:
-            error_result['error'] = "Could not find correct error message from COINSPH - {}. Here is it all {}".format(url, str(result))
+            error_result['error'] = "Could not find correct error message from COINSPH - {}. Here is it all {}".format(
+                url, str(result))
         return error_result
+
 
 def get_user_token(user):
     user_wallet = Wallet.objects.filter(user_id=user)[0]
@@ -740,7 +750,6 @@ def get_user_token(user):
             user_wallet.save()
             return {'success': True, 'token': token['access_token']}
         return {'success': False, 'error': token.reason}
-
 
 
 # u'{

@@ -6,7 +6,14 @@ from apiv1.internal.utils import format_currency_display
 from haedrian.models import UserData
 
 def mifosx_loan(user):
-    params = {"sqlSearch": "l.client_id={}".format(UserData.objects.get(user=user).app_id)}
+    client_id = UserData.objects.get(user=user).app_id
+    if not client_id:
+        return {
+            'success': False,
+            'error': 'No ID for this user in Mifos'
+        }
+
+    params = {"sqlSearch": "l.client_id={}".format(client_id)}
     loan = mifosx_api('loans/', params=params)
     loans = []
     if loan['success']:

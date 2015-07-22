@@ -368,10 +368,10 @@ def create_account(request):
     })
 
 
-def _get_groups(user, kwargs):
+def _get_groups(user):
     # TODO :: fix hard coded user when we have more real users
     try:
-        return get_group_members({'clientId': UserData.objects.get(user_id=user).app_id})
+        return get_group_members(user)
     except Exception as e:
         return {'success': False, 'error': e}
 
@@ -578,8 +578,10 @@ def _get_next_repayment(user, data=''):
 
 
 def _testing(user, data=''):
+    user=get_user_model().objects.get(username='bobbyray')
+    return _get_groups(user)
+
     from apiv1.tasks import verify_send_que
-    user=get_user_model().objects.get(username='davidtorio1')
     return verify_send_que()
     # return _get_next_repayment(user)
 

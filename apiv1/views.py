@@ -205,7 +205,7 @@ def get_exchange_rate(request):
 @authentication_classes(auth_classes)
 def get_groups(request):
     try:
-        data = internal._get_groups(request.user, request.data)
+        data = internal._get_groups(request.user)
         return Response(data)
     except Exception as e:
         return Response(({'success': False, 'error': e.message}), status=400)

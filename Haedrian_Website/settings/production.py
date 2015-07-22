@@ -7,10 +7,9 @@ EMAIL_HOST_USER = 'aquila@haedrian.io'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-# TODO:: this needs to go back to non sandbox for live, also the api keys are still for testing...
-COINS_BASE_URL = 'https://sandbox.coins.ph'
-COINS_API_KEY = "e8I58PvSGTznhAWRXfzVvP61jRcFaw7AGXdgIYNu"
-COINS_SECRET = "4X8RBUpKVA4ugaagvz7bcAATXS6REaL1wJFAsWa9AyrxR90RRZ"
+COINS_BASE_URL = 'https://coins.ph'
+COINS_API_KEY = "09Wvsxce4IVBYfW1yIn4OnvlstObgTXNEeV0i7jY"
+COINS_SECRET = "8PLwxbZpB3nW2N7kqRaIfkgja5kLTMO6VYUaJMLQ3Aea2yfv4K"
 
 try:
     EMAIL_HOST_PASSWORD = os.environ["DJANGO_EMAIL_PASSWORD"]

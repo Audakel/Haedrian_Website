@@ -121,14 +121,21 @@ def fetch_mfi_client(new_user):
 
 
 @shared_task
-def get_group_members(json):
+def get_group_members(user):
     """Queries the external application to see if there is a group associated with
         the user and if so returns the group and info on the members
 
     :param clientId: JSON containing the internal (MIFOSX) ID to query the user by
     :return: {'success': True|False, 'message': message}
     """
-    id = json['clientId']
+    id = UserData.objects.get(user_id=user).app_id
+    if id == None:
+        return {
+            'success': True,
+            'group_id': 'Not in a group',
+            'office': 'Unknown office',
+            'group_members': []
+        }
     # user = UserData.objects.get(app_interal_id=id)
 
     client = mifosx_api('clients/{}'.format(id))
@@ -137,6 +144,14 @@ def get_group_members(json):
     groups = client['response']['groups']
 
     # TODO:: fix dis shiz (assuming that clients can only be in one group....)
+    if len(groups) == 0:
+        return {
+            'success': True,
+            'group_id': 'Not in a group',
+            'office': 'Not a group member',
+            'group_members': []
+        }
+
     group = groups[0]
     res = mifosx_api('groups/{}'.format(group['id']), params='associations=activeClientMembers&clientId={}'.format(id))
     if res['success']:

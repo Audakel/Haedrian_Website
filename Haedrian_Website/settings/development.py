@@ -8,7 +8,15 @@ MANAGERS = ADMINS
 
 SECRET_KEY = 'TEST'
 
-COINS_BASE_URL = 'https://sandbox.coins.ph'
+COINS_BASE_URL = 'https://coins.ph'
+COINS_API_KEY = "09Wvsxce4IVBYfW1yIn4OnvlstObgTXNEeV0i7jY"
+COINS_SECRET = "8PLwxbZpB3nW2N7kqRaIfkgja5kLTMO6VYUaJMLQ3Aea2yfv4K"
+
+
+# For testing in sandbox
+# COINS_BASE_URL = 'https://coins.ph'
+# COINS_API_KEY = "09Wvsxce4IVBYfW1yIn4OnvlstObgTXNEeV0i7jY"
+# COINS_SECRET = "8PLwxbZpB3nW2N7kqRaIfkgja5kLTMO6VYUaJMLQ3Aea2yfv4K"
 
 DATABASES = {
     'default': {

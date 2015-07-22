@@ -44,11 +44,8 @@ class ServiceUnavailable(APIException):
 @api_view(http_method_names=['POST'])
 @permission_classes((AllowAny,))
 def new_user(request):
-    data = internal._new_user(request.data)
-    if data['success']:
-        return Response(data, status=201)
-    else:
-        return Response(data, status=412)
+    data = internal.new_user(request.data)
+    return Response(data, status=201)
 
 
 @api_view(http_method_names=['GET'])
@@ -108,7 +105,6 @@ def send(request):
     except Exception as e:
         return Response(({'success': False, 'error': e.message}), status=400)
 
-
 # @api_view(http_method_names=['POST'])
 # @authentication_classes(auth_classes)
 # def send_to_user_handle(request):
@@ -118,16 +114,14 @@ def send(request):
 #     except Exception as e:
 #         return Response(({'success': False, 'error': e.message}), status=400)
 
-
-@api_view(http_method_names=['POST'])
-@authentication_classes(auth_classes)
-def create_wallet(request):
-    try:
-        data = internal._create_wallet(request.user, request.data)
-        return Response(data)
-    except Exception as e:
-        return Response(({'success': False, 'error': e.message}), status=400)
-
+# @api_view(http_method_names=['POST'])
+# @authentication_classes(auth_classes)
+# def create_wallet(request):
+#     try:
+#         data = internal._create_wallet(request.user, request.data)
+#         return Response(data)
+#     except Exception as e:
+#         return Response(({'success': False, 'error': e.message}), status=400)
 
 @api_view(http_method_names=['GET'])
 @authentication_classes(auth_classes)

@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^currency/', views.currency, name="currency"),
     url(r'^home/', views.get_home_screen, name="home"),
 
-    url(r'^create-wallet/', views.create_wallet, name="wallet_create"),
+    # url(r'^create-wallet/', views.create_wallet, name="wallet_create"),
     url(r'^exchange-fees/', views.get_exchange_fees, name="exchange_fees"),
     url(r'^exchange-types/', views.get_exchange_types, name="exchange_types"),
 

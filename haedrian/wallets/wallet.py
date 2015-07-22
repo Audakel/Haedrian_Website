@@ -43,7 +43,7 @@ class BaseWallet(object):
         pass
 
     @abstractmethod
-    def create_wallet(self, email, password):
+    def create_wallet(self, user, password):
         """Make a new node on wallet provider backend"""
 
         pass

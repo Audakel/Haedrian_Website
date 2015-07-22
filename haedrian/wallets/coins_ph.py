@@ -1,17 +1,16 @@
 import re
-from decimal import Decimal, ROUND_DOWN
-import urlparse
-from apiv1.internal.utils import format_currency_display
-
-__author__ = 'audakel'
 import hashlib
 import hmac
 import time
+from rest_framework import serializers
 import simplejson as json
-
+import urlparse
 import requests
+from decimal import Decimal, ROUND_DOWN
+from requests.exceptions import HTTPError
+from rest_framework.exceptions import ParseError
+from apiv1.internal.utils import format_currency_display
 from django.conf import settings
-
 from haedrian.models import Wallet
 from wallet import BaseWallet
 from apiv1.models import VerifyGroup, VerifyPerson
@@ -494,72 +493,44 @@ class CoinsPhWallet(BaseWallet):
         else:
             return _data
 
-    def create_wallet(self, user, data):
+    def create_wallet(self, user, password):
         endpoint = '/api/v2/user'
         url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
         # url = 'https://sandbox.coins.ph/api/v2/user'
         body = {
-            'email': data['email'],
-            'password': data['password1'],
+            'email': user.email,
+            'password': password,
             'api_key': settings.COINS_API_KEY
         }
         # TODO check for duplicte emails - roll back
         _data = make_hmac_request(url, body)
 
-        if _data['success']:
-            access_token = _data['user']['access_token']
-            refresh_token = _data['user']['refresh_token']
-            expires_at = _data['user']['expires_at']
-            wallet = Wallet.objects.get(user_id=user)
-            wallet.access_token = access_token
-            wallet.refresh_token = refresh_token
-            wallet.expires_at = expires_at
-            wallet.currency = "BTC"
-            try:
-                wallet.save()
-            except Exception as e:
-                return {
-                    'error': e.message,
-                    'success': False
-                }
+        access_token = _data['user']['access_token']
+        refresh_token = _data['user']['refresh_token']
+        expires_at = _data['user']['expires_at']
+        wallet = Wallet.objects.get(user_id=user)
+        wallet.access_token = access_token
+        wallet.refresh_token = refresh_token
+        wallet.expires_at = expires_at
+        wallet.currency = "BTC"
+        wallet.save()
 
-            # Make PHP wallet
-            wallet2 = Wallet(user_id=user.id)
-            wallet2.currency = "PHP"
-            wallet2.access_token = access_token
-            wallet2.refresh_token = refresh_token
-            wallet2.expires_at = expires_at
-            try:
-                wallet2.save()
-            except Exception as e:
-                return {
-                    'error': e.message,
-                    'success': False
-                }
-            # TODO:: Check for false on get address
-            additional_params = get_extra_wallet_info(user)
-            wallet.blockchain_address = additional_params['blockchain_address']
-            wallet.provider_wallet_id = additional_params['provider_wallet_id']
-            wallet2.blockchain_address = additional_params['blockchain_address2']
-            wallet2.provider_wallet_id = additional_params['provider_wallet_id2']
-            try:
-                wallet.save()
-                wallet2.save()
-            except Exception as e:
-                return {
-                    'error': e.message,
-                    'success': False
-                }
-            return _data
-        else:
-            error_message = {'success': False}
-            if 'error' in _data:
-                error_message['error'] = _data['error']
-            elif 'errors' in _data:
-                error_message['error'] = _data['errors']
-            else:
-                error_message['error'] = "Could not find the error. Look for yourself {}".format(str(_data))
-            return error_message
+        # Make PHP wallet
+        wallet2 = Wallet(user_id=user.id)
+        wallet2.currency = "PHP"
+        wallet2.access_token = access_token
+        wallet2.refresh_token = refresh_token
+        wallet2.expires_at = expires_at
+        wallet2.save()
+        # TODO:: Check for false on get address
+        additional_params = get_extra_wallet_info(user)
+        wallet.blockchain_address = additional_params['blockchain_address']
+        wallet.provider_wallet_id = additional_params['provider_wallet_id']
+        wallet2.blockchain_address = additional_params['blockchain_address2']
+        wallet2.provider_wallet_id = additional_params['provider_wallet_id2']
+        wallet.save()
+        wallet2.save()
+        # return _data
 
 
 currency = ["BTC", "CLP", "PBTC"]
@@ -648,16 +619,16 @@ def make_oauth_request(url, user, body={}, put=False, headers="", content_type=T
 
     # Use requests.get instead of POST for GET requests, without the data kwarg
 
-def make_hmac_request(url, body=''):
+def make_hmac_request(url, body=None):
     """Make a HMAC request to coins"""
     nonce = int(time.time() * 1e6)
 
-    if body is None:
+    if not body:
         # For GET requests
         message = str(nonce) + url
     else:
         # For POST requests
-        body = json.dumps(body, separators=(',', ':'))
+        body = json.dumps(body)
         message = str(nonce) + url + body
     signature = hmac.new(str(settings.COINS_SECRET), message, hashlib.sha256).hexdigest()
 
@@ -669,33 +640,40 @@ def make_hmac_request(url, body=''):
         'Accept': 'application/json'
     }
 
-
     if body:
-        try:
-            response = requests.post(url, headers=headers, data=body)
-        except Exception as e:
-            return {"success": False, "error": e.message}
+        response = requests.post(url, headers=headers, data=body)
     else:
+        response = requests.get(url, headers=headers)
+    try:
+        response.raise_for_status()
+    except HTTPError as res:
+        # find the error message hidden within :p
+        message = 'Failed to create CoinsPH wallet.'
         try:
-            response = requests.get(url, headers=headers)
-        except Exception as e:
-            return {"success": False, "error": e.message}
-    result = response.json()
+            r = res.response.json()
+        except:
+            # Something went wrong while finding more information, so we'll just pass
+            pass
+        if r and 'error' in r:
+            raise serializers.ValidationError(detail=r['error'])
+        elif r and 'errors' in r:
+            raise serializers.ValidationError(detail=r['errors'])
+        raise ParseError(detail=message)
+    return response.json()
 
-    if result['success'] and response.status_code == 201:
-        return result
-    else:
-        error_result = {}
-        error_result['success'] = False
-
-        if 'errors' in result:
-            if isinstance(result['errors'], str):
-                error_result['error'] = result['errors']
-            else:
-                error_result['error'] = result['errors'][0]
-        else:
-            error_result['error'] = "Could not find correct error message from COINSPH - {}. Here is it all {}".format(url, str(result))
-        return error_result
+    # if result['success'] and response.status_code == 201:
+    #     return result
+    # else:
+    #     error_result = {'success': False}
+    #
+    #     if 'errors' in result:
+    #         if isinstance(result['errors'], str):
+    #             error_result['error'] = result['errors']
+    #         else:
+    #             error_result['error'] = result['errors'][0]
+    #     else:
+    #         error_result['error'] = "Could not find correct error message from COINSPH - {}. Here is it all {}".format(url, str(result))
+    #     return error_result
 
 def get_user_token(user):
     user_wallet = Wallet.objects.filter(user_id=user)[0]

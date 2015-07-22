@@ -1,3 +1,5 @@
+import random
+import string
 import sys
 import simplejson as json
 import datetime
@@ -49,23 +51,36 @@ class AccountTests(APITestCase):
 
     def test_create_account(self):
         url = reverse('apiv1:create')
-        data = {
-            "username": "first_user",
-            "email": "first_test_user101010@mailinator.com",
+
+        # create a brand new user with a new email
+        brand_new = {
+            "username": "brand_new",
+            "email": "haedrian_test_{}@mailinator.com".format(''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(10))),
             "password1": "password123",
             "phone": "+14105521258",
             "country": "US",
         }
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(url, brand_new, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        # Send the same email a second time to trigger duplicate email
-        data['username'] = "duplicate_email"
-        data['phone'] = "+17066284548"
-        response = self.client.post(url, data, format='json')
+        # send an existing coinsph user. Should fail with a 400
+        existing_coinsph = {
+            "username": "first_user",
+            "email": "first_test_user101010@mailinator.com",
+            "password1": "password123",
+            "phone": "+17068019809",
+            "country": "US",
+        }
+        response = self.client.post(url, existing_coinsph, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        import pdb; pdb.set_trace()
-        self.assertDictEqual(json.loads(response.body), {})
+        self.assertListEqual(response.data, ["This email is already associated with an account."])
+
+        # Send the same email a second time to trigger duplicate email on our db end
+        brand_new['username'] = "duplicate_email"
+        brand_new['phone'] = "+17066284548"
+        response = self.client.post(url, brand_new, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # self.assertDictEqual(json.loads(response.body), {})
 
     def test_get_history(self):
         pass

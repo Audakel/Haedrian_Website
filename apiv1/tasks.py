@@ -2,6 +2,9 @@ from collections import namedtuple
 from celery import shared_task
 from django.contrib.auth import get_user_model
 from money import Money as Convert
+import logging
+logger = logging.getLogger('hotfix')
+
 
 from apiv1.external.mifosx import mifosx_api
 from haedrian.models import UserData, Transaction
@@ -12,9 +15,17 @@ from apiv1.internal.views_tasks import _get_history, repay_outstanding_loan
 
 @app.task
 def verify_send_que():
-    transactions = Transaction.objects.filter(payment_confirmed=False)
+
+    logger.debug('inside verify_send_que')
+
+    transactions = Transaction.objects.filter(mifos_confirmed=False)
     for transaction in transactions:
         history = _get_history(transaction.sender, {'id': transaction.sent_payment_id}, filter_transactions=False)
+
+        # Take this out
+        # if True:
+        logger.debug('transaction: {}'.format(transaction))
+
         if history['success'] and history['transactions'][0]['status'] == 'success':
             transaction.payment_confirmed = True
             transaction.save()
@@ -55,6 +66,7 @@ def verify_send_que():
                         'clientId': member.mifos_id,
                         'transactionId': transaction.id
                     })
+
 
 
 @shared_task

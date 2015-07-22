@@ -319,6 +319,13 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': os.path.join(PROJECT_ROOT, 'rapidsms.log'),
         },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'hotfix_debug.log',
+
+        },
+
     },
     'loggers': {
         'django': {
@@ -343,6 +350,10 @@ LOGGING = {
         'celery': {
             'handlers': ['celery', 'console'],
             'level': 'ERROR',
+        },
+        'hotfix': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
         },
     }
 }

@@ -11,8 +11,8 @@ import simplejson as json
 from money import Money as Convert
 
 from utils import format_currency_display, calculate_fees
-
-__author__ = 'audakel'
+import logging
+logger = logging.getLogger('hotfix')
 
 
 def _get_history(user, kwargs, filter_transactions=True):
@@ -91,8 +91,15 @@ def repay_outstanding_loan(_json):
     :param transactionId: Primary Key to look up the Transaction by
     :return: {'success': True|False, 'message': message}
     """
+
+
     id = _json['clientId']
     tr = _json['transactionId']
+
+
+    logger.debug('inside repay_outstanding_loan. id: {} , tr: {}'.format(id, tr))
+
+
     # user = UserData.objects.get(app_interal_id=id)
     trans = Transaction.objects.get(id=tr)
     res = mifosx_api('loans/', params={"sqlSearch": "l.client_id={}".format(id)})
@@ -114,6 +121,12 @@ def repay_outstanding_loan(_json):
         res = mifosx_api('loans/{}/transactions'.format(loan_id), params={'command': 'repayment'}, body=json.dumps(body), method='POST')
 
         if res['success']:
-            return {'success': True, 'message': 'Paid back loan'}
+            try:
+                trans.mifos_confirmed = True
+                trans.save()
+                return {'success': True, 'message': 'Paid back loan'}
+            except Exception as e:
+                return {'success': False, 'message': str(e)}
+
     # something went wrong
     return res['message']

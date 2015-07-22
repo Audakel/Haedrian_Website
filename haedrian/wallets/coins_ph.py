@@ -51,10 +51,8 @@ POST
 # Optional param - payment_id (include for group repayments)
 {
     "send_to": "mentors_international",
-    "amount_local": 10,
-    "currency": "PHP",
-    "send_method": "username",
-    "payment_id": 23
+    "amount_local": 0.10,
+    "send_method": "username"
 }
 
 # NEW USER - CREATE
@@ -66,7 +64,7 @@ POST
         "phone": "+14105521258",
         "country": "US",
         "application": "MENTORS",
-        "app_id": 4
+        "app_id": 50
 }
 
 # BUY

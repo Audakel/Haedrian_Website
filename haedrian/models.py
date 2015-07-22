@@ -76,6 +76,7 @@ class Transaction(models.Model):
     amount_local = MoneyField(max_digits=32, decimal_places=16)
     date_modified = models.DateTimeField(auto_now_add=True)
     payment_confirmed = models.BooleanField(default=False)
+    mifos_confirmed = models.BooleanField(default=False)
     sent_payment_id = models.CharField(max_length=40)
     group = models.ForeignKey(VerifyGroup, null=True)
     REPAYMENT = 'Re'

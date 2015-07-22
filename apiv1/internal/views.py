@@ -602,8 +602,8 @@ def _get_next_repayment(user, data=''):
 
 
 def _testing(user, data=''):
-    user=get_user_model().objects.get(username='bobbyray')
-    return _get_groups(user)
+    user=get_user_model().objects.get(username='sir_kovu_XII')
+    # return _get_groups(user)
 
     from apiv1.tasks import verify_send_que
     return verify_send_que()

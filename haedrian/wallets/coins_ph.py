@@ -426,6 +426,10 @@ class CoinsPhWallet(BaseWallet):
     def get_exchanges(self, kwargs):
         # Get locations
         locations = self.get_exchange_types()
+
+        if not locations['success']:
+            return {'success': False, 'error': locations['error']}
+
         if not locations:
             return locations
 
@@ -438,9 +442,6 @@ class CoinsPhWallet(BaseWallet):
         for id in fees:
             fee_ids[id['outlet']] = i
             i += 1
-	
-	if not locations['locations']:
-	    return {'locations':[]}
 
         for outlet in locations['locations']:
             for name in outlet['outlets']:

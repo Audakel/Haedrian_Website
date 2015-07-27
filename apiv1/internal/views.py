@@ -80,8 +80,8 @@ def _new_user(kwargs):
 
 def _get_exchanges(user, kwargs):
     wallet = get_temp_wallet(user)
-    try:
-        data = wallet.get_exchanges(kwargs)
+    data = wallet.get_exchanges(kwargs)
+    if data['success']:
         default_currency = user.userdata.default_currency
         for location in data['locations']:
             for outlet in location['outlets']:
@@ -94,9 +94,8 @@ def _get_exchanges(user, kwargs):
                                                                    info['until_amount'])
                     info['currency'] = default_currency
 
-        return data
-    except Exception as e:
-        return str(e)
+    return data
+
 
 
 def _get_exchange_fees(user, kwargs):

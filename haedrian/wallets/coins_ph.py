@@ -438,6 +438,9 @@ class CoinsPhWallet(BaseWallet):
         for id in fees:
             fee_ids[id['outlet']] = i
             i += 1
+	
+	if not locations['locations']:
+	    return {'locations':[]}
 
         for outlet in locations['locations']:
             for name in outlet['outlets']:
@@ -735,10 +738,12 @@ def get_user_token(user):
             'grant_type': 'refresh_token',
             'redirect_uri': 'https://haedrian.io'
         }
-        headers = {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        }
-        token = requests.post(url, headers=headers, params=data)
+#        headers = {
+#            'Content-Type': 'application/x-www-form-urlencoded',
+#        }
+#        token = requests.post(url, headers=headers, params=data)
+        token = requests.post(url, data=data)
+
 
         if token.status_code == 200:
             token = token.json()

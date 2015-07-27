@@ -29,6 +29,7 @@ def verify_send_que():
         if history['success'] and history['transactions'][0]['status'] == 'success':
             transaction.payment_confirmed = True
             transaction.save()
+            logger.debug('transaction confirmed!')
 
 
             if not transaction.type == Transaction.FEE:
@@ -36,8 +37,11 @@ def verify_send_que():
                     group = transaction.group
 
                 else:
+                    logger.debug("1")
                     userdata = UserData.objects.filter(user=transaction.sender)[0]
+                    logger.debug("2")
                     try:
+                        logger.debug("3")
                         verify_group = VerifyGroup(size=1,
                                                    buy_order_id=transaction.sent_payment_id,
                                                    buy_confirmed=True,
@@ -45,13 +49,18 @@ def verify_send_que():
                                                    currency=userdata.default_currency,
                                                    created_by=userdata.user)
 
+                        logger.debug("4")
                         verify_group.save()
+                        logger.debug("5")
                         verify_person = VerifyPerson(group=verify_group,
                                                      mifos_id=userdata.app_id,
                                                      phone=userdata.phone,
                                                      amount=history['transactions'][0]['amount'])
+                        logger.debug("6")
                         verify_person.save()
+                        logger.debug("7")
                     except Exception as e:
+                        logger.warn("exception caught! {} ".format( str(e)))
                         return {'success': False, 'error': e}
 
                     group = verify_group
@@ -61,6 +70,7 @@ def verify_send_que():
                 # Update MIFOS
                 # TODO:: DB rollback
                 members = VerifyPerson.objects.filter(group_id=group)
+                logger.debug('Trying to verify persons!')
                 for member in members:
                     repay_outstanding_loan({
                         'clientId': member.mifos_id,

@@ -96,7 +96,7 @@ def _get_exchanges(user, kwargs):
 
         return data
     except Exception as e:
-        return e
+        return str(e)
 
 
 def _get_exchange_fees(user, kwargs):

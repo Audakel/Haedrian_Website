@@ -17,7 +17,7 @@ __author__ = 'audakel'
 
 def _get_history(user, kwargs, filter_transactions=True):
 
-    wallet = get_temp_wallet(user)
+    wallet = get_first_wallet(user)
     data = wallet.get_history(kwargs)
     if data['success']:
         # TODO: fix double wallet issue.... find out what currecny wallet they want
@@ -69,7 +69,7 @@ def _get_history(user, kwargs, filter_transactions=True):
         return data
 
 
-def get_temp_wallet(user):
+def get_first_wallet(user):
     wallets = Wallet.objects.filter(user=user, currency="BTC")
     # TODO:: turn on PHP wallets instead of BTC
     wallet = wallets[0]

@@ -85,7 +85,7 @@ def get_wallet_info(request):
 @api_view(http_method_names=['GET'])
 @authentication_classes(auth_classes)
 def get_balance(request):
-    data = internal._get_balance(request.user, request.data)
+    data = internal.get_balance(request.user, request.data)
     return Response(data)
 
 @api_view(http_method_names=['GET'])
@@ -223,12 +223,8 @@ def group_verify(request):
 @api_view(http_method_names=['GET'])
 @authentication_classes(auth_classes)
 def get_home_screen(request):
-    try:
-        data = internal._get_home_screen(request.user, request.data)
-        return Response(data)
-    except Exception as e:
-        return Response(({'success': False, 'error': e.message}), status=400)
-
+    data = internal.get_home_screen(request.user)
+    return Response(data)
 
 @api_view(http_method_names=['GET'])
 @authentication_classes(auth_classes)

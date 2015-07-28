@@ -173,7 +173,7 @@ def sms_help(msg):
 def sms_balance(msg):
     # TODO: figure out how to find the user ID from authusers
 
-    # response = _get_balance(UserModel.objects.get(id=user_id))
+    # response = get_balance(UserModel.objects.get(id=user_id))
     # msg.respond("You have $%s available, with $%s pending. Nice!" % (response['balance'],
     #                                                           response['pending_balance']))
 

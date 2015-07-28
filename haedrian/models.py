@@ -64,6 +64,7 @@ class Wallet(models.Model):
     provider_wallet_id = models.CharField(max_length=60, default="")
     access_token = models.CharField(max_length=60, default="")
     refresh_token = models.CharField(max_length=60, default="")
+    # TODO: Change this to an int field or something more appropriate
     expires_at = models.CharField(max_length=60, default="")
     currency = models.CharField(max_length=6, choices=CURRENCY, default=BITCOIN)
     blockchain_address = models.CharField(max_length=80, default="")

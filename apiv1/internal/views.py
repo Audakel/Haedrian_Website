@@ -17,7 +17,7 @@ import requests
 from rapidsms.router import send, lookup_connections
 
 from apiv1.internal.utils import format_currency_display, calculate_fees
-from apiv1.internal.views_tasks import _get_history, get_temp_wallet, repay_outstanding_loan
+from apiv1.internal.views_tasks import _get_history, get_first_wallet, repay_outstanding_loan
 from apiv1.serializers import SendSerializer
 from haedrian.forms import NewUserForm
 from haedrian.models import UserData, Transaction, Wallet
@@ -54,7 +54,7 @@ def new_user(data):
 
 
 def _get_exchanges(user, kwargs):
-    wallet = get_temp_wallet(user)
+    wallet = get_first_wallet(user)
     try:
         data = wallet.get_exchanges(kwargs)
         default_currency = user.userdata.default_currency
@@ -75,7 +75,7 @@ def _get_exchanges(user, kwargs):
 
 
 def _get_exchange_fees(user, kwargs):
-    wallet = get_temp_wallet(user)
+    wallet = get_first_wallet(user)
     try:
         data = wallet.get_exchange_fees(kwargs)
         return data
@@ -84,7 +84,7 @@ def _get_exchange_fees(user, kwargs):
 
 
 def _get_exchange_types(user, kwargs):
-    wallet = get_temp_wallet(user)
+    wallet = get_first_wallet(user)
     data = wallet.get_exchange_types(kwargs)
     if data['success']:
         return {
@@ -96,7 +96,7 @@ def _get_exchange_types(user, kwargs):
 
 def _send_to_user_handle(user, **kwargs):
     pass
-    # wallet = get_temp_wallet(user)
+    # wallet = get_first_wallet(user)
     # try:
     # data = wallet.send_to_user(data["receiving_user"], data["amount_btc"], data["target_address"])
     # return data
@@ -107,7 +107,7 @@ def _send_to_user_handle(user, **kwargs):
 def _send(user, kwargs):
     """ Internal API for the SMS app to call as well """
 
-    wallet = get_temp_wallet(user)
+    wallet = get_first_wallet(user)
     UserModel = get_user_model()
 
     send_data = SendSerializer(data=kwargs)
@@ -217,7 +217,7 @@ def _send(user, kwargs):
 
 
 def _get_pending_balance(user, kwargs):
-    wallet = get_temp_wallet(user)
+    wallet = get_first_wallet(user)
     try:
         data = wallet.get_pending_balance(kwargs)
         return data
@@ -225,18 +225,14 @@ def _get_pending_balance(user, kwargs):
         return False
 
 
-def _get_balance(user, kwargs=''):
-    wallet = get_temp_wallet(user)
-    try:
-        data = wallet.get_balance(kwargs)
-        default_currency = user.userdata.default_currency
-        data['balance'] = format_currency_display(data['currency'], default_currency, data['balance'])
-        data['pending_balance'] = format_currency_display(data['currency'], default_currency, data['pending_balance'])
-        data['currency'] = default_currency
-
-        return data
-    except Exception as e:
-        return {'error': e, 'success': False}
+def get_balance(user, kwargs=''):
+    wallet = get_first_wallet(user)
+    data = wallet.get_balance(kwargs)
+    default_currency = user.userdata.default_currency
+    data['balance'] = format_currency_display(data['currency'], default_currency, data['balance'])
+    data['pending_balance'] = format_currency_display(data['currency'], default_currency, data['pending_balance'])
+    data['currency'] = default_currency
+    return data
 
 
 def _get_wallet_info(user, kwargs):
@@ -248,7 +244,7 @@ def _get_wallet_info(user, kwargs):
     pending_balance - Incoming pending balance.
     default_address - The default address used when the account is specified as a recipient.
     """
-    wallet = get_temp_wallet(user)
+    wallet = get_first_wallet(user)
     data = wallet.get_wallet_info(kwargs)
     if data['success']:
         default_currency = user.userdata.default_currency
@@ -283,7 +279,7 @@ def _get_wallet_info(user, kwargs):
 
 
 def _get_address(user, kwargs):
-    wallet = get_temp_wallet(user)
+    wallet = get_first_wallet(user)
     try:
         data = wallet.get_address(kwargs)
         return data
@@ -292,7 +288,7 @@ def _get_address(user, kwargs):
 
 
 def _buy(user, kwargs):
-    wallet = get_temp_wallet(user)
+    wallet = get_first_wallet(user)
     try:
         data = wallet.buy(kwargs)
         return data
@@ -301,7 +297,7 @@ def _buy(user, kwargs):
 
 
 def _verify_buy(user, kwargs):
-    wallet = get_temp_wallet(user)
+    wallet = get_first_wallet(user)
     try:
         data = wallet.verify_buy(kwargs)
         vg = VerifyGroup.objects.filter(created_by=user).filter(buy_order_id=kwargs['order_id'])
@@ -318,7 +314,7 @@ def _verify_buy(user, kwargs):
 
 
 def _get_buy_history(user, kwargs):
-    wallet = get_temp_wallet(user)
+    wallet = get_first_wallet(user)
     try:
         data = wallet.buy_history(kwargs)
         if data['success']:
@@ -460,10 +456,13 @@ def _group_payment(user, kwargs):
         'payments': payment_list
     }
 
-
-def _get_home_screen(user, kwargs=''):
+def get_home_screen(user):
+    """
+    :param user:
+    :return:
+    """
     default_currency = user.userdata.default_currency
-    balance = _get_balance(user)
+    balance = get_balance(user)
 
     if not balance['success']:
         # Issue with coins.ph wallet

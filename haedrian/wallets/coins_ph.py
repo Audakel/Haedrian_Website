@@ -564,15 +564,11 @@ def get_extra_wallet_info(user):
     return data
 
 
-def make_oauth_request(url, user, body={}, put=False, headers="", content_type=True, get_params={}):
-    user_token = get_user_token(user)
-    if user_token['success']:
-        TOKEN = user_token['token']
-    else:
-        return user_token
+def make_oauth_request(url, user, body=None, put=False, content_type=True, get_params=None):
+    token = get_user_token(user)
 
     headers = {
-        'Authorization': 'Bearer {}'.format(TOKEN),
+        'Authorization': 'Bearer {}'.format(token),
         'Content-Type': 'application/json;charset=UTF-8',
         'Accept': 'application/json'
     }
@@ -582,57 +578,22 @@ def make_oauth_request(url, user, body={}, put=False, headers="", content_type=T
         del headers['Content-Type']
 
     if put:
-        try:
-            response = requests.put(url, headers=headers)
-        except Exception as e:
-            return {"success": False, "error": e.message}
+        response = requests.put(url, headers=headers)
     elif body:
-        try:
-            response = requests.post(url, headers=headers, data=body)
-        except Exception as e:
-            return {"success": False, "error": e.message}
+        response = requests.post(url, headers=headers, data=body)
     else:
-        try:
-            if get_params:
-                params = dict({'per_page': 100}.items() + get_params.items())
-            else:
-                params = {'per_page': 100}
-            response = requests.get(url, headers=headers, params=params)
-        except Exception as e:
-            return {"success": False, "error": e.message}
-
-    if response.status_code == 503:
-        return {
-            'success': False,
-            'error': response.reason
-        }
-
+        params = {'per_page': 100}
+        if get_params:
+            params.update(get_params)
+        response = requests.get(url, headers=headers, params=params)
+    try:
+        response.raise_for_status()
+    except HTTPError as res:
+        if res.response.status:
+            pass # writing here
+        raise res
     result = response.json()
-
-    if response.ok and (response.status_code == 200 or response.status_code == 201):
-        result['success'] = True
-        return result
-    else:
-        error_result = {}
-        error_result['success'] = False
-        try:
-            error_result['error'] = result['errors']['non_field_errors']
-        except:
-            error_result['error'] = result.get('errors', response.reason)
-
-        if isinstance(error_result['error'], str):
-            error_result['error'] = error_result['error']
-        elif isinstance(error_result['error'], dict):
-            try:
-                error_result['error'] = error_result['error']['target_address'][0]
-            except:
-                error_result['error'] = error_result['error']
-        else:
-            error_result['error'] = error_result['error'][0]
-        return error_result
-
-        # Use requests.get instead of POST for GET requests, without the data kwarg
-
+    return result
 
 def make_hmac_request(url, body=None):
     """Make a HMAC request to coins"""
@@ -664,6 +625,7 @@ def make_hmac_request(url, body=None):
     except HTTPError as res:
         # find the error message hidden within :p
         message = 'Failed to create CoinsPH wallet.'
+        r = None
         try:
             r = res.response.json()
         except:
@@ -692,35 +654,28 @@ def make_hmac_request(url, body=None):
 
 
 def get_user_token(user):
+    # get the first wallet
     user_wallet = Wallet.objects.filter(user_id=user)[0]
 
-    if float(user_wallet.expires_at) > time.time():
-        token = user_wallet.access_token
-        return {'success': True, 'token': token}
-
-    else:
-        endpoint = '/user/oauthtoken'
-        url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
-        data = {
-            'client_id': settings.COINS_API_KEY,
-            'client_secret': settings.COINS_SECRET,
-            'refresh_token': user_wallet.refresh_token,
-            'grant_type': 'refresh_token',
-            'redirect_uri': 'https://haedrian.io'
-        }
-        headers = {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        }
-        token = requests.post(url, headers=headers, params=data)
-
-        if token.status_code == 200:
-            token = token.json()
-            user_wallet.expires_at = token['expires_at']
-            user_wallet.access_token = token['access_token']
-            user_wallet.refresh_token = token['refresh_token']
-            user_wallet.save()
-            return {'success': True, 'token': token['access_token']}
-        return {'success': False, 'error': token.reason}
+    if int(user_wallet.expires_at) > time.time():
+        return user_wallet.access_token
+    endpoint = '/user/oauthtoken'
+    url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
+    data = {
+        'client_id': settings.COINS_API_KEY,
+        'client_secret': settings.COINS_SECRET,
+        'refresh_token': user_wallet.refresh_token,
+        'grant_type': 'refresh_token',
+        'redirect_uri': 'https://haedrian.io'
+    }
+    response = requests.post(url, data=data)
+    response.raise_for_status()
+    token = response.json()
+    user_wallet.expires_at = token['expires_at']
+    user_wallet.access_token = token['access_token']
+    user_wallet.refresh_token = token['refresh_token']
+    user_wallet.save()
+    return token['access_token']
 
 
 # u'{

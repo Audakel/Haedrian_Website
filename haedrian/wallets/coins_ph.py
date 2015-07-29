@@ -492,10 +492,13 @@ class CoinsPhWallet(BaseWallet):
                     outlet_locations_id = []
 
                     for outlet in i['outlets']:
-                        outlet_locations.append({
-                            'name': outlet.replace("_", " ").replace('-', ' ').title(),
-                            'id': outlet
-                        })
+                        # mlhuillier_deposit is causing issues on android and has a very large fee...
+                        # have not looked in to it, just taking it out
+                        if outlet != 'mlhuillier_deposit':
+                            outlet_locations.append({
+                                'name': outlet.replace("_", " ").replace('-', ' ').title(),
+                                'id': outlet
+                            })
 
                     exchange_list.append(dict({'name': outlet_name, 'outlets': outlet_locations}))
             return {
@@ -724,8 +727,8 @@ def make_hmac_request(url, body=''):
 
 def get_user_token(user):
     user_wallet = Wallet.objects.filter(user_id=user)[0]
-
-    if float(user_wallet.expires_at) > time.time():
+    # >
+    if float(user_wallet.expires_at) == time.time():
         token = user_wallet.access_token
         return {'success': True, 'token': token}
 
@@ -739,10 +742,8 @@ def get_user_token(user):
             'grant_type': 'refresh_token',
             'redirect_uri': 'https://haedrian.io'
         }
-#        headers = {
-#            'Content-Type': 'application/x-www-form-urlencoded',
-#        }
-#        token = requests.post(url, headers=headers, params=data)
+
+
         token = requests.post(url, data=data)
 
 

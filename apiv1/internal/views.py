@@ -22,7 +22,7 @@ from haedrian.forms import NewUserForm, EmailUserForm
 from haedrian.models import UserData, Transaction, Wallet
 from apiv1.models import VerifyGroup, VerifyPerson
 from haedrian.views import _create_account
-from haedrian.wallets.coins_ph import CoinsPhWallet
+from haedrian.wallets.coins_ph import CoinsPhWallet, get_user_token
 from apiv1.tasks import get_group_members, verify_send_que
 from apiv1.external.mifosx import mifosx_loan, mifosx_api
 from money import Money as Convert, Money
@@ -601,8 +601,8 @@ def _get_next_repayment(user, data=''):
 
 
 def _testing(user, data=''):
-    user=get_user_model().objects.get(username='sir_kovu_XII')
-    # return _get_groups(user)
+    user=get_user_model().objects.get(username='cray_3')
+    return get_user_token(user)
 
     from apiv1.tasks import verify_send_que
     return verify_send_que()

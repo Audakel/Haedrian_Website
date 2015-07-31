@@ -81,6 +81,18 @@ class Transaction(models.Model):
     mifos_confirmed = models.BooleanField(default=False)
     sent_payment_id = models.CharField(max_length=40)
     group = models.ForeignKey(VerifyGroup, null=True)
+    BITCOIN = 'BTC'
+    PHILIPPINE_PESO = 'PHP'
+    US_DOLLAR = 'USD'
+    CURRENCY = (
+        (BITCOIN, 'Bitcoin'),
+        (PHILIPPINE_PESO, 'Philippine Peso'),
+        (US_DOLLAR, 'United States Dollar'),
+    )
+    amount_local_currency = models.CharField(max_length=6, choices=CURRENCY, default=US_DOLLAR)
+
+
+
     REPAYMENT = 'Re'
     SEND = 'Se'
     FEE = 'Fe'

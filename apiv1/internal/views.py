@@ -464,7 +464,7 @@ def _group_verify(user, kwargs):
 
 def _group_payment(user, kwargs):
     time_delta = datetime.datetime.now() - datetime.timedelta(days=14)
-    payments = VerifyGroup.objects.filter(created_by=user, buy_confirmed=True,
+    payments = VerifyGroup.objects.filter(created_by=user, buy_confirmed=True, send_confirmed=False,
                                           created__gte=time_delta).order_by('created')
     payment_list = []
     default_currency = user.userdata.default_currency
@@ -601,9 +601,10 @@ def _get_next_repayment(user, data=''):
 
 
 def _testing(user, data=''):
-    user=get_user_model().objects.get(username='shizz10')
-    # return get_user_token(user)
-    return update_coins_token()
+    return verify_send_que()
+    # user=get_user_model().objects.get(username='shizz10')
+    # # return get_user_token(user)
+    # return update_coins_token()
 
     # btc_wallet = Wallet.objects.get(user_id=user, type=Wallet.COINS_PH, currency='BTC')
     # php_wallet = Wallet.objects.get(user_id=user, type=Wallet.COINS_PH, currency='PHP')

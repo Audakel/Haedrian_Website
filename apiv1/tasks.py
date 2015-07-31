@@ -9,6 +9,8 @@ from money import Money as Convert
 import logging
 
 from celery.utils.log import get_task_logger
+from apiv1.internal.utils import calculate_fees
+
 logger = get_task_logger(__name__)
 
 from apiv1.external.mifosx import mifosx_api
@@ -17,15 +19,17 @@ from apiv1.models import VerifyPerson, VerifyGroup
 from Haedrian_Website.celery import app
 from apiv1.internal.views_tasks import _get_history, repay_outstanding_loan
 
+
 @app.task
 def update_coins_token():
-    wallets = Wallet.objects.filter(type=Wallet.COINS_PH, expires_at__lte=datetime.now() + timedelta(hours=4, minutes=10))
+    wallets = Wallet.objects.filter(type=Wallet.COINS_PH,
+                                    expires_at__lte=datetime.now() + timedelta(hours=4, minutes=10))
     btc_wallets = wallets.filter(currency='BTC')
     php_wallets = wallets.filter(currency='PHP')
 
     for btc_wallet in btc_wallets:
-        logger.info('Updating wallet for: {}'.format(btc_wallet.user_id)) 
-	endpoint = '/user/oauthtoken'
+        logger.info('Updating wallet for: {}'.format(btc_wallet.user_id))
+        endpoint = '/user/oauthtoken'
         url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
         data = {
             'client_id': settings.COINS_API_KEY,
@@ -53,34 +57,49 @@ def update_coins_token():
         else:
             try:
                 logger.info('Cant update coins token. user: {}-{}'.format(
-                get_user_model().objects.get(id=btc_wallet.user_id),
-                btc_wallet.user_id))
+                    get_user_model().objects.get(id=btc_wallet.user_id),
+                    btc_wallet.user_id))
             except Exception as e:
                 logger.info('Cant update coins token. error: {}'.format(str(e)))
 
 
-
-
-
 @app.task
 def verify_send_que():
-
-
     transactions = Transaction.objects.filter(mifos_confirmed=False)
     for transaction in transactions:
         history = _get_history(transaction.sender, {'id': transaction.sent_payment_id}, filter_transactions=False)
-
-        # Take this out
-        # if True:
 
         if history['success'] and history['transactions'][0]['status'] == 'success':
             transaction.payment_confirmed = True
             transaction.save()
 
-
             if not transaction.type == Transaction.FEE:
                 if transaction.group:
                     group = transaction.group
+
+                    members = VerifyPerson.objects.filter(group_id=group)
+                    for member in members:
+                        calc_fees = calculate_fees(transaction.amount_local_currency, member.amount)
+
+                        # TODO:: FIX receiver from being hardcoded
+                        mfi_transaction = Transaction(sender=UserData.objects.get(app_id=member.mifos_id).user,
+                                                      receiver=get_user_model().objects.get(username='mentors_international'),
+                                                      amount_btc=calc_fees['amount_btc'].amount,
+                                                      amount_local=member.amount,
+                                                      amount_local_currency=transaction.amount_local_currency,
+                                                      sent_payment_id=transaction.sent_payment_id,
+                                                      group=group)
+                        try:
+                            mfi_transaction.save()
+                        except Exception as e:
+                            return {'success': False, 'error': str(e)}
+
+                        repay_outstanding_loan({
+                            'clientId': member.mifos_id,
+                            'transactionId': mfi_transaction.id
+                        })
+
+                    VerifyGroup.objects.filter(id=group.id).update(send_confirmed=True)
 
                 else:
                     userdata = UserData.objects.filter(user=transaction.sender)[0]
@@ -99,21 +118,16 @@ def verify_send_que():
                                                      amount=history['transactions'][0]['amount'])
                         verify_person.save()
                     except Exception as e:
-                        return {'success': False, 'error': e}
+                        return {'success': False, 'error': str(e)}
 
                     group = verify_group
-
-
-
-                # Update MIFOS
-                # TODO:: DB rollback
-                members = VerifyPerson.objects.filter(group_id=group)
-                for member in members:
-                    repay_outstanding_loan({
-                        'clientId': member.mifos_id,
-                        'transactionId': transaction.id
-                    })
-
+                    members = VerifyPerson.objects.filter(group_id=group)
+                    for member in members:
+                        repay_outstanding_loan({
+                            'clientId': member.mifos_id,
+                            'transactionId': transaction.id
+                        })
+                    VerifyGroup.objects.filter(id=group).update(send_confirmed=True)
 
 
 @shared_task
@@ -149,7 +163,7 @@ def fetch_mfi_client(new_user):
 
 # def repay_outstanding_loan(json):
 # """Queries the external application to see if there is an outstanding loan for this
-#     user and applies the money from this transaction to that loan
+# user and applies the money from this transaction to that loan
 #
 #     :param clientId: JSON containing the internal (MIFOSX) ID to query the user by
 #     :param transactionId: Primary Key to look up the Transaction by

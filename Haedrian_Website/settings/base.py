@@ -216,8 +216,8 @@ CELERYBEAT_SCHEDULE = {
         'schedule': timedelta(minutes=30),
     },
     'refresh-coins-token': {
-        'task': 'haedrian.tasks.update_coins_token',
-        'schedule': timedelta(hours=4),
+        'task': 'apiv1.tasks.update_coins_token',
+        'schedule': timedelta(seconds=30),
     },
 
 }

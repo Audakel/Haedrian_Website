@@ -24,7 +24,8 @@ def update_coins_token():
     php_wallets = wallets.filter(currency='PHP')
 
     for btc_wallet in btc_wallets:
-        endpoint = '/user/oauthtoken'
+        logger.info('Updating wallet for: {}'.format(btc_wallet.user_id)) 
+	endpoint = '/user/oauthtoken'
         url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
         data = {
             'client_id': settings.COINS_API_KEY,

@@ -641,9 +641,11 @@ def make_oauth_request(url, user, body={}, put=False, headers="", content_type=T
             'success': False,
             'error': response.reason
         }
-
-    result = response.json()
-
+    try:
+    	result = response.json()
+    except:
+	return {'success': False, error:'no json'}
+    
     if response.ok and (response.status_code == 200 or response.status_code == 201):
         result['success'] = True
         return result
@@ -727,7 +729,6 @@ def make_hmac_request(url, body=''):
 
 from django.db import transaction
 
-@transaction.atomic
 def get_user_token(user):
     user_wallet = Wallet.objects.filter(user_id=user)[0]
     token = user_wallet.access_token

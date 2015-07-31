@@ -11,6 +11,9 @@ COINS_BASE_URL = 'https://coins.ph'
 COINS_API_KEY = "09Wvsxce4IVBYfW1yIn4OnvlstObgTXNEeV0i7jY"
 COINS_SECRET = "8PLwxbZpB3nW2N7kqRaIfkgja5kLTMO6VYUaJMLQ3Aea2yfv4K"
 
+DEBUG = False
+TEMPLATE_DEBUG = DEBUG
+
 try:
     EMAIL_HOST_PASSWORD = os.environ["DJANGO_EMAIL_PASSWORD"]
 except KeyError:

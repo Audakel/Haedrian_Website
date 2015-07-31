@@ -434,7 +434,7 @@ class CoinsPhWallet(BaseWallet):
             return locations
 
         fees = self.get_exchange_fees(kwargs)
-        if not fees:
+        if not fees or ('success' in fees and not fees['success']):
             return fees
 
         fee_ids = {}
@@ -645,7 +645,7 @@ def make_oauth_request(url, user, body={}, put=False, headers="", content_type=T
         return result
     else:
         error_result = {}
-        error_result['success'] = False
+	error_result['success'] = False
         try:
             error_result['error'] = result['errors']['non_field_errors']
         except:
@@ -721,39 +721,39 @@ def make_hmac_request(url, body=''):
                 url, str(result))
         return error_result
 
+from django.db import transaction
 
+@transaction.atomic
 def get_user_token(user):
-    user_wallet = Wallet.objects.filter(user_id=user)[0]
-
-    if float(user_wallet.expires_at) > time.time():
-        token = user_wallet.access_token
+    user_wallets = Wallet.objects.select_for_update().filter(user_id=user)
+    if int(user_wallets[0].expires_at) >= time.time():
+        token = user_wallets[0].access_token
         return {'success': True, 'token': token}
-
+    
     else:
         endpoint = '/user/oauthtoken'
         url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
         data = {
             'client_id': settings.COINS_API_KEY,
             'client_secret': settings.COINS_SECRET,
-            'refresh_token': user_wallet.refresh_token,
+            'refresh_token': user_wallets[0].refresh_token,
             'grant_type': 'refresh_token',
             'redirect_uri': 'https://haedrian.io'
         }
-#        headers = {
-#            'Content-Type': 'application/x-www-form-urlencoded',
-#        }
-#        token = requests.post(url, headers=headers, params=data)
         token = requests.post(url, data=data)
-
 
         if token.status_code == 200:
             token = token.json()
-            user_wallet.expires_at = token['expires_at']
-            user_wallet.access_token = token['access_token']
-            user_wallet.refresh_token = token['refresh_token']
-            user_wallet.save()
-            return {'success': True, 'token': token['access_token']}
-        return {'success': False, 'error': token.reason}
+            for wallet in user_wallets:
+                wallet.expires_at = token['expires_at']
+                wallet.access_token = token['access_token']
+                wallet.refresh_token = token['refresh_token']
+                try:
+		    wallet.save()
+	        except Exception as e:
+		    return {'success': False, 'error': str(e)}
+                return {'success': True, 'token': token['access_token']}
+        return {'success': False, 'error': str(token)}
 
 
 # u'{

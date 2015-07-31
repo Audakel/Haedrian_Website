@@ -32,8 +32,8 @@ except KeyError:
     #print("Error! You need to set the DJANGO_SECRET_KEY environment variable")
     # sys.exit(1)
 
-DEBUG = False
-TEMPLATE_DEBUG = False
+#DEBUG = False
+#TEMPLATE_DEBUG = False
 
 SITE_ID = 1
 

@@ -1,7 +1,8 @@
 import decimal
-import datetime
+from datetime import datetime
 from calendar import month_name
 import copy
+import urlparse
 from rest_framework.exceptions import ParseError
 import simplejson as json
 import random
@@ -23,7 +24,7 @@ from haedrian.models import UserData, Transaction, Wallet
 from apiv1.models import VerifyGroup, VerifyPerson
 from haedrian.views import _create_account
 from haedrian.wallets.coins_ph import CoinsPhWallet, get_user_token
-from apiv1.tasks import get_group_members, verify_send_que
+from apiv1.tasks import get_group_members, verify_send_que, update_coins_token
 from apiv1.external.mifosx import mifosx_loan, mifosx_api
 from money import Money as Convert, Money
 
@@ -601,11 +602,43 @@ def _get_next_repayment(user, data=''):
 
 
 def _testing(user, data=''):
-    user=get_user_model().objects.get(username='cray_3')
-    return get_user_token(user)
+    user=get_user_model().objects.get(username='shizz10')
+    # return get_user_token(user)
+    return update_coins_token()
 
-    from apiv1.tasks import verify_send_que
-    return verify_send_que()
+    # btc_wallet = Wallet.objects.get(user_id=user, type=Wallet.COINS_PH, currency='BTC')
+    # php_wallet = Wallet.objects.get(user_id=user, type=Wallet.COINS_PH, currency='PHP')
+    #
+    # endpoint = '/user/oauthtoken'
+    # url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
+    # data = {
+    #     'client_id': settings.COINS_API_KEY,
+    #     'client_secret': settings.COINS_SECRET,
+    #     'refresh_token': btc_wallet.refresh_token,
+    #     'grant_type': 'refresh_token',
+    #     'redirect_uri': 'https://haedrian.io'
+    # }
+    # token = requests.post(url, data=data)
+    #
+    # # token.raise_for_status()
+    # if token.status_code == 200:
+    #     token = token.json()
+    #     btc_wallet.expires_at = datetime.fromtimestamp(token['expires_at'])
+    #     btc_wallet.access_token = token['access_token']
+    #     btc_wallet.refresh_token = token['refresh_token']
+    #     btc_wallet.save()
+    #
+    #     if php_wallet:
+    #         php_wallet.expires_at = datetime.fromtimestamp(token['expires_at'])
+    #         php_wallet.access_token = token['access_token']
+    #         php_wallet.refresh_token = token['refresh_token']
+    #         php_wallet.save()
+    #
+    #
+    #     return token['access_token']
+
+    # from apiv1.tasks import verify_send_que
+    # return verify_send_que()
     # return _get_next_repayment(user)
 
     # transaction = Transaction(sender=user,

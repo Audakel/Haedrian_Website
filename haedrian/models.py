@@ -5,6 +5,7 @@ from django_countries.fields import CountryField
 from djmoney.models.fields import MoneyField
 from apiv1.models import VerifyGroup
 from django.utils.translation import ugettext_lazy as _
+from datetime import datetime
 
 class BetaApplicant(models.Model):
     name = models.CharField(max_length=255)
@@ -64,9 +65,10 @@ class Wallet(models.Model):
     provider_wallet_id = models.CharField(max_length=60, default="")
     access_token = models.CharField(max_length=60, default="")
     refresh_token = models.CharField(max_length=60, default="")
-    expires_at = models.CharField(max_length=60, default="")
     currency = models.CharField(max_length=6, choices=CURRENCY, default=BITCOIN)
     blockchain_address = models.CharField(max_length=80, default="")
+    expires_at = models.DateTimeField(default=datetime.fromtimestamp(0))
+
 
 class Transaction(models.Model):
     sender = models.ForeignKey(User, related_name="sent")

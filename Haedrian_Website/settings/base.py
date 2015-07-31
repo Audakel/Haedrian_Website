@@ -214,7 +214,12 @@ CELERYBEAT_SCHEDULE = {
     'update-exchange-rates': {
         'task': 'haedrian.tasks.fetch_exchange_rates',
         'schedule': timedelta(minutes=30),
-    }
+    },
+    'refresh-coins-token': {
+        'task': 'haedrian.tasks.update_coins_token',
+        'schedule': timedelta(hours=4),
+    },
+
 }
 
 # countries conf

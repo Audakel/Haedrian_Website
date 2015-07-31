@@ -1,22 +1,69 @@
 from collections import namedtuple
+import urlparse
+from datetime import timedelta, datetime
+from django.conf import settings
+import requests
 from celery import shared_task
 from django.contrib.auth import get_user_model
 from money import Money as Convert
 import logging
-logger = logging.getLogger('hotfix')
 
+from celery.utils.log import get_task_logger
+logger = get_task_logger(__name__)
 
 from apiv1.external.mifosx import mifosx_api
-from haedrian.models import UserData, Transaction
+from haedrian.models import UserData, Transaction, Wallet
 from apiv1.models import VerifyPerson, VerifyGroup
 from Haedrian_Website.celery import app
 from apiv1.internal.views_tasks import _get_history, repay_outstanding_loan
+
+@app.task
+def update_coins_token():
+    wallets = Wallet.objects.filter(type=Wallet.COINS_PH, expires_at__lte=datetime.now() + timedelta(hours=4, minutes=10))
+    btc_wallets = wallets.filter(currency='BTC')
+    php_wallets = wallets.filter(currency='PHP')
+
+    for btc_wallet in btc_wallets:
+        endpoint = '/user/oauthtoken'
+        url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
+        data = {
+            'client_id': settings.COINS_API_KEY,
+            'client_secret': settings.COINS_SECRET,
+            'refresh_token': btc_wallet.refresh_token,
+            'grant_type': 'refresh_token',
+            'redirect_uri': 'https://haedrian.io'
+        }
+
+        token = requests.post(url, data=data)
+
+        # token.raise_for_status()
+        if token.status_code == 200:
+            token = token.json()
+            btc_wallet.expires_at = datetime.fromtimestamp(token['expires_at'])
+            btc_wallet.access_token = token['access_token']
+            btc_wallet.refresh_token = token['refresh_token']
+            btc_wallet.save()
+
+            php_wallet = php_wallets.get(user_id=btc_wallet.user_id)
+            php_wallet.expires_at = datetime.fromtimestamp(token['expires_at'])
+            php_wallet.access_token = token['access_token']
+            php_wallet.refresh_token = token['refresh_token']
+            php_wallet.save()
+        else:
+            try:
+                logger.info('Cant update coins token. user: {}-{}'.format(
+                get_user_model().objects.get(id=btc_wallet.user_id),
+                btc_wallet.user_id))
+            except Exception as e:
+                logger.info('Cant update coins token. error: {}'.format(str(e)))
+
+
+
 
 
 @app.task
 def verify_send_que():
 
-    logger.debug('inside verify_send_que')
 
     transactions = Transaction.objects.filter(mifos_confirmed=False)
     for transaction in transactions:
@@ -24,12 +71,10 @@ def verify_send_que():
 
         # Take this out
         # if True:
-        logger.debug('transaction: {}'.format(transaction))
 
         if history['success'] and history['transactions'][0]['status'] == 'success':
             transaction.payment_confirmed = True
             transaction.save()
-            logger.debug('transaction confirmed!')
 
 
             if not transaction.type == Transaction.FEE:
@@ -37,11 +82,8 @@ def verify_send_que():
                     group = transaction.group
 
                 else:
-                    logger.debug("1")
                     userdata = UserData.objects.filter(user=transaction.sender)[0]
-                    logger.debug("2")
                     try:
-                        logger.debug("3")
                         verify_group = VerifyGroup(size=1,
                                                    buy_order_id=transaction.sent_payment_id,
                                                    buy_confirmed=True,
@@ -49,18 +91,13 @@ def verify_send_que():
                                                    currency=userdata.default_currency,
                                                    created_by=userdata.user)
 
-                        logger.debug("4")
                         verify_group.save()
-                        logger.debug("5")
                         verify_person = VerifyPerson(group=verify_group,
                                                      mifos_id=userdata.app_id,
                                                      phone=userdata.phone,
                                                      amount=history['transactions'][0]['amount'])
-                        logger.debug("6")
                         verify_person.save()
-                        logger.debug("7")
                     except Exception as e:
-                        logger.warn("exception caught! {} ".format( str(e)))
                         return {'success': False, 'error': e}
 
                     group = verify_group
@@ -70,7 +107,6 @@ def verify_send_que():
                 # Update MIFOS
                 # TODO:: DB rollback
                 members = VerifyPerson.objects.filter(group_id=group)
-                logger.debug('Trying to verify persons!')
                 for member in members:
                     repay_outstanding_loan({
                         'clientId': member.mifos_id,

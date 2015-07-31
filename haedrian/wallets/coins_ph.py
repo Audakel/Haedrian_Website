@@ -1,6 +1,7 @@
 import re
 from decimal import Decimal, ROUND_DOWN
 import urlparse
+from datetime import datetime
 from apiv1.internal.utils import format_currency_display
 
 __author__ = 'audakel'
@@ -523,7 +524,7 @@ class CoinsPhWallet(BaseWallet):
         if _data['success']:
             access_token = _data['user']['access_token']
             refresh_token = _data['user']['refresh_token']
-            expires_at = _data['user']['expires_at']
+            expires_at = datetime.fromtimestamp(_data['user']['expires_at'])
             wallet = Wallet.objects.get(user_id=user)
             wallet.access_token = access_token
             wallet.refresh_token = refresh_token
@@ -727,39 +728,6 @@ def make_hmac_request(url, body=''):
 
 def get_user_token(user):
     user_wallet = Wallet.objects.filter(user_id=user)[0]
-    # >
-    if float(user_wallet.expires_at) == time.time():
-        token = user_wallet.access_token
-        return {'success': True, 'token': token}
+    token = user_wallet.access_token
+    return {'success': True, 'token': token}
 
-    else:
-        endpoint = '/user/oauthtoken'
-        url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
-        data = {
-            'client_id': settings.COINS_API_KEY,
-            'client_secret': settings.COINS_SECRET,
-            'refresh_token': user_wallet.refresh_token,
-            'grant_type': 'refresh_token',
-            'redirect_uri': 'https://haedrian.io'
-        }
-
-
-        token = requests.post(url, data=data)
-
-
-        if token.status_code == 200:
-            token = token.json()
-            user_wallet.expires_at = token['expires_at']
-            user_wallet.access_token = token['access_token']
-            user_wallet.refresh_token = token['refresh_token']
-            user_wallet.save()
-            return {'success': True, 'token': token['access_token']}
-        return {'success': False, 'error': token.reason}
-
-
-# u'{
-# "token_type": "Bearer",
-# "expires_at": 1432831184,
-# "access_token": "ngno84UMAzi4JZWjyhEeD752nTQ0ml",
-# "scope": "buyorder sellorder history wallet_history wallet_transfer user_identity",
-# "refresh_token": "cUOhNtb3sndfismt2FwAbfQ2XIK6rh"}'

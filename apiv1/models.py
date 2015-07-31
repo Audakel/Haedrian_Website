@@ -19,7 +19,7 @@ class VerifyGroup(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     buy_order_id = models.CharField(max_length=60, default="")
     buy_confirmed = models.BooleanField(default=False)
-    total_payment = models.DecimalField(max_digits=30, decimal_places=10)
+    total_payment = models.DecimalField(max_digits=30, decimal_places=8)
     # TODO:: link currencies to SupportedCurrencies
     # currency = models.ForeignKey(SupportedCurrencies, default=3)
     currency = models.CharField(max_length=3, default='USD')

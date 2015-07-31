@@ -199,7 +199,7 @@ STATICFILES_FINDERS = (
 
 # CELERY_ANNOTATIONS = {'tasks.add': {'rate_limit': '10/s'}}
 CELERY_DISABLE_RATE_LIMITS = True
-
+CELERYD_TASK_SOFT_TIME_LIMIT = 60
 #: Only add pickle to this list if your broker is secured
 #: from unwanted access (see userguide/security.html)
 CELERY_ACCEPT_CONTENT = ['json']
@@ -214,7 +214,12 @@ CELERYBEAT_SCHEDULE = {
     'update-exchange-rates': {
         'task': 'haedrian.tasks.fetch_exchange_rates',
         'schedule': timedelta(minutes=30),
-    }
+    },
+    'refresh-coins-token': {
+        'task': 'haedrian.tasks.update_coins_token',
+        'schedule': timedelta(hours=4),
+    },
+
 }
 
 # countries conf

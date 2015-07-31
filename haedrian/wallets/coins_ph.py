@@ -1,6 +1,7 @@
 import re
 from decimal import Decimal, ROUND_DOWN
 import urlparse
+from datetime import datetime
 from apiv1.internal.utils import format_currency_display
 
 __author__ = 'audakel'
@@ -492,10 +493,13 @@ class CoinsPhWallet(BaseWallet):
                     outlet_locations_id = []
 
                     for outlet in i['outlets']:
-                        outlet_locations.append({
-                            'name': outlet.replace("_", " ").replace('-', ' ').title(),
-                            'id': outlet
-                        })
+                        # mlhuillier_deposit is causing issues on android and has a very large fee...
+                        # have not looked in to it, just taking it out
+                        if outlet != 'mlhuillier_deposit':
+                            outlet_locations.append({
+                                'name': outlet.replace("_", " ").replace('-', ' ').title(),
+                                'id': outlet
+                            })
 
                     exchange_list.append(dict({'name': outlet_name, 'outlets': outlet_locations}))
             return {
@@ -520,7 +524,7 @@ class CoinsPhWallet(BaseWallet):
         if _data['success']:
             access_token = _data['user']['access_token']
             refresh_token = _data['user']['refresh_token']
-            expires_at = _data['user']['expires_at']
+            expires_at = datetime.fromtimestamp(_data['user']['expires_at'])
             wallet = Wallet.objects.get(user_id=user)
             wallet.access_token = access_token
             wallet.refresh_token = refresh_token
@@ -725,40 +729,7 @@ from django.db import transaction
 
 @transaction.atomic
 def get_user_token(user):
-    user_wallets = Wallet.objects.select_for_update().filter(user_id=user)
-    if int(user_wallets[0].expires_at) >= time.time():
-        token = user_wallets[0].access_token
-        return {'success': True, 'token': token}
-    
-    else:
-        endpoint = '/user/oauthtoken'
-        url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
-        data = {
-            'client_id': settings.COINS_API_KEY,
-            'client_secret': settings.COINS_SECRET,
-            'refresh_token': user_wallets[0].refresh_token,
-            'grant_type': 'refresh_token',
-            'redirect_uri': 'https://haedrian.io'
-        }
-        token = requests.post(url, data=data)
+    user_wallet = Wallet.objects.filter(user_id=user)[0]
+    token = user_wallet.access_token
+    return {'success': True, 'token': token}
 
-        if token.status_code == 200:
-            token = token.json()
-            for wallet in user_wallets:
-                wallet.expires_at = token['expires_at']
-                wallet.access_token = token['access_token']
-                wallet.refresh_token = token['refresh_token']
-                try:
-		    wallet.save()
-	        except Exception as e:
-		    return {'success': False, 'error': str(e)}
-                return {'success': True, 'token': token['access_token']}
-        return {'success': False, 'error': str(token)}
-
-
-# u'{
-# "token_type": "Bearer",
-# "expires_at": 1432831184,
-# "access_token": "ngno84UMAzi4JZWjyhEeD752nTQ0ml",
-# "scope": "buyorder sellorder history wallet_history wallet_transfer user_identity",
-# "refresh_token": "cUOhNtb3sndfismt2FwAbfQ2XIK6rh"}'

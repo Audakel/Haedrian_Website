@@ -1,5 +1,5 @@
 import decimal
-from datetime import datetime
+import datetime
 from calendar import month_name
 import copy
 import urlparse
@@ -487,7 +487,6 @@ def _group_payment(user, kwargs):
 def _get_home_screen(user, kwargs=''):
     default_currency = user.userdata.default_currency
     balance = _get_balance(user)
-
     if not balance['success']:
         # Issue with coins.ph wallet
         balance['balance'] = format_currency_display('USD', default_currency, 0)

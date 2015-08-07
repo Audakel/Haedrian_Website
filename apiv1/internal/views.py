@@ -502,7 +502,8 @@ def _get_home_screen(user, kwargs=''):
         next_repayment = {}
 
     # individual_loan_data is included for easy calculation of mifos repayments, not needed for home screen
-    del next_repayment['individual_loan_data']
+    if 'individual_loan_data' in next_repayment.keys():
+        del next_repayment['individual_loan_data']
 
     loan = mifosx_loan(user)
     if loan['success']:
@@ -558,9 +559,9 @@ def _testing(user, data=''):
     # _data = make_oauth_request(url, user)
     # php_address = _data['monitored_address']
     # return _data
+    user=get_user_model().objects.get(username='jmonkey212')
 
-    return verify_send_que()
-    # user=get_user_model().objects.get(username='shizz10')
+    return _get_home_screen(user)
     # # return get_user_token(user)
     # return update_coins_token()
 

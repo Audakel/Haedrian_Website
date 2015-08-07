@@ -45,7 +45,7 @@ def _new_user(kwargs):
     # so it doesn't throw a key error when bad input comes in
 
     # Create email for user
-    user_email = kwargs.get('email', 'aquila+{}@haedrian.io'.format(kwargs['username']))
+    user_email = kwargs.get('email', None) or 'aquila+{}@haedrian.io'.format(kwargs['username'])
 
     new_data = {
         "username": kwargs['username'],

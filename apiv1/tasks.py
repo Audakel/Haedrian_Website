@@ -28,7 +28,6 @@ def update_coins_token():
     php_wallets = wallets.filter(currency='PHP')
 
     for btc_wallet in btc_wallets:
-        logger.info('Updating wallet for: {}'.format(btc_wallet.user_id))
         endpoint = '/user/oauthtoken'
         url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
         data = {
@@ -43,7 +42,8 @@ def update_coins_token():
 
         # token.raise_for_status()
         if token.status_code == 200:
-            token = token.json()
+            logger.info('Updating wallet for: {}'.format(btc_wallet.user_id))
+	    token = token.json()
             btc_wallet.expires_at = datetime.fromtimestamp(token['expires_at'])
             btc_wallet.access_token = token['access_token']
             btc_wallet.refresh_token = token['refresh_token']
@@ -60,7 +60,7 @@ def update_coins_token():
                     get_user_model().objects.get(id=btc_wallet.user_id),
                     btc_wallet.user_id))
             except Exception as e:
-                logger.info('Cant update coins token. error: {}'.format(str(e)))
+                logger.info('Coins error: {}'.format(str(e)))
 
 
 @app.task

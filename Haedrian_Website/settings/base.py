@@ -217,7 +217,7 @@ CELERYBEAT_SCHEDULE = {
     },
     'refresh-coins-token': {
         'task': 'apiv1.tasks.update_coins_token',
-        'schedule': timedelta(seconds=30),
+        'schedule': timedelta(hours=4),
     },
 
 }

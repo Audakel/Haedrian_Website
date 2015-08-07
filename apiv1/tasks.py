@@ -65,6 +65,7 @@ def update_coins_token():
 
 @app.task
 def verify_send_que():
+    # TODO:: Redo code duplication below and maybe create transaction somewhere else?
     transactions = Transaction.objects.filter(mifos_confirmed=False)
     for transaction in transactions:
         history = _get_history(transaction.sender, {'id': transaction.sent_payment_id}, filter_transactions=False)
@@ -127,7 +128,7 @@ def verify_send_que():
                             'clientId': member.mifos_id,
                             'transactionId': transaction.id
                         })
-                    VerifyGroup.objects.filter(id=group).update(send_confirmed=True)
+                    VerifyGroup.objects.filter(id=group.id).update(send_confirmed=True)
 
 
 @shared_task

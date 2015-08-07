@@ -1,13 +1,11 @@
 import decimal
 import datetime
-from calendar import month_name
 import copy
-import urlparse
-from rest_framework.exceptions import ParseError
-import simplejson as json
 import random
+import urlparse
 
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from rest_framework.exceptions import ParseError
+from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.http import HttpResponseRedirect
@@ -15,18 +13,21 @@ from django.shortcuts import render
 from rest_framework.authtoken.models import Token
 import requests
 from rapidsms.router import send, lookup_connections
+from money import Money as Convert
+
+from apiv1.internal.repayment import _get_next_repayment
 
 from apiv1.internal.utils import format_currency_display, calculate_fees
-from apiv1.internal.views_tasks import _get_history, get_temp_wallet, repay_outstanding_loan
+from apiv1.internal.views_tasks import get_temp_wallet, repay_outstanding_loan
 from apiv1.serializers import SendSerializer
 from haedrian.forms import NewUserForm, EmailUserForm
 from haedrian.models import UserData, Transaction, Wallet
 from apiv1.models import VerifyGroup, VerifyPerson
 from haedrian.views import _create_account
-from haedrian.wallets.coins_ph import CoinsPhWallet, get_user_token
-from apiv1.tasks import get_group_members, verify_send_que, update_coins_token
-from apiv1.external.mifosx import mifosx_loan, mifosx_api
-from money import Money as Convert, Money
+from haedrian.wallets.coins_ph import CoinsPhWallet, make_oauth_request
+from apiv1.tasks import get_group_members, verify_send_que
+from apiv1.external.mifosx import mifosx_loan
+
 
 __author__ = 'audakel'
 
@@ -496,6 +497,9 @@ def _get_home_screen(user, kwargs=''):
         # Issue with Mifosx
         next_repayment = {}
 
+    # individual_loan_data is included for easy calculation of mifos repayments, not needed for home screen
+    del next_repayment['individual_loan_data']
+
     loan = mifosx_loan(user)
     if loan['success']:
         response = {
@@ -505,7 +509,8 @@ def _get_home_screen(user, kwargs=''):
             'loan_message': '',
             'username': user.username.title(),
             'pending_buy_order': True,
-            'success': True
+            'success': True,
+            'consolidated': loan['consolidated']
         }
     else:
         response = {
@@ -515,7 +520,8 @@ def _get_home_screen(user, kwargs=''):
             'loan_message': loan['error'],
             'username': user.username.title(),
             'pending_buy_order': True,
-            'success': True
+            'success': True,
+            'consolidated': {}
         }
     return response
 
@@ -538,69 +544,17 @@ def _get_currencies(user, data):
     return {'success': True, 'currencies': ['USD', 'PHP', 'BTC']}
 
 
-def _get_next_repayment(user, data=''):
-    clientId = UserData.objects.get(user=user).app_id
-    res = mifosx_api('loans',
-                     method='GET',
-                     params={
-                         'associations': 'all',
-                         'tenantIdentifier': 'default',
-                         'associations': 'all',
-                         'exclude': 'guarantors',
-                         'sqlSearch': 'l.client_id={}'.format(clientId)
-                     },
-                     baseurl=settings.MIFOSX_SERVER_URL,
-                     tenant="default")
 
-    if not res['success']:
-        return res
-
-    res = res['response']['pageItems'][0]
-    loan_id = res['id']
-
-    response = mifosx_api(
-        endpoint='loans/{}'.format(loan_id),
-        method='GET',
-        params={'associations': 'all', 'exclude': 'guarantors'},
-        baseurl=settings.MIFOSX_SERVER_URL,
-        tenant="default"
-    )
-    res = response['response']
-    periods = res['repaymentSchedule']['periods']
-
-    due = None
-    default_currency = user.userdata.default_currency
-    currency = default_currency
-    total_due = 0
-
-    for i, period in enumerate(periods):
-        if i == 0:
-            continue
-        if not period['complete']:
-            due = period['dueDate']
-            currency = res['currency']['code']
-            default_currency = user.userdata.default_currency
-            total_due = period['totalDueForPeriod']
-            break
-
-
-
-    # period = res['periods'][what_repayment_number]
-    # due = period['dueDate']
-    # currency = res['currency']['code']
-    # default_currency = user.userdata.default_currency
-
-    return {
-        'success': True,
-        # 'total_term_days': res['loanTermInDays'],
-        'date': 0 if not due else datetime.date(due[0], due[1], due[2]),
-        'amount': Convert(period['totalOriginalDueForPeriod'], currency).to(default_currency).amount,
-        'amount_display': format_currency_display(currency, default_currency,
-                                                  total_due)
-    }
 
 
 def _testing(user, data=''):
+    # endpoint = '/api/v3/crypto-routes/'
+    # url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
+    #
+    # _data = make_oauth_request(url, user)
+    # php_address = _data['monitored_address']
+    # return _data
+
     return verify_send_que()
     # user=get_user_model().objects.get(username='shizz10')
     # # return get_user_token(user)
@@ -658,22 +612,3 @@ def _testing(user, data=''):
     # })
 
 
-def _aub_test(user, data):
-    transaction = Transaction(
-        sender=user,
-        receiver=get_user_model().objects.get(username='mentors_international'),
-        amount_btc=Convert(data['amount'], currency='USD').to('BTC').amount,
-        amount_btc_currency='BTC',
-        amount_local=data['amount'],
-        amount_local_currency='USD'
-    )
-    try:
-        transaction.save()
-    except Exception as e:
-        return {"success": False, "error": str(e)}
-
-    repay_outstanding_loan({
-        'clientId': user.userdata.app_id,
-        'transactionId': transaction.id
-    })
-    pass

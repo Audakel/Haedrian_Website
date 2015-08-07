@@ -21,6 +21,8 @@ def mifosx_loan(user):
         missing = 'missing'
         default_currency = user.userdata.default_currency
 
+        consolidated_loan_total = 0
+
         for l in loan:
             if not l['status']['active']:
                 return {'success': False, 'error': 'Loan not active - {}'.format(l['status']['value'])}
@@ -50,6 +52,8 @@ def mifosx_loan(user):
             # Other general formating
             total_overdue = format_currency_display(currency, default_currency, l['summary'].get('totalOverdue', -1))
 
+            consolidated_loan_total += current_balance
+
             # Prepare JSON to send
             loans.append({
                 'starting_balance_display': starting_balance_display,
@@ -61,7 +65,7 @@ def mifosx_loan(user):
                 'loan_id': l.get('id', -1),
                 'currency': default_currency,
                 'repay_every': l.get('repaymentEvery', -1),
-                'loan_descriptor': l.get('loanProductDescription', missing),
+                'loan_descriptor': l.get('loanProductName', missing),
                 'interest_rate': l.get('interestRatePerPeriod', missing),
                 'number_of_repayments': l.get('numberOfRepayments', missing),
                 'interest_frequency': l['interestRateFrequencyType'].get('value', missing),
@@ -69,7 +73,11 @@ def mifosx_loan(user):
                 'total_overdue': total_overdue,
             })
 
-    return {'success': True, 'loans': loans}
+    consolidated_balance_display = format_currency_display(currency, default_currency, consolidated_loan_total)
+    if consolidated_balance_display[len(consolidated_balance_display)-3] == '.':
+            consolidated_balance_display = consolidated_balance_display[:-3]
+
+    return {'success': True, 'loans': loans, 'consolidated': {'loan_total': consolidated_loan_total, 'display': consolidated_balance_display}}
 
 def mifosx_auth(username=settings.MIFOSX_USER, password=settings.MIFOSX_PASSWORD, baseurl=settings.MIFOSX_SERVER_URL, tenant="default"):
     headers ={
@@ -131,3 +139,20 @@ def mifosx_api(endpoint, method='GET', params={}, body=None, baseurl=settings.MI
         return {'message': "Failed to authenticate with mifosx. Status code: {} | Data: {}".format(
                 err.status_code, err.text
             ), 'success': False}
+
+
+def _get_next_repayment_raw(user, data=''):
+    clientId = UserData.objects.get(user=user).app_id
+    res = mifosx_api('loans',
+                     method='GET',
+                     params={
+                         'associations': 'all',
+                         'tenantIdentifier': 'default',
+                         'associations': 'all',
+                         'exclude': 'guarantors',
+                         'sqlSearch': 'l.client_id={}'.format(clientId)
+                     },
+                     baseurl=settings.MIFOSX_SERVER_URL,
+                     tenant="default")
+
+    return res

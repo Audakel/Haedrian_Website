@@ -4,7 +4,8 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import DatabaseError
 from money import Money
-from apiv1.external.mifosx import mifosx_api
+from apiv1.external.mifosx import mifosx_api, _get_next_repayment_raw
+from apiv1.internal.repayment import _get_next_repayment
 from apiv1.models import VerifyPerson
 from haedrian.models import Wallet, Transaction, UserData
 import simplejson as json
@@ -16,14 +17,11 @@ logger = logging.getLogger('hotfix')
 
 
 def _get_history(user, kwargs, filter_transactions=True):
-
     wallet = get_temp_wallet(user)
     data = wallet.get_history(kwargs)
     if data['success']:
         # TODO: fix double wallet issue.... find out what currecny wallet they want
-        # TODO: this is f**** important to fix
-        # currency = Wallet.objects.filter(user=user).currency
-        currency = "BTC"
+        currency = settings.COINS_WALLET_TYPE
 
         default_currency = user.userdata.default_currency
 
@@ -70,7 +68,7 @@ def _get_history(user, kwargs, filter_transactions=True):
 
 
 def get_temp_wallet(user):
-    wallets = Wallet.objects.filter(user=user, currency="BTC")
+    wallets = Wallet.objects.filter(user=user, currency=settings.COINS_WALLET_TYPE)
     # TODO:: turn on PHP wallets instead of BTC
     wallet = wallets[0]
     wallet_class = Wallet.WALLET_CLASS[wallet.type]
@@ -102,31 +100,54 @@ def repay_outstanding_loan(_json):
 
     # user = UserData.objects.get(app_interal_id=id)
     trans = Transaction.objects.get(id=tr)
-    res = mifosx_api('loans/', params={"sqlSearch": "l.client_id={}".format(id)})
-    # TODO:: Support multiple loans
-    loan_currency = res['response']['pageItems'][0]['currency']['code']
+    loan_schedule = _get_next_repayment(get_user_model().objects.get(id=UserData.objects.get(app_id=id).user_id))
+    # TODO:: Fix all the currency changing
 
-    if res['success']:
-        # TODO: assumed their loan is the first one
-        loan_id = res['response']['pageItems'][0]['id']
-        # loan_name = res['response']['productOptions'][0]['name']
-        body = {
-            "dateFormat": "dd MMMM yyyy",
-            "locale": "en",
-            "transactionDate": trans.date_modified.strftime("%d %B %Y"),
-            "transactionAmount": Convert(trans.amount_local.amount, trans.amount_local_currency).to(loan_currency).amount,
-            "paymentTypeId": "1",
-            "note": "Payment through Haedrian Labs",
-        }
-        res = mifosx_api('loans/{}/transactions'.format(loan_id), params={'command': 'repayment'}, body=json.dumps(body), method='POST')
+    if loan_schedule['success']:
+        loan_dates = loan_schedule['individual_loan_data']
+        loan_dates.sort(key=lambda item: item['maturity_date'])
 
-        if res['success']:
-            try:
-                trans.mifos_confirmed = True
-                trans.save()
-                return {'success': True, 'message': 'Paid back loan'}
-            except Exception as e:
-                return {'success': False, 'message': str(e)}
+        amount_remaining = Money(amount=trans.amount_local.amount, currency=trans.amount_local.currency.code)
+
+        for loan in loan_dates:
+            loan_currency = loan['payment_amount'].currency
+            localized_amount_remaining = Convert(amount_remaining.amount,
+                                                 amount_remaining.currency).to(loan_currency).amount
+
+            if localized_amount_remaining - loan['payment_amount'].amount > 0:
+                amount_remaining = localized_amount_remaining - Convert(loan['payment_amount'].amount,
+                                                                loan['payment_amount'].currency).to(amount_remaining.currency)
+                res = _pay_back(trans, loan, loan['payment_amount'].amount)
+                if not res['success']:
+                    return res
+
+            else:
+                if localized_amount_remaining > 0:
+                    res = _pay_back(trans, loan, localized_amount_remaining)
+                    if not res['success']:
+                        return res
+                break
+
+        try:
+            trans.mifos_confirmed = True
+            trans.save()
+            return {'success': True, 'message': 'Paid back loan'}
+
+        except Exception as e:
+            return {'success': False, 'message': str(e)}
+
 
     # something went wrong
-    return res['message']
+    return loan_schedule['message']
+
+
+def _pay_back(trans, loan, amount):
+    body = {
+        "dateFormat": "dd MMMM yyyy",
+        "locale": "en",
+        "transactionDate": trans.date_modified.strftime("%d %B %Y"),
+        "transactionAmount": amount,
+        "paymentTypeId": "1",
+        "note": "Payment through Haedrian Labs",
+    }
+    return mifosx_api('loans/{}/transactions'.format(loan['loan_id']), params={'command': 'repayment'}, body=json.dumps(body), method='POST')

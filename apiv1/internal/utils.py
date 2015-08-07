@@ -6,6 +6,13 @@ from money import Money as Convert
 from moneyed import Money
 
 def format_currency_display(in_currency, out_currency, amount):
+    # TODO fix rounding to be more acurate
+    try:
+        amount = float(amount)
+        amount = round(amount, 8)
+    except Exception as e:
+        return {'success': False, 'error': str(e)}
+
 
     in_currency = "PHP" if in_currency == "PBTC" else in_currency
 

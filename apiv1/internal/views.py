@@ -62,7 +62,7 @@ def _new_user(kwargs):
         user = get_user_model().objects.get(username=kwargs['username'])
         token = Token.objects.create(user=user)
         try:
-            my_wallet = _create_wallet(user, kwargs)
+            my_wallet = _create_wallet(user, new_data)
         except Exception as e:
             get_user_model().objects.get(username=kwargs['username']).delete()
             raise ParseError(detail=str(e))

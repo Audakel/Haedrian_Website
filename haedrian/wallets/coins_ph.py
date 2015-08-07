@@ -402,7 +402,12 @@ class CoinsPhWallet(BaseWallet):
         balance = make_oauth_request(url, self.user)
         if balance['success']:
             # TODO:: fix crypto default to PHP instead of bitcoin
-            _data = balance['crypto-accounts'][0]
+            if settings.COINS_WALLET_TYPE == 'BTC':
+                wallet_number = 0
+            elif settings.COINS_WALLET_TYPE == 'PHP':
+                wallet_number = 2
+
+            _data = balance['crypto-accounts'][wallet_number]
             data = {
                 "balance": _data['balance'],
                 "pending_balance": _data['pending_balance'],
@@ -553,10 +558,10 @@ class CoinsPhWallet(BaseWallet):
                 }
             # TODO:: Check for false on get address
             additional_params = get_extra_wallet_info(user)
-            wallet.blockchain_address = additional_params['blockchain_address']
-            wallet.provider_wallet_id = additional_params['provider_wallet_id']
-            wallet2.blockchain_address = additional_params['blockchain_address2']
-            wallet2.provider_wallet_id = additional_params['provider_wallet_id2']
+            wallet.blockchain_address = additional_params['blockchain_address_btc']
+            wallet.provider_wallet_id = additional_params['provider_wallet_id_btc']
+            wallet2.blockchain_address = additional_params['blockchain_address_php']
+            wallet2.provider_wallet_id = additional_params['provider_wallet_id_php']
             try:
                 wallet.save()
                 wallet2.save()
@@ -591,10 +596,10 @@ def get_extra_wallet_info(user):
     url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
     _data = make_oauth_request(url, user)['crypto-accounts']
     data = {
-        'blockchain_address': _data[0]['default_address'],
-        'provider_wallet_id': _data[0]['id'],
-        'blockchain_address2': _data[2]['default_address'],
-        'provider_wallet_id2': _data[2]['id']
+        'blockchain_address_btc': _data[0]['default_address'],
+        'provider_wallet_id_btc': _data[0]['id'],
+        'blockchain_address_php': _data[2]['default_address'],
+        'provider_wallet_id_php': _data[2]['id']
     }
     return data
 

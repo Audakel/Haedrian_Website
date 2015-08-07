@@ -43,9 +43,13 @@ def _create_wallet(user, kwargs):
 def _new_user(kwargs):
     # TODO: Make a new user Serializer to validate that all the fields are here
     # so it doesn't throw a key error when bad input comes in
+
+    # Create email for user
+    user_email = kwargs.get('email', 'aquila+{}@haedrian.io'.format(kwargs['username']))
+
     new_data = {
         "username": kwargs['username'],
-        "email": kwargs['email'],
+        "email": user_email,
         "password1": kwargs['password1'],
         "password2": kwargs['password1'],
         "phone": kwargs['phone'],

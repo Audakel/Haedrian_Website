@@ -492,7 +492,9 @@ class CoinsPhWallet(BaseWallet):
 
             exchange_list = []
             for i in _data:
-                if i['id'] not in exclude_foreign:
+                # Take out everything except banks for test run
+                # if i['id'] not in exclude_foreign:
+                if i['id'] == 'bank_deposit':
                     outlet_name = (i['name'].replace("_", " ").replace('-', ' ').title())
                     outlet_locations = []
                     outlet_locations_id = []

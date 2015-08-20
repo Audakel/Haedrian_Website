@@ -63,7 +63,7 @@ def _get_next_repayment(user, data=''):
         'success': True,
         # 'total_term_days': res['loanTermInDays'],
         'date': 0 if not due else datetime.date(due[0], due[1], due[2]),
-        'amount': Convert(total_due, currency).to(default_currency).amount,
-        'amount_display': format_currency_display(currency, default_currency, total_due),
+        'amount': Convert(total_due, default_currency).to(default_currency).amount,
+        'amount_display': format_currency_display(default_currency, default_currency, total_due),
         'individual_loan_data': loan_repay_data
     }

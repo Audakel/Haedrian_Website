@@ -73,7 +73,7 @@ def mifosx_loan(user):
                 'total_overdue': total_overdue,
             })
 
-    consolidated_balance_display = format_currency_display(currency, default_currency, consolidated_loan_total)
+    consolidated_balance_display = format_currency_display(default_currency, default_currency, consolidated_loan_total)
     if consolidated_balance_display[len(consolidated_balance_display)-3] == '.':
             consolidated_balance_display = consolidated_balance_display[:-3]
 

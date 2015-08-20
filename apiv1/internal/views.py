@@ -284,28 +284,17 @@ def _get_wallet_info(user, kwargs):
         default_currency = user.userdata.default_currency
         _data = data['wallets']
         data = {
+            # Not nessarly bitcoin - can be either bitcoin or PHP depending on user preference
             'bitcoin': {
-                "name": _data[0]["name"],
-                "total_received": format_currency_display(_data[0]['currency'], default_currency,
-                                                          _data[0]["total_received"]),
-                "blockchain_address": _data[0]["default_address"],
-                "balance": format_currency_display(_data[0]['currency'], default_currency, _data[0]["balance"]),
-                "id": _data[0]["id"],
-                "pending_balance": format_currency_display(_data[0]['currency'], default_currency,
-                                                           _data[0]["pending_balance"]),
-                "btc_balance": format_currency_display(_data[0]['currency'], 'BTC', _data[0]["balance"]),
-                "currency": default_currency
-            },
-            'local': {
-                "name": _data[2]["name"],
-                "total_received": format_currency_display(_data[2]['currency'], default_currency,
-                                                          _data[2]["total_received"]),
-                "blockchain_address": _data[2]["default_address"],
-                "balance": format_currency_display(_data[2]['currency'], default_currency, _data[2]["balance"]),
-                "id": _data[2]["id"],
-                "pending_balance": format_currency_display(_data[2]['currency'], default_currency,
-                                                           _data[2]["pending_balance"]),
-                "btc_balance": format_currency_display(_data[2]['currency'], 'BTC', _data[2]["balance"]),
+                "name": _data["name"],
+                "total_received": format_currency_display(_data['currency'], default_currency,
+                                                          _data["total_received"]),
+                "blockchain_address": _data["default_address"],
+                "balance": format_currency_display(_data['currency'], default_currency, _data["balance"]),
+                "id": _data["id"],
+                "pending_balance": format_currency_display(_data['currency'], default_currency,
+                                                           _data["pending_balance"]),
+                "btc_balance": format_currency_display(_data['currency'], 'BTC', _data["balance"]),
                 "currency": default_currency
             }
         }

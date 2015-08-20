@@ -46,4 +46,4 @@ BROKER_URL = 'amqp://guest:guest@localhost:5672//'
 MIFOSX_USER = "aquila"
 MIFOSX_PASSWORD = "MifosxSaTeCoCeMuBu1"
 MIFOSX_TENANT = "default"
-MIFOSX_SERVER_URL = "https://mentors.haedrian.io/mifosng-provider/api/v1/"
+MIFOSX_SERVER_URL = "https://mi-asia.haedrian.io/mifosng-provider/api/v1/"

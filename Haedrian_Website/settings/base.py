@@ -220,7 +220,10 @@ CELERYBEAT_SCHEDULE = {
         'task': 'apiv1.tasks.update_coins_token',
         'schedule': timedelta(hours=4),
     },
-
+    'confirm-coinsPH-emails': {
+	'task': 'apiv1.email_confirm_bot.email_confirm.bot',
+	'schedule': timedelta(minutes=1),
+    },
 }
 
 # countries conf

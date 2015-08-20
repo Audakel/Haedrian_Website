@@ -57,4 +57,4 @@ CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 MIFOSX_USER = "aquila"
 MIFOSX_PASSWORD = "MifosxSaTeCoCeMuBu1"
 MIFOSX_TENANT = "test"
-MIFOSX_SERVER_URL = "https://mentors.haedrian.io/mifosng-provider/api/v1/"
+MIFOSX_SERVER_URL = "https://mi-asia.haedrian.io/mifosng-provider/api/v1/"

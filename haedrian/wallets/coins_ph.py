@@ -335,12 +335,14 @@ class CoinsPhWallet(BaseWallet):
     def get_wallet_info(self, kwargs):
         endpoint = '/api/v3/crypto-accounts/'
         url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
+        wallet_number = get_correct_wallet_number()
+
 
         data = make_oauth_request(url, self.user)
         if data['success']:
             _data = data
             data = {
-                'wallets': _data['crypto-accounts'],
+                'wallets': _data['crypto-accounts'][wallet_number],
                 'success': True
             }
         return data
@@ -402,10 +404,7 @@ class CoinsPhWallet(BaseWallet):
         balance = make_oauth_request(url, self.user)
         if balance['success']:
             # TODO:: fix crypto default to PHP instead of bitcoin
-            if settings.COINS_WALLET_TYPE == 'BTC':
-                wallet_number = 0
-            elif settings.COINS_WALLET_TYPE == 'PHP':
-                wallet_number = 2
+            wallet_number = get_correct_wallet_number()
 
             _data = balance['crypto-accounts'][wallet_number]
             data = {
@@ -589,7 +588,12 @@ currency = ["BTC", "CLP", "PBTC"]
 API_KEY = settings.COINS_API_KEY  # Replace this with your API Key
 API_SECRET = settings.COINS_SECRET  # Replace this with your API secret
 # ==============================================================================================================================
-
+def get_correct_wallet_number():
+    if settings.COINS_WALLET_TYPE == 'BTC':
+        wallet_number = 0
+    elif settings.COINS_WALLET_TYPE == 'PHP':
+        wallet_number = 2
+    return wallet_number
 
 
 # TODO:: fix this internal rewrite

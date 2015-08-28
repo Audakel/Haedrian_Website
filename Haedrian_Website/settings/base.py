@@ -222,7 +222,7 @@ CELERYBEAT_SCHEDULE = {
     },
     'confirm-coinsPH-emails': {
 	'task': 'apiv1.email_confirm_bot.email_confirm.bot',
-	'schedule': timedelta(minutes=1),
+	'schedule': timedelta(minutes=10),
     },
 }
 

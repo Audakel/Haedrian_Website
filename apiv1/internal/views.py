@@ -19,7 +19,7 @@ from apiv1.internal.repayment import _get_next_repayment
 
 from apiv1.internal.utils import format_currency_display, calculate_fees
 from apiv1.internal.views_tasks import get_temp_wallet, repay_outstanding_loan
-from apiv1.serializers import SendSerializer
+from apiv1.serializers import SendSerializer, ExchangeWorkerSerializer
 from haedrian.forms import NewUserForm, EmailUserForm
 from haedrian.models import UserData, Transaction, Wallet
 from apiv1.models import VerifyGroup, VerifyPerson
@@ -538,6 +538,22 @@ def _get_currencies(user, data):
     return {'success': True, 'currencies': ['USD', 'PHP', 'BTC']}
 
 
+def _exchange_worker(user, data):
+    exchange_data = ExchangeWorkerSerializer(data=data)
+
+    if not exchange_data.is_valid():
+        return {'success': False, 'error': exchange_data.errors}
+
+    if exchange_data.data['code'] == ':) 59881':
+
+        return {
+            "client": {
+                "name": "Juan Pablo",
+                "next_payment": "$3.14",
+                "deposit": "$4.15",
+                "phone": "400-123-3254"
+            }
+        }
 
 
 

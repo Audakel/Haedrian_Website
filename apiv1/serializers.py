@@ -24,12 +24,23 @@ class SendSerializer(serializers.Serializer):
     payment_id = serializers.IntegerField(required=False)
 
 
+class ExchangeWorkerSerializer(serializers.Serializer):
+    def create(self, validated_data):
+        return super(ExchangeWorkerSerializer, self).create(validated_data)
+
+    def update(self, instance, validated_data):
+        return super(ExchangeWorkerSerializer, self).update(instance, validated_data)
+
+    code = serializers.CharField(max_length=8, min_length=8)
+
+
 class CurrencySerializer(serializers.Serializer):
     def create(self, validated_data):
         return super(CurrencySerializer, self).create(validated_data)
 
     def update(self, instance, validated_data):
         return super(CurrencySerializer, self).update(instance, validated_data)
+
 
     in_currency = serializers.ChoiceField(choices=CURRENCIES)
     out_currency = serializers.ChoiceField(choices=CURRENCIES)

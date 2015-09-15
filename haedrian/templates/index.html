@@ -3,10 +3,211 @@
 {% load static %}
 
 <head>
-    <link href="{% static "css/style.css" %}" rel="stylesheet">
+
 </head>
 
 {% block content %}
+    <div class="haedrian-content ng-scope" ng-view="">
+    <div class="haedrian-home-page ng-scope">
+        <!-- Content under the feader -->
+        <div class="haedrian-background-pink haedrian-home-head-tmp">
+            <div class="container haedrian-home-container">
+                <div class="haedrian-cloud-bottom-top"></div>
+                <!--ul class="image">
+        < Add "ng-rn-carousel rn-carousel-indicator" attribute if you have more than one <li> element to enable the slider>
+        <li-->
+                <!-- Slide one -->
+                <div class="row haedrian-home-row">
+                    <!-- right -->
+                    <div class="col-sm-push-6 col-sm-6 haedrian-home-head-right">
+                        <h1 class="haedrian-h1">A <b>better</b> mobile wallet</h1>
+                        <p>Curo is the next generation of banking for developing nations, already trusted by 40,000 people. Now even easier to use with lots more features.</p>
+                        <div class="haedrian-home-head-btn"><a id="haedrian-get-btn-slide-1" class="btn btn-white-haedrian" href="https://play.google.com/store/apps/details?id=com.haedrian.curo&hl=en" geny-tracking="Get Genymotion Clicked (Button)" geny-tracking-props="{&quot;Button location&quot;:&quot;Homepage&quot;}">Get Curo</a>
+                        </div>
+                    </div>
+                    <!-- left -->
+                    <div class="col-sm-pull-6 col-sm-6 hidden-xs haedrian-video-container haedrian-home-head-left">
+                        <img class="img-responsive" src="images/home/edito/3129c540.video_screen.svg" alt="Video screen">
+                        <a rel="lightbox" class="haedrian-video-play ng-scope" bs-modal="" data-animation="am-fade-and-scale" data-placement="center" data-template-url="views/subviews/modal-home-video.html" data-container="body" geny-tracking="Intro Video Clicked"></a>
+                    </div>
+                </div>
+                <!--/li>
+      </ul-->
+                <div class="row visible-xs haedrian-responsive-bottom">
+                    <div class="col-xs-12 haedrian-video-container">
+                        <img class="img-responsive" src="images/home/responsive/d2c37784.responsive_video_screen.svg" alt="Video screen">
+                        <a rel="lightbox" class="haedrian-video-play ng-scope" bs-modal="" data-animation="am-fade-and-scale" data-placement="center" data-template-url="views/subviews/modal-home-video.html"></a>
+                        <div class="haedrian-cloud-bottom-left"></div>
+                        <div class="haedrian-cloud-bottom-right"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="haedrian-cloud-bottom-left"></div>
+            <div class="haedrian-cloud-bottom-right"></div>
+        </div>
+        <!-- End of the content header -->
+        <div class="container haedrian-content-news">
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <p class="haedrian-subtitle">Curo is a secure, fast and easy-to-use mobile wallet for everyone</p>
+                    <p>Perfect to send, store, and receive in your local currency anywhere in the world</p>
+                </div>
+            </div>
+        </div>
+        <!-- Content laptop -->
+        <div class="container">
+            <div class="row haedrian-laptop-show">
+                <div class="col-xs-12 col-sm-6 right-side">
+                    <ul class="haedrian-circle-list">
+                        <li ng-mouseover="currentFocus = 'fast'" class="haedrian-circle-item haedrian-circle-item-hover" ng-class="{'haedrian-circle-item-hover': currentFocus === 'fast'}">
+                            <h3 class="haedrian-h3">Secure</h3>
+                            <p>Multi-signature, multi-factor authentication, and real-time monitoring of wallets. You'll have the most secure app around without needing to know a thing about the latest security features.</p>
+                        </li>
+                        <li ng-mouseover="currentFocus = 'simple'" class="haedrian-circle-item" ng-class="{'haedrian-circle-item-hover': currentFocus == 'simple'}">
+                            <h3 class="haedrian-h3">Simple</h3>
+                            <p>Easy to load your wallet balance, easy to send. Using our network of exchange points to deposit and withdraw cash means no bank account is ever required.</p>
+                        </li>
+                        <li ng-mouseover="currentFocus = 'powerful'" class="haedrian-circle-item" ng-class="{'haedrian-circle-item-hover': currentFocus == 'powerful'}">
+                            <h3 class="haedrian-h3">Global</h3>
+                            <p>Send money to friends and family anywhere in the world for a fraction of current money transfer fees.</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="hidden-xs col-sm-offset-1 col-sm-5 left-side">
+                    <img class="img-responsive" ng-class="{hidden: currentFocus != 'fast'}" src="images/home/illu_laptop/3c158ce3.illu_laptop_fast.svg" alt="fast">
+                    <img class="img-responsive hidden" ng-class="{hidden: currentFocus != 'simple'}" src="images/home/illu_laptop/239d96c0.illu_laptop_simple.svg" alt="simple">
+                    <img class="img-responsive hidden" ng-class="{hidden: currentFocus != 'powerful'}" src="images/home/illu_laptop/0dcc3b13.illu_laptop_powerful.svg" alt="powerful">
+                </div>
+            </div>
+        </div>
+        <!-- End content laptop -->
+
+        {% comment %}==========================================================================================================={% endcomment %}
+
+        {% comment %}==========================================================================================================={% endcomment %}
+
+
+        <!--  section content Global wallet -->
+        <div class="container">
+            <div class="row section-a">
+                <div class="col-sm-7 left-side">
+                    <h2 class="haedrian-h2 hidden-sm hidden-md hidden-lg">Global wallet</h2>
+                    <img class="img-responsive img-section hidden-xs" src="{% static "images/site_wallet.png" %}" alt="Global wallet">
+                    <img class="img-responsive img-section hidden-sm hidden-md hidden-lg" src="{% static "images/site_wallet.png" %}" alt="resizable windows">
+                </div>
+                <div class="col-sm-4 col-sm-offset-1 right-side">
+                    <h2 class="haedrian-h2 hidden-xs">Global wallet</h2>
+                    <div class="text">Display several windows at the same time by resizing them on your desktop. Go full-screen for immersive demonstration. Use Pixel Perfect to ensure absolute perfection of your target design.</div>
+                </div>
+            </div>
+        </div>
+        <!--  end of section Global wallet -->
+        <!-- sepqarator -->
+        <div class="container">
+            <div class="row hidden-xs haedrian-background">
+                <div class="haedrian-separator"></div>
+            </div>
+        </div>
+        <!-- separator -->
+        <!--  section content Credit Score -->
+        <div class="container">
+            <div class="row section-b">
+                <div class="col-sm-4 left-side">
+                    <h2 class="haedrian-h2">Credit Score</h2>
+                    <div class="text hidden-xs">By combining community-based lending techniques with social network data, we use a trustworthiness
+                        scoring platform optimized to service emerging markets; specifically, markets where traditional credit scores and collateral
+                        frameworks may not exist.</div>
+                </div>
+                <div class="col-sm-7 col-sm-offset-1 right-side">
+                    <img class="img-responsive img-seamless" src="{% static "images/site_deposits.png" %}" alt="Credit Score">
+                    <div class="text hidden-sm hidden-md hidden-lg">By combining community-based lending techniques with social network data, we use a trustworthiness
+                        scoring platform optimized to service emerging markets; specifically, markets where traditional credit scores and collateral
+                        frameworks may not exist.</div>
+                </div>
+            </div>
+        </div>
+        <!-- section content Credit Score -->
+        <!--  section content Seamless deposits & withdraws -->
+        <div class="container">
+            <div class="row section-a">
+                <div class="col-sm-7 left-side">
+                    <h2 class="haedrian-h2 hidden-sm hidden-md hidden-lg">Seamless deposits & withdraws</h2>
+                    <img class="img-responsive img-section hidden-xs" src="{% static "images/site_deposits.png" %}" alt="Seamless deposits & withdraws">
+                    <img class="img-responsive img-section hidden-sm hidden-md hidden-lg" src="images/home/responsive/a6e24846.responsive_laptop_drag.png" alt="resizable windows">
+                </div>
+                <div class="col-sm-4 col-sm-offset-1 right-side">
+                    <h2 class="haedrian-h2 hidden-xs">Seamless deposits & withdraws</h2>
+                    <div class="text">You can withdraw or deposit money into the app via either a linked bank account
+                        or by utilizing our network of exchange points. Human ATM machines.</div>
+                </div>
+            </div>
+        </div>
+        <!--  section content Seamless deposits & withdraws -->
+        <!-- separator -->
+        <div class="container">
+            <div class="row hidden-xs haedrian-background">
+                <div class="col-sm-12 haedrian-separator"></div>
+            </div>
+        </div>
+        <!-- separator -->
+        <!--  section content Exchange point -->
+        <div class="container">
+            <div class="row section-b">
+                <div class="col-sm-4 left-side">
+                    <h2 class="haedrian-h2">Exchange point</h2>
+                    <div class="text hidden-xs">Start your own startup and set your own fees. Help other Curo users load
+                        money on and off their phones. It's a lot like prepaid airtime sales except it's real money.</div>
+                </div>
+                <div class="col-sm-offset-1 col-sm-7 right-side">
+                    <img class="img-responsive img-seamless" src="{% static "images/site_wallet.png" %}" alt="Exchange point">
+                    <div class="text hidden-sm hidden-md hidden-lg">Start your own startup and set your own fees. Help other Curo users load
+                        money on and off their phones. It's a lot like prepaid airtime sales except it's real money.</div>
+                </div>
+            </div>
+        </div>
+        <!-- section content Exchange point -->
+        <!-- more features -->
+        <div class="container">
+            <div class="home-more-feature"><a id="haedrian-lnk-guide" class="haedrian-navlink arrow-slim" href="#!/product">See more features</a>
+            </div>
+        </div>
+        <!-- end of features -->
+        <!--Info services -->
+        <div class="container">
+            <div class="row home-info-services">
+                <div class="col-sm-push-6 col-sm-6 col-xs-12 professional-services-text">
+                    <h5 class="haedrian-h2">Institutional services</h5>
+                    <div class="service-description">Using our comprehensive expertise, Haedrian Labs offers professional
+                        services to help large companies connect with their clients and users around the globe.
+                        If you have specific needs around the Haedrian Labs wallet technology, we will be
+                        happy to discuss them with you.</div>
+                    <div class="contact-us-link"><a id="haedrian-contact-us" class="haedrian-link arrow" href="#!/support?type=sales#contact">Contact us</a>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-pull-6 col-sm-6 text">
+                    <img class="img-responsive hidden-xs" src="{% static "images/blueGuy.png" %}" alt="Professional services">
+                    <img class="img-responsive visible-xs" src="{% static "images/blueGuy.png" %}" alt="Professional services">
+                </div>
+            </div>
+        </div>
+        <!-- END INFO SERVICES -->
+        <!-- CONTENT LINK BOTTOM -->
+        <div class="home-link-bottom haedrian-background-pink">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 text-center">
+                        <h5 class="haedrian-h2">Make your life easier</h5>
+                        <div class="link"><a id="haedrian-get-btn-2" class="btn btn-white-haedrian" href="https://play.google.com/store/apps/details?id=com.haedrian.curo&hl=en" >Get Curo</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END CONTENT LINK BOTTOM -->
+    </div>
+</div>
+
+
     {#    <!-- banner start -->#}
     {#    <div class="banner-image"  style="background-image: url('{% static "images/banner.png" %}');#}
     {#            background-size: cover;#}

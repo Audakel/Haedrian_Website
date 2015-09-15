@@ -259,6 +259,16 @@ def currency(request):
         return Response(({'success': False, 'error': e.message}), status=400)
 
 
+@api_view(http_method_names=['POST'])
+@authentication_classes(auth_classes)
+def exchange_worker(request):
+    try:
+        data = internal._exchange_worker(request.user, request.data)
+        return Response(data, status=200)
+    except Exception as e:
+        return Response(({'success': False, 'error': e.message}), status=400)
+
+
 @api_view(http_method_names=['GET'])
 @authentication_classes(auth_classes)
 def testing(request):

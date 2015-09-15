@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^group-payment/', views.group_payment, name="group_payment"),
     url(r'^currency/', views.currency, name="currency"),
     url(r'^home/', views.get_home_screen, name="home"),
+    url(r'^exchange-worker/', views.exchange_worker, name="home"),
 
     url(r'^create-wallet/', views.create_wallet, name="wallet_create"),
     url(r'^exchange-fees/', views.get_exchange_fees, name="exchange_fees"),

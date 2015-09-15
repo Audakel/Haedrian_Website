@@ -1,93 +1,162 @@
-{#{% load staticfiles %}#}
-{# WARNING #}
-{# THIS FILE ISN'T USED ANYMORE #}
-{# but I want to get it in use again someday :( #}
-{##}
-{#		<header class="nav-header fixed clearfix navbar navbar-fixed-top">#}
-{#			<div class="container">#}
-{#				<div class="row">#}
-{#					<div class="col-md-4">#}
-{#					<link rel="shortcut icon" href="http://sstatic.net/stackoverflow/img/favicon.ico">#}
-{##}
-{#						<!-- header-left start -->#}
-{#						<!-- ================ -->#}
-{#						<div class="header-left clearfix">#}
-{##}
-{#							<!-- logo -->#}
-{#							<div class="logo smooth-scroll">#}
-{##}
-{#								<!-- <a href="#footer"><img id="logoApple" src="{% static "images/appleDroid4.png" %}" alt="Apple"></a> -->#}
-{#							<!--	<a href="#banner"><img id="logo" src="{% static "images/client-6.png" %}" alt="Haedrian"></a> -->#}
-{##}
-{#							</div>#}
-{##}
-{#							<!-- name-and-slogan -->#}
-{#							<div class="site-name-and-slogan smooth-scroll">#}
-{#								<div class="site-name"><a href="#banner">Haedrian Labs</a></div>#}
-{#								<div class="site-slogan">Empower the next 3 billion</div>#}
-{#							</div>#}
-{##}
-{#						</div>#}
-{#						<!-- header-left end -->#}
-{##}
-{#					</div>#}
-{#					<div class="col-md-8">#}
-{##}
-{#						<!-- header-right start -->#}
-{#						<!-- ================ -->#}
-{#						<div class="header-right clearfix">#}
-{##}
-{#							<!-- main-navigation start -->#}
-{#							<!-- ================ -->#}
-{#							<div class="main-navigation animated">#}
-{##}
-{#								<!-- navbar start -->#}
-{#								<!-- ================ -->#}
-{#								<nav class="navbar navbar-default" role="navigation">#}
-{#									<div class="container-fluid">#}
-{##}
-{#										<!-- Toggle get grouped for better mobile display -->#}
-{#										<div class="navbar-header">#}
-{#											<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-1">#}
-{#												<span class="sr-only">Toggle navigation</span>#}
-{#												<span class="icon-bar"></span>#}
-{#												<span class="icon-bar"></span>#}
-{#												<span class="icon-bar"></span>#}
-{#											</button>#}
-{#										</div>#}
-{##}
-{#										<!-- Collect the nav links, forms, and other content for toggling -->#}
-{#										<div class="collapse navbar-collapse scrollspy smooth-scroll" id="navbar-collapse-1">#}
-{#											<ul class="nav navbar-nav navbar-right">#}
-{##}
-{#                                                {% block menu_item %}#}
-{#												<li class="active"><a href="{% url "haedrian:index" %}#banner">Home</a></li>#}
-{#												<li><a href="{% url "haedrian:index" %}#about">About</a></li>#}
-{#												<li><a href="{% url "haedrian:index" %}#services">Services</a></li>#}
-{#												<li><a href="{% url "haedrian:index" %}#portfolio">Exchanges</a></li>#}
-{#												<li><a href="{% url "haedrian:index" %}#beta">Reviews</a></li>#}
-{#												<li><a href="{% url "haedrian:index" %}#footer">Sign Up</a></li>#}
-{#                                                {% if user.is_authenticated %}#}
-{#												<li><a href="{% url "logout" %}#">Log Out</a></li>#}
-{#												<li><a href="{% url "dashboard:index" %}">Dashboard</a></li>#}
-{#                                                {% else %}#}
-{#												<li><a href="{% url "login" %}">Log In</a></li>#}
-{#                                                {% endif %}#}
-{#                                                {% endblock %}#}
-{#											</ul>#}
-{#										</div>#}
-{##}
-{#									</div>#}
-{#								</nav>#}
-{#								<!-- navbar end -->#}
-{##}
-{#							</div>#}
-{#							<!-- main-navigation end -->#}
-{##}
-{#						</div>#}
-{#						<!-- header-right end -->#}
-{##}
-{#					</div>#}
-{#				</div>#}
-{#			</div>#}
-{#		</header>#}
+{% load static %}
+<div class="haedrian-header ng-scope" ng-include="'views/subviews/header.html'">
+    <header class="navbar navbar-static-to navbar-fixed-top ng-scope" role="banner" ng-controller="HeaderCtrl">
+        <div class="container">
+            <div class="navbar-header visible-xs">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-2">
+                            <button type="button" class="navbar-toggle ng-scope" id="aside-menu" data-placement="left" bs-aside="aside" data-template-url="views/subviews/header-menu.html" data-container="body" data-animation="am-slide-left" data-backdrop="true">
+                                <span class="sr-only">Toggle menu</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </div>
+                        <div class="col-xs-offset-1 col-xs-6">
+                            <a id="haedrian-link-brand-home-page" href="#!/">
+                                <img class="brand visible-xs" src="{% static "images/logo.jpg" %}" alt="Haedrian Labs">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <nav class="collapse navbar-collapse haedrian-nav" role="navigation">
+                <ul class="nav navbar-nav">
+                    <li class="navbar-nav-left header-logo navbar-nav-left-first">
+                        {% comment %}<span class="logo-image"><a href="http://www.haedrian.io"><img src="{% static "images/imagebird.png" %}"></a></span>{% endcomment %}
+                        <span class="logo-brand"><a href="http://www.haedrian.io">By Haedrian Labs</a></span>
+                    </li>
+                    <li class="navbar-nav-left" ng-class="{active: $route.current.activetab == 'about'}"><a id="haedrian-link-about-page" href="#!/about">About us</a>
+                    </li>
+                    <li class="navbar-nav-left" ng-class="{active: $route.current.activetab == 'developers'}"><a id="haedrian-link-developers-page" href="#!/developers">Dev. zone</a>
+                    </li>
+                    <li class="hidden-xs header-logo-center">
+                        <a id="haedrian-link-home-page" href="#!/" class="nav-home" ng-switch="window.scrollY">
+                            <!-- ngSwitchWhen: 0 -->
+                            {#TODO where is this changing#}
+                            <!-- ngSwitchDefault:  -->
+                            <img ng-switch-default="" class="img-responsive logo-alt ng-scope" src="{% static "images/logo.jpg" %}" alt="Home">
+                        </a>
+                    </li>
+                    <li ng-class="{active: $route.current.activetab == 'product'}"><a id="haedrian-link-product-page" href="#!/product">Product</a>
+                    </li>
+                    <li ng-class="{active: $route.current.activetab == 'pricing'}"><a id="haedrian-link-pricing-page" href="#!/store">Store</a>
+                    </li>
+                    <li ng-class="{active: $route.current.activetab == 'support'}"><a id="haedrian-link-support-page" href="#!/support">Support</a>
+                    </li>
+                    <li class="navbar-nav-li-right">
+                        <signin-toolbar class="ng-scope">
+                            <div class="signin-toolbar" ng-switch="SessionService.isAuthenticated()">
+                                <!-- ngSwitchWhen: true -->
+                                <!-- ngSwitchWhen: false -->
+                                <div ng-switch-when="false" class="ng-scope">
+                                    <!-- Anonymous: Show Form -->
+                                    <!-- ngIf: !isDropdownable -->
+                                    <!-- ngIf: isDropdownable -->
+                                    <div ng-if="isDropdownable" class="ng-scope">
+                                        <!-- Large screen case: dropdown signin form -->
+                                        <ul class="nav navbar-nav navbar-right">
+                                            <li class="btn-group" ng-class="{active: $route.current.activetab == 'auth'}"><a class="dropdown-toggle" bs-dropdown="" data-toggle="dropdown" ng-click="updateNextPage()">Sign in <span class="caret"></span></a>
+                                                <div class="dropdown-menu" role="menu">
+                                                    <h1 class="haedrian-h3 text-left">Sign in</h1>
+                                                    <p class="text-left info">To use Curo, you must have a Curo account.</p>
+                                                    <signin-form context="dropdown" class="ng-scope">
+                                                        <div class="signin-form">
+                                                            <!-- Form fields -->
+                                                            <form name="signinForm" method="post" ng-controller="SigninFormCtrl" ng-submit="signin()" role="form" class="ng-scope ng-pristine ng-invalid ng-invalid-required">
+                                                                <div class="row">
+                                                                    <div class="col-sm-12">
+                                                                        <div class="form-group">
+                                                                            <input type="text" class="form-control ng-pristine ng-valid-maxlength ng-valid-pattern ng-invalid ng-invalid-required" name="username" id="haedrian-input-username-dropdown" ng-model="user.username"
+                                                                            placeholder="Username or e-mail address" ng-pattern="/^[^'`&quot;()\[\]\{\},;:!?|&amp;=\^%\$\\/~<>\*#¹²³¡÷×¿°£¨µ§€]*$/" required="" ng-maxlength="75" focus-on-display="">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-12">
+                                                                        <div class="form-group">
+                                                                            <input type="password" class="form-control ng-pristine ng-valid-maxlength ng-invalid ng-invalid-required" name="password" id="haedrian-input-password-dropdown" ng-model="user.password"
+                                                                            placeholder="Password" required="" ng-maxlength="100">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-12">
+                                                                        <div class="checkbox">
+                                                                            <input type="checkbox" id="haedrian-input-rememberme-dropdown" ng-model="user.rememberMe" class="ng-pristine ng-valid">
+                                                                            <label for="haedrian-input-rememberme-dropdown" class="highlight">Remember me</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- Error messages from fields -->
+                                                                <div class="haedrian-form">
+                                                                    <div class="haedrian-content-fix-height">
+                                                                        <!-- ngIf: signinForm.$invalid -->
+                                                                        <div ng-if="signinForm.$invalid" class="row animate-error ng-scope">
+                                                                            <div class="col-sm-12">
+                                                                                <div class="form-group" id="haedrian-form-error">
+                                                                                    <div class="haedrian-icon-warning highlight">
+                                                                                        <!-- ngIf: signinForm.username.$invalid -->
+                                                                                        <div ng-if="signinForm.username.$invalid" class="ng-scope">
+                                                                                            <!-- Username validity -->
+                                                                                            <!-- ngIf: signinForm.username.$error.required -->
+                                                                                            <div ng-if="signinForm.username.$error.required" class="ng-scope">Please specify a username or an e-mail address.</div>
+                                                                                            <!-- end ngIf: signinForm.username.$error.required -->
+                                                                                            <!-- ngIf: signinForm.username.$error.maxlength -->
+                                                                                            <!-- ngIf: signinForm.username.$error.pattern -->
+                                                                                        </div>
+                                                                                        <!-- end ngIf: signinForm.username.$invalid -->
+                                                                                        <!-- ngIf: signinForm.username.$valid && signinForm.password.$invalid -->
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <!-- end ngIf: signinForm.$invalid -->
+                                                                    </div>
+                                                                </div>
+                                                                <!-- Error messages from server -->
+                                                                <!-- ngIf: serverError !== undefined -->
+                                                                <!-- Submit buttons -->
+                                                                <div class="row form-fullscreen">
+                                                                    <div class="col-sm-12">
+                                                                        <div class="form-group">
+                                                                            <div class="col-sm-5 delete-padding">
+                                                                                <button type="submit" class="btn btn-grey-haedrian" id="haedrian-signin-dropdown" ng-class="{'btn-grey-haedrian': signinForm.$invalid, 'btn-haedrian': signinForm.$valid}"
+                                                                                ng-disabled="signinForm.$invalid" disabled="disabled">Sign in</button>
+                                                                            </div>
+                                                                            <div class="col-sm-2 highlight text-center hidden-xs" style="padding-top:10px"><b>Or</b>
+                                                                            </div>
+                                                                            <div class="col-sm-5 delete-padding"><a class="btn btn-haedrian form-link" id="haedrian-account-creation-dropdown" ng-click="onSigninFinished();" href="#!/auth/account-creation" geny-tracking="Create Account Clicked"
+                                                                                geny-tracking-props="{&quot;Started account created&quot;:true}">Create account</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- Forgot password -->
+                                                                <div class="row">
+                                                                    <div class="col-sm-12">
+                                                                        <p><a class="highlight" href="#!/auth/reset-password" id="haedrian-forgot-password-link" ng-click="onSigninFinished();">Forgot your password?</a>
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- ngIf: acceptGuest -->
+                                                            </form>
+                                                        </div>
+                                                    </signin-form>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <!--/Large screen case: dropdown signin form -->
+                                    </div>
+                                    <!-- end ngIf: isDropdownable -->
+                                    <!--/Anonymous: Show Form -->
+                                </div>
+                            </div>
+                        </signin-toolbar>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+</div>

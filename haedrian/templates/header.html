@@ -25,7 +25,9 @@
                 <ul class="nav navbar-nav">
                     <li class="navbar-nav-left header-logo navbar-nav-left-first">
                         {% comment %}<span class="logo-image"><a href="http://www.haedrian.io"><img src="{% static "images/imagebird.png" %}"></a></span>{% endcomment %}
-                        <span class="logo-brand"><a href="http://www.haedrian.io">By Haedrian Labs</a></span>
+{% comment %}      TODO                  <span class="logo-brand"><a href="http://www.haedrian.io"> By Haedrian Labs</a></span>{% endcomment %}
+
+                        <span class="logo-brand"><a href="http://www.haedrian.io"></a></span>
                     </li>
                     <li class="navbar-nav-left" ng-class="{active: $route.current.activetab == 'about'}"><a id="haedrian-link-about-page" href="#!/about">About us</a>
                     </li>

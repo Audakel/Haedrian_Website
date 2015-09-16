@@ -1,25 +1,26 @@
+{% load static %}
 <div class="haedrian-footer ng-scope" ng-include="'views/subviews/footer.html'">
     <footer ng-controller="FooterCtrl" class="footer ng-scope">
         <div class="container">
             <div class="row footer-link-section">
                 <div class="col-xs-3 col-md-offset-2 col-md-2">
-                    <a href="https://twitter.com/Genymotion" target="_blank">
-                        <img class="img-responsive link-img-left" src="images/header-footer/f0591218.twitter_default.svg">
+                    <a href="https://twitter.com/haedrianlabs" target="_blank">
+                        <img class="img-responsive link-img-left" src="{% static "images/icons/twitter_default.svg" %}">
                     </a>
                 </div>
                 <div class="col-xs-3 col-md-2">
-                    <a href="https://www.youtube.com/channel/UCR3HcX37wekXBGvV_xTzEkQ" target="_blank">
-                        <img class="img-responsive link-img-left" src="images/header-footer/3ea4b6a0.youtube_default.svg">
+                    <a href="" target="_blank">
+                        <img class="img-responsive link-img-left" src="{% static "images/icons/youtube_default.svg" %}">
                     </a>
                 </div>
                 <div class="col-xs-3 col-md-2">
-                    <a href="https://plus.google.com/+GenymotionEmulator?rel=author" target="_blank">
-                        <img class="img-responsive" src="images/header-footer/eaaeceb4.google_default.svg">
+                    <a href="" target="_blank">
+                        <img class="img-responsive" src="{% static "images/icons/google_default.svg" %}">
                     </a>
                 </div>
                 <div class="col-xs-3 col-md-2">
                     <a href="#!/support#contact">
-                        <img class="img-responsive" src="images/header-footer/10c343cb.contact_default.svg">
+                        <img class="img-responsive" src="{% static "images/icons/contact_default.svg" %}">
                     </a>
                 </div>
             </div>

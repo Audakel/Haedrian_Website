@@ -428,6 +428,19 @@ class CoinsPhWallet(BaseWallet):
         }
         return data
 
+
+    def get_crypto_routes(self):
+        endpoint = '/api/v3/crypto-routes/{}'.format("")
+        url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
+
+        _data = make_oauth_request(url, self.user)
+        # data = {
+        #     "default_address": _data['default_address'],
+        #     "currency": currency[0]
+        # }
+        return _data
+
+
     def get_exchanges(self, kwargs):
         # Get locations
         locations = self.get_exchange_types()

@@ -25,7 +25,7 @@ from haedrian.models import UserData, Transaction, Wallet
 from apiv1.models import VerifyGroup, VerifyPerson
 from haedrian.views import _create_account
 from haedrian.wallets.coins_ph import CoinsPhWallet, make_oauth_request
-from apiv1.tasks import get_group_members, verify_send_que
+from apiv1.tasks import get_group_members, verify_send_que, update_coins_token
 from apiv1.external.mifosx import mifosx_loan
 
 
@@ -564,12 +564,24 @@ def _testing(user, data=''):
     # _data = make_oauth_request(url, user)
     # php_address = _data['monitored_address']
     # return _data
-    user=get_user_model().objects.get(username='jmonkey212')
 
-    return _get_home_screen(user)
+    # update_coins_token()
+
+    user = get_user_model().objects.get(username='jmonkey212')
+
+    wallet = get_temp_wallet(user)
+    try:
+        data = wallet.get_crypto_routes()
+        if data['success']:
+            pass
+        return data
+    except Exception as e:
+        return e
+
+    # return _get_home_screen(user)
     # # return get_user_token(user)
     # return update_coins_token()
-
+    #
     # btc_wallet = Wallet.objects.get(user_id=user, type=Wallet.COINS_PH, currency='BTC')
     # php_wallet = Wallet.objects.get(user_id=user, type=Wallet.COINS_PH, currency='PHP')
     #

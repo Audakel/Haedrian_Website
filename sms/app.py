@@ -1,6 +1,4 @@
 from decimal import Decimal
-
-from rapidsms.apps.base import AppBase
 from django.utils import translation
 from django.utils.translation import ugettext as _
 from django.contrib.auth import get_user_model
@@ -12,14 +10,20 @@ import phonenumbers
 from apiv1.internal.views import _get_exchange_types
 from haedrian.models import UserData
 from models import Message
-from sms_verify import verify_sender, str_usage_commands
-from strings import str_deposit_locations
 
+from sms_verify import verify_sender
+
+
+from rapidsms.apps.base import AppBase
+
+from strings import *
 
 class SMSApplication(AppBase):
     def handle(self, msg):
         # sms sender is in our DB
-        return True
+        # msg.respond("Error: Not enough funds")
+        # return True
+
 
         try:
             # TODO:: why are the numbers not in i17n form?
@@ -37,10 +41,12 @@ class SMSApplication(AppBase):
             print("Could not look up the short name for the country {}".format(country_name))
         except AttributeError as f:
             print("Translation for the country {} not found".format(country))
-        if verify_sender(msg):
+        if True:
+        # if verify_sender(msg):
             parts = msg.text.lower().strip().split(" ")
             command = parts[0]
-            save_message(msg)
+            # TODO:: redo message logging in db
+            # save_message(msg)
             _user_id = UserData.objects.get(phone=msg.connections[0].identity).user_id
             user_id = get_user_model().objects.get(id=_user_id)
 
@@ -48,18 +54,19 @@ class SMSApplication(AppBase):
                 sms_balance(msg)
             elif command == _('send'):
                 sms_send(msg, parts)
-            elif command == _('use'):
+            elif command == _('help'):
                 sms_help(msg)
             # elif command == _('tulong'):  # Tagolog help
             #     sms_tulong(msg)
             elif command == _('whoami'):
                 sms_whoami(msg)
-            elif command == _('deposit'):
-                sms_deposit(msg, parts, user_id)
+            elif command == _('repay'):
+                sms_repay(msg, parts, user_id)
             elif command == _('where'):
                 sms_where(msg, parts, user_id)
             else:
-                sms_help(msg)
+                # sms_help(msg)
+                return True
 
                 # we handled sms, no need to keep looking
         return True
@@ -177,8 +184,8 @@ def sms_balance(msg):
     # msg.respond("You have $%s available, with $%s pending. Nice!" % (response['balance'],
     #                                                           response['pending_balance']))
 
-    response = UserData.objects.get(phone=msg.connections[0].identity).sms_balance
-    msg.respond(_("You have $%d available, with $%d pending. Nice!") % (response, 0.00))
+    # response = UserData.objects.get(phone=msg.connections[0].identity).sms_balance
+    msg.respond(_(("Wallet Balance: PHP %d\nRemaining Loan: PHP %d\nNext payment in %d days") % (100, 857, 6)))
 
 
 def save_message(msg):
@@ -197,20 +204,26 @@ def verify(msg):
 
 
 def sms_whoami(msg):
-    msg.respond(UserData.objects.get(phone=msg.connections[0].identity).handle)
+
+    user_id = UserData.objects.get(phone=msg.connections[0].identity).user_id
+    msg.respond('User: @{}'.format(get_user_model().objects.get(id=user_id).username))
 
 
 def sms_where(msg, parts, user_id):
     pass
 
 
-def sms_deposit(msg, parts, user_id):
-    _deposit_list = get_deposit_types(user_id)
-    deposit_list = []
-    for i, val in enumerate(_deposit_list):
-        deposit_list.append("%d-%s" % (i, val))
-    # msg.respond(', '.join(deposit_list))
-    msg.respond(str_deposit_locations)
+def sms_repay(msg, parts, user_id):
+    response = "Please deposit the exact cash amount (%d PHP) at any BDO branch to the following account: \nAccount name: " \
+               "BETUR INC. \nAccount number: 008170015060 \nAccount type: SAVINGS" % (Decimal(parts[1])+10)
+    msg.respond(response)
+
+    # _deposit_list = get_deposit_types(user_id)
+    # deposit_list = []
+    # for i, val in enumerate(_deposit_list):
+    #     deposit_list.append("%d-%s" % (i, val))
+    # # msg.respond(', '.join(deposit_list))
+    #
 
 
 def get_deposit_types(user_id):

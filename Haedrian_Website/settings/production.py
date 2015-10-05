@@ -37,6 +37,26 @@ DATABASES = {
     }
 }
 
+INSTALLED_BACKENDS = {
+    # "twilio-backend": {
+    #     "ENGINE": "rtwilio.outgoing.TwilioBackend",
+    #     'config': {
+    #         'account_sid': 'AC4f7dec744e3bcad378e19888b8213af3',  # (required)
+    #         'auth_token': '0c7b01582cbe2ce27123e2dc7ac983d6',  # (required)
+    #         'number': '(920) 645-2134',  # your Twilio phone number (required)
+    #         # optional callback URL
+    #         # 'callback': 'http://<public-django-instance>/backend/twilio/status-callback/',
+    #     }
+    # },
+    "telerivet": {
+        "ENGINE": "rapidsms_telerivet.outgoing.TelerivetBackend",
+        "project_id": "PJa61703ce18b3a11e",
+        "phone_id": "PN1370f45e6aa449c2",
+        "secret": "AUH4PZMMLHN3XPHHHDW6MM3HURZ923XD",
+        "api_key": "SMLXzvuupVOtIP9SIOU5hdXRlSkRwvaM",
+    },
+}
+
 #MIDDLEWARE_CLASSES += ['subdomains.middleware.SubdomainURLRoutingMiddleware',]
 
 ## Broker settings.

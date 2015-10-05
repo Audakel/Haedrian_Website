@@ -5,9 +5,6 @@ from django.contrib.auth import get_user_model
 from haedrian.models import UserData
 from models import Signup
 from haedrian.views import _create_account
-
-
-#  DEBUGGING HELP +++++++++ ========= import pdb; pdb.set_trace()
 from strings import *
 
 def verify_sender(msg):
@@ -77,7 +74,7 @@ def sms_create_user(username, msg):
     user_data = {
         "username": username,
         # TODO:: fix email
-        "email": username+"@gmail.com",
+        "email": 'aquila+{}@haedrian.io'.format(username),
         "password1": "thisisabadpassword",
         "password2": "thisisabadpassword",
         "phone": msg.connections[0].identity,

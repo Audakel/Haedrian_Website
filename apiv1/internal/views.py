@@ -14,6 +14,7 @@ from rest_framework.authtoken.models import Token
 import requests
 from rapidsms.router import send, lookup_connections
 from money import Money as Convert
+from apiv1.email_confirm_bot import confirm_emails
 
 from apiv1.internal.repayment import _get_next_repayment
 
@@ -260,6 +261,7 @@ def _get_balance(user, kwargs=''):
     try:
         data = wallet.get_balance(kwargs)
         default_currency = user.userdata.default_currency
+        data['_balance'] = round(decimal.Decimal(data['balance']), 2)
         data['balance'] = format_currency_display(data['currency'], default_currency, data['balance'])
         data['pending_balance'] = format_currency_display(data['currency'], default_currency, data['pending_balance'])
         data['currency'] = default_currency
@@ -558,6 +560,8 @@ def _exchange_worker(user, data):
 
 
 def _testing(user, data=''):
+    from apiv1.email_confirm_bot import email_confirm_bot
+    return email_confirm_bot()
     # endpoint = '/api/v3/crypto-routes/'
     # url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
     #

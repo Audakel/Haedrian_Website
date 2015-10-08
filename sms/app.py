@@ -7,7 +7,7 @@ from phonenumbers import geocoder
 import pycountry
 import phonenumbers
 
-from apiv1.internal.views import _get_exchange_types
+from apiv1.internal.views import _get_exchange_types, _get_balance
 from haedrian.models import UserData
 from models import Message
 
@@ -41,8 +41,7 @@ class SMSApplication(AppBase):
             print("Could not look up the short name for the country {}".format(country_name))
         except AttributeError as f:
             print("Translation for the country {} not found".format(country))
-        if True:
-        # if verify_sender(msg):
+        if verify_sender(msg):
             parts = msg.text.lower().strip().split(" ")
             command = parts[0]
             # TODO:: redo message logging in db
@@ -51,7 +50,7 @@ class SMSApplication(AppBase):
             user_id = get_user_model().objects.get(id=_user_id)
 
             if command == _('balance'):
-                sms_balance(msg)
+                sms_balance(msg, user_id)
             elif command == _('send'):
                 sms_send(msg, parts)
             elif command == _('help'):
@@ -177,15 +176,16 @@ def sms_help(msg):
 #     msg.respond("""Halimbawa send: 'Send 15 @mi'\n Halimbawa balance: 'Balance'""")
 
 
-def sms_balance(msg):
+def sms_balance(msg, user_id):
     # TODO: figure out how to find the user ID from authusers
 
-    # response = _get_balance(UserModel.objects.get(id=user_id))
-    # msg.respond("You have $%s available, with $%s pending. Nice!" % (response['balance'],
-    #                                                           response['pending_balance']))
+    response = _get_balance(user_id)
+    # response = _get_home_screen(user_id)
+    funny_response = ': )' if response['_balance'] > 0 else ': ('
 
-    # response = UserData.objects.get(phone=msg.connections[0].identity).sms_balance
-    msg.respond(_(("Wallet Balance: PHP %d\nRemaining Loan: PHP %d\nNext payment in %d days") % (100, 857, 6)))
+    msg.respond("You have %s %s available %s\nNo loan out. " % (response['currency'], response['_balance'], funny_response))
+
+    # msg.respond(_(("Wallet Balance: PHP %d\nRemaining Loan: PHP %d\nNext payment in %d days") % (100, 857, 6)))
 
 
 def save_message(msg):

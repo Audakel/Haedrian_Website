@@ -10,36 +10,38 @@ import urlparse
 import datetime
 import webbrowser
 import requests
+from django.conf import settings
 
 url_pattern = re.compile('(https://coins.ph/settings/confirm\?.*haedrian.io)')
 
-aquila_u = 'aquila@haedrian.io'
-aquila_p = 'GmailSaTeCoCeMuBu1'
+aquila_u = settings.GMAIL_USER
+aquila_p = settings.GMAIL_PASSWORD
 
 
 
 def confirm_emails(username, password, sender_of_interest):
-    # Login to INBOX
-    M = imaplib.IMAP4_SSL("imap.gmail.com", 993)
-    M.login(username, password)
 
-    M.select('Email Confirm- Coins')
+    # Login to INBOX
+    m = imaplib.IMAP4_SSL("imap.gmail.com", 993)
+    m.login(username, password)
+
+    mailbox = m.select('Email Confirm- Coins')
     # Use search(), not status()
-    status, data = M.search('Email Confirm- Coins', '(UNSEEN)')#('INBOX', '(UNSEEN)')
+    status, data = m.search('Email Confirm- Coins', '(UNSEEN)')#('INBOX', '(UNSEEN)')
     unread_msg_nums = data[0].split()
 
     # Print the count of all unread messages
     print 'Unread messages :' + str(len(unread_msg_nums))
 
     # Print all unread messages from a certain sender of interest
-    status, data = M.search(None, '(UNSEEN)', '(FROM "%s")' % (sender_of_interest))
+    status, data = m.search(None, '(UNSEEN)', '(FROM "%s")' % (sender_of_interest))
     
     if status != 'OK':
         print "No new messages found!"
         return
         
     for num in reversed(data[0].split()):
-        rv, data = M.fetch(num, '(RFC822)')
+        rv, data = m.fetch(num, '(RFC822)')
         if rv != 'OK':
             print "ERROR getting message", num
             return

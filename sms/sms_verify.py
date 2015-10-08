@@ -1,6 +1,7 @@
 import random
 
 from django.contrib.auth import get_user_model
+from apiv1.internal.views import _new_user
 
 from haedrian.models import UserData
 from models import Signup
@@ -12,6 +13,8 @@ def verify_sender(msg):
         return True
     elif not currently_signing_up(msg):
         # add them to the signup database
+        if msg.text is str_please_create_username:
+            return False
         signup = Signup(phone_number=msg.connections[0].identity)
         signup.save()
         msg.respond(str_please_create_username)
@@ -52,6 +55,7 @@ def check_handle_exist(msg_handle):
 
 
 def create_handle(msg):
+
     msg_handle = msg.text.strip().lower()[1:]
     if check_handle_exist(msg_handle):
         # TODO make beter check for existing handle / better collison avoidance
@@ -73,14 +77,14 @@ def create_handle(msg):
 def sms_create_user(username, msg):
     user_data = {
         "username": username,
-        # TODO:: fix email
-        "email": 'aquila+{}@haedrian.io'.format(username),
-        "password1": "thisisabadpassword",
-        "password2": "thisisabadpassword",
+        "password1": "thisisabadpassword1",
         "phone": msg.connections[0].identity,
-        "country": "US",
-        "sms_balance": 20
+        "country": "US"
+        # TODO:: Check for number in MFI Mifos account
+        # TODO:: Allow signup with MFI id if not already in DB
+        # "application": kwargs.get("application", None),
+        # "app_id": kwargs.get("app_id", None)
     }
 
-    _create_account(user_data)
+    _new_user(user_data)
 

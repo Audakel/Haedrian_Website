@@ -6,10 +6,12 @@ from django.db.models import F
 from phonenumbers import geocoder
 import pycountry
 import phonenumbers
+import re
+from apiv1.internal.utils import format_currency_display
 
-from apiv1.internal.views import _get_exchange_types, _get_balance
+from apiv1.internal.views import _get_exchange_types, _get_balance, _buy
 from haedrian.models import UserData
-from models import Message
+from models import Message, PendingDeposit
 
 from sms_verify import verify_sender
 
@@ -214,8 +216,30 @@ def sms_where(msg, parts, user_id):
 
 
 def sms_repay(msg, parts, user_id):
-    response = "Please deposit the exact cash amount (%d PHP) at any BDO branch to the following account: \nAccount name: " \
-               "BETUR INC. \nAccount number: 008170015060 \nAccount type: SAVINGS" % (Decimal(parts[1])+10)
+    data = {
+        "amount_local": parts[1],
+        "currency": "PHP",
+        "payment_method": "bdo_deposit",
+    }
+
+    res = _buy(user_id, data)
+    if res['success']:
+
+        pending = PendingDeposit(amount=res['order']['instructions_details']['amount'], user=user_id, order_id=res['order']['id'])
+        try:
+            pending.save()
+        except Exception as e:
+            response = "We are sorry, there has been an error with your deposit. %s" % (str(e))
+            msg.respond(response)
+            return
+
+        res = res['order']['instructions_details']
+        response = "Please deposit the exact cash amount (%s PHP) at any BDO branch to the following account: " \
+                   "\nAccount name: %s\nAccount number: %s\nAccount type: %s\nYour reference number is: %s" \
+                   "\nOnce you have deposited the money, reply with 'done' to mark you deposit as complete." \
+                   % (res['amount'],res['account_name'],res['account_number'],res['account_type'],res['ref_number'])
+    else:
+        response = "We are sorry, there has been an error with your deposit. %s" % (res['error'])
     msg.respond(response)
 
     # _deposit_list = get_deposit_types(user_id)

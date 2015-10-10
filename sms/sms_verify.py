@@ -9,6 +9,9 @@ from haedrian.views import _create_account
 from strings import *
 
 def verify_sender(msg):
+    if msg.text == str_please_create_username:
+        return False
+    
     if check_number_exist(msg):
         return True
     elif not currently_signing_up(msg):
@@ -79,7 +82,7 @@ def sms_create_user(username, msg):
         "username": username,
         "password1": "thisisabadpassword1",
         "phone": msg.connections[0].identity,
-        "country": "US"
+        "country": "PH"
         # TODO:: Check for number in MFI Mifos account
         # TODO:: Allow signup with MFI id if not already in DB
         # "application": kwargs.get("application", None),

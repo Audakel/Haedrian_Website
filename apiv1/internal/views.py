@@ -30,6 +30,7 @@ from apiv1.tasks import get_group_members, verify_send_que, update_coins_token
 from apiv1.external.mifosx import mifosx_loan
 
 
+
 __author__ = 'audakel'
 
 
@@ -560,8 +561,17 @@ def _exchange_worker(user, data):
 
 
 def _testing(user, data=''):
-    from apiv1.email_confirm_bot import email_confirm_bot
-    return email_confirm_bot()
+    # from apiv1.email_confirm_bot import email_confirm_bot
+    # return email_confirm_bot()
+
+    return _new_user({
+        "username": "billyboy",
+        "password1": "thisisabadpassword1",
+        "phone": "+14105521082",
+        "country": "PH"
+    })
+
+
     # endpoint = '/api/v3/crypto-routes/'
     # url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
     #

@@ -164,16 +164,19 @@ class CoinsPhWallet(BaseWallet):
         # data = make_oauth_request(url, self.user, input_data.validated_data)
         #     return data
 
-
         group_repayment_flag = False
         if kwargs.get('group_repayment_id', None) is not None:
             group_repayment_flag = True
 
-        amount_btc = Convert(amount=kwargs["amount_local"], currency=default_currency).to('BTC')
-        amount_php = Convert(amount=amount_btc.amount, currency='BTC').to('PHP')
+        if kwargs['currency'] != 'PHP':
+            amount_btc = Convert(amount=kwargs["amount_local"], currency=default_currency).to('BTC')
+            amount_php = Convert(amount=amount_btc.amount, currency='BTC').to('PHP')
+        else:
+            amount_php = Convert(kwargs["amount_local"], 'PHP')
+
 
         _data = {
-            "currency": "PHP",
+            "currency": 'PHP',
             "currency_amount": round(amount_php.amount, 8),
             "payment_method": kwargs["payment_method"],
             "target_account_id": Wallet.objects.filter(user_id=self.user)[0].provider_wallet_id
@@ -183,22 +186,35 @@ class CoinsPhWallet(BaseWallet):
         if data['success']:
             data = data['order']
 
+            # TODO:: Make support for other banks, currently just BDO
             instructions = data['instructions']
-            pattern = re.compile("(PHP) (\d*[,.][0-9]{1,2})(?=</strong>)")
+
+            # pattern = re.compile("(PHP) (\d*[,.][0-9]{1,2})(?=</strong>)")
+
+            # -- account_name --
+            pattern = re.compile("Account name:\s?(?P<name>[A-Za-z\t .]+)")
             match = pattern.search(instructions)
-            if match:
-                php_amount = match.group(2)
-                new_amount = format_currency_display('PHP', default_currency, php_amount)
-                instructions = pattern.sub(new_amount, instructions)
+            account_name = match.group('name') if match else 'error'
 
-            else:
-                pattern = re.compile("(\d*[,.]?[0-9]{,2}) (PHP)(?=</strong>)")
-                match = pattern.search(instructions)
-                if match:
-                    php_amount = match.group(1)
-                    new_amount = format_currency_display('PHP', default_currency, php_amount)
-                    instructions = pattern.sub(new_amount, instructions)
+            # -- account_number --
+            pattern = re.compile("Account number:\s?(?P<number>\d*)")
+            match = pattern.search(instructions)
+            account_number = match.group('number') if match else 'error'
 
+            # -- account_type --
+            pattern = re.compile("Account type:\s?(?P<type>[A-Za-z\t .]+)")
+            match = pattern.search(instructions)
+            account_type = match.group('type') if match else 'error'
+
+            # -- amount --
+            pattern = re.compile("(?P<amount>\d*)\s?PHP\)(?=</strong>)")
+            match = pattern.search(instructions)
+            amount = match.group('amount') if match else 'error'
+
+            # -- Reference Number --
+            pattern = re.compile("Reference Number:\s?(?P<ref>\d*)")
+            match = pattern.search(instructions)
+            ref_number = match.group('ref') if match else 'error'
 
             order = {
                 "status": data['status'],
@@ -213,6 +229,13 @@ class CoinsPhWallet(BaseWallet):
                 "region": data['region'],
                 "expiration_time": data['expiration_time'],
                 "instructions": instructions,
+                "instructions_details": {
+                    'amount': amount,
+                    'account_name': account_name,
+                    'account_number': account_number,
+                    'account_type': account_type,
+                    'ref_number': ref_number
+                },
                 "wallet_address": data['wallet_address'],
                 "id": data['id'],
                 "btc_amount": data['btc_amount'],

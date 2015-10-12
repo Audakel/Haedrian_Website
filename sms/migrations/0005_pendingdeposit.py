@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('order_id', models.CharField(max_length=60)),
                 ('confirmed', models.BooleanField(default=False)),
                 ('amount', models.DecimalField(max_digits=30, decimal_places=8)),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True)),
             ],
             options={
             },

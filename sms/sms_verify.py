@@ -32,16 +32,12 @@ def verify_sender(msg):
 
 def check_number_exist(msg):
     # Check for phone number in real DB
-    if UserData.objects.filter(phone=msg.connections[0].identity).exists():
-        return True
+    return True if UserData.objects.filter(phone=msg.connections[0].identity).exists() else False
 
 
 def currently_signing_up(msg):
     # Check for phone number in DB
-    if Signup.objects.filter(phone_number=msg.connections[0].identity).exists():
-        return True
-    else:
-        return False
+    return True if Signup.objects.filter(phone_number=msg.connections[0].identity).exists() else False
 
 
 def check_handle_exist(msg_handle):

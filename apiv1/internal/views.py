@@ -1,6 +1,7 @@
 import decimal
 import datetime
 import copy
+from django.core.serializers import json
 import random
 import urlparse
 
@@ -28,7 +29,7 @@ from haedrian.views import _create_account
 from haedrian.wallets.coins_ph import CoinsPhWallet, make_oauth_request
 from apiv1.tasks import get_group_members, verify_send_que, update_coins_token
 from apiv1.external.mifosx import mifosx_loan
-
+from sms.models import PendingDeposit
 
 
 __author__ = 'audakel'
@@ -560,16 +561,11 @@ def _exchange_worker(user, data):
 
 
 
-def _testing(user, data=''):
+def _testing():
     # from apiv1.email_confirm_bot import email_confirm_bot
     # return email_confirm_bot()
 
-    return _new_user({
-        "username": "billyboy",
-        "password1": "thisisabadpassword1",
-        "phone": "+14105521082",
-        "country": "PH"
-    })
+
 
 
     # endpoint = '/api/v3/crypto-routes/'
@@ -581,16 +577,27 @@ def _testing(user, data=''):
 
     # update_coins_token()
 
-    user = get_user_model().objects.get(username='jmonkey212')
-
-    wallet = get_temp_wallet(user)
+    user_id = get_user_model().objects.get(username='jmonkey212')
+    pending = PendingDeposit(amount=12, user=user_id, order_id=123456, time=datetime.datetime.now()+datetime.timedelta(days=3))
+    # pending = PendingDeposit(amount=12, user=user_id, order_id=res['order']['id'])
     try:
-        data = wallet.get_crypto_routes()
-        if data['success']:
-            pass
-        return data
+        pending.save()
     except Exception as e:
-        return e
+        response = "We are sorry, there has been an error with your deposit. %s" % (str(e))
+        return response
+    latest = PendingDeposit.objects.filter(user=user_id, confirmed=False).latest('time')
+    return {'time': latest.time, 'amount': latest.amount}
+
+
+
+    # wallet = get_temp_wallet(user)
+    # try:
+    #     data = wallet.get_crypto_routes()
+    #     if data['success']:
+    #         pass
+    #     return data
+    # except Exception as e:
+    #     return e
 
     # return _get_home_screen(user)
     # # return get_user_token(user)

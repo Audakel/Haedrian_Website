@@ -26,8 +26,8 @@ class Depositor(models.Model):
     long_name = models.CharField(max_length=40)
 
 class PendingDeposit(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     time = models.DateTimeField(default=datetime.now)
     order_id = models.CharField(max_length=60)
     confirmed = models.BooleanField(default=False)
     amount = models.DecimalField(max_digits=30, decimal_places=8)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)

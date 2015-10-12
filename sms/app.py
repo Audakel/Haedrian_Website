@@ -1,3 +1,6 @@
+# https://74b0199a.ngrok.com/sms/telerivet/
+# https://haedrian.io/sms/telerivet/
+
 from decimal import Decimal
 from django.utils import translation
 from django.utils.translation import ugettext as _
@@ -9,7 +12,7 @@ import phonenumbers
 import re
 from apiv1.internal.utils import format_currency_display
 
-from apiv1.internal.views import _get_exchange_types, _get_balance, _buy
+from apiv1.internal.views import _get_exchange_types, _get_balance, _buy, _verify_buy
 from haedrian.models import UserData
 from models import Message, PendingDeposit
 
@@ -63,6 +66,8 @@ class SMSApplication(AppBase):
                 sms_whoami(msg)
             elif command == _('repay'):
                 sms_repay(msg, parts, user_id)
+            elif command == _('done'):
+                sms_done(msg, parts, user_id)
             elif command == _('where'):
                 sms_where(msg, parts, user_id)
             else:
@@ -224,7 +229,6 @@ def sms_repay(msg, parts, user_id):
 
     res = _buy(user_id, data)
     if res['success']:
-
         pending = PendingDeposit(amount=res['order']['instructions_details']['amount'], user=user_id, order_id=res['order']['id'])
         try:
             pending.save()
@@ -248,6 +252,27 @@ def sms_repay(msg, parts, user_id):
     #     deposit_list.append("%d-%s" % (i, val))
     # # msg.respond(', '.join(deposit_list))
     #
+
+def sms_done(msg, parts, user_id):
+    if not PendingDeposit.objects.filter(user=user_id, confirmed=False).exists():
+        msg.respond("Sorry, we can't find any repayments for you : (")
+        return
+
+    latest = PendingDeposit.objects.filter(user=user_id, confirmed=False).latest('time')
+    res = _verify_buy(user_id, {'order_id': latest.order_id})
+    if res['success']:
+        latest.confirmed = True
+        try:
+            latest.save()
+        except Exception as e:
+            msg.respond('There has been some type of error with marking your order "done": Error %s') % (str(e))
+            return
+
+        message = "Congrats! Your PHP %s deposit is '%s'. We will notify you when when your repayment " \
+                  "has been received by %s." % (latest.amount, res['order']['status'].replace('_', ' ').title(), 'Mentors International')
+        msg.respond(message)
+    else:
+        msg.respond('There has been some type of error with marking your order "done"')
 
 
 def get_deposit_types(user_id):

@@ -270,10 +270,10 @@ def exchange_worker(request):
 
 
 @api_view(http_method_names=['GET'])
-@authentication_classes(auth_classes)
+# @authentication_classes(auth_classes)
 def testing(request):
     try:
-        data = internal._testing(request.user, request.data)
+        data = internal._testing()
         return Response(data)
     except Exception as e:
         return Response(({'success': False, 'error': e.message}), status=400)

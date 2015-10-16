@@ -48,12 +48,13 @@ class NewUserForm(ModelForm):
         _id = self.cleaned_data['app_id']
         if not _id:
             return _id
-        res = mifosx_api('clients', params={"externalId": _id})
+        # TODO:: Put what db this should be hitting (in app)
+        res = mifosx_api('clients', params={"externalId": _id}, app=self.cleaned_data['app'])
         if res['success'] and res['response']['totalFilteredRecords'] == 1:
             self.first_name = res['response']['pageItems']['firstname']
             self.last_name = res['response']['pageItems']['lastname']
             return res['response']['pageItems']['id']
-        res = mifosx_api('clients/{}'.format(_id), params={"fields": "id,firstname,lastname"})
+        res = mifosx_api('clients/{}'.format(_id), params={"fields": "id,firstname,lastname"}, app=self.cleaned_data['app'])
         if res['success']:
             self.first_name = res['response']['firstname']
             self.last_name = res['response']['lastname']

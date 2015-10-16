@@ -138,8 +138,8 @@ def fetch_mfi_client(new_user):
     :return: {'success': True|False, 'message': message}
     """
 
-    if new_user['app'] == UserData.MENTORS:
-        res = mifosx_api("clients/?externalId={}".format(new_user['id']))
+    if new_user['app'] != '':
+        res = mifosx_api("clients/?externalId={}".format(new_user['id']), app=new_user['app'])
         if res['success']:
             userdata = UserData.objects.get(pk=new_user['pk'])
             if not res['response']['pageItems']:
@@ -212,7 +212,7 @@ def get_group_members(user):
         }
     # user = UserData.objects.get(app_interal_id=id)
 
-    client = mifosx_api('clients/{}'.format(id))
+    client = mifosx_api('clients/{}'.format(id), user=user)
     if not client['success'] and not client['response']['groups']:
         return "Failed. Could not find a group for client with id {}".format(id)
     groups = client['response']['groups']
@@ -227,7 +227,7 @@ def get_group_members(user):
         }
 
     group = groups[0]
-    res = mifosx_api('groups/{}'.format(group['id']), params='associations=activeClientMembers&clientId={}'.format(id))
+    res = mifosx_api('groups/{}'.format(group['id']), params='associations=activeClientMembers&clientId={}'.format(id), user=user)
     if res['success']:
         group = []
         acm = res['response']['activeClientMembers']

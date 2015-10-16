@@ -438,6 +438,7 @@ class CoinsPhWallet(BaseWallet):
             }
             return data
         else:
+            balance['error'] = balance['error']
             return balance
 
     def get_address(self):

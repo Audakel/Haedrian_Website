@@ -23,8 +23,7 @@ def _get_next_repayment(user, data=''):
             endpoint='loans/{}'.format(loan_id),
             method='GET',
             params={'associations': 'all', 'exclude': 'guarantors'},
-            baseurl=settings.MIFOSX_SERVER_URL,
-            tenant="default"
+            user=user
         )
         res = response['response']
         periods = res['repaymentSchedule']['periods']

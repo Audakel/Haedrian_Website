@@ -260,17 +260,17 @@ def _get_pending_balance(user, kwargs):
 
 def _get_balance(user, kwargs=''):
     wallet = get_temp_wallet(user)
-    try:
-        data = wallet.get_balance(kwargs)
+    data = wallet.get_balance(kwargs)
+    if data['success']:
         default_currency = user.userdata.default_currency
-        data['_balance'] = round(decimal.Decimal(data['balance']), 2)
+        data['_balance'] = decimal.Decimal(data['balance'])
         data['balance'] = format_currency_display(data['currency'], default_currency, data['balance'])
+        data['_pending'] = decimal.Decimal(data['pending_balance'])
         data['pending_balance'] = format_currency_display(data['currency'], default_currency, data['pending_balance'])
         data['currency'] = default_currency
 
-        return data
-    except Exception as e:
-        return {'error': e, 'success': False}
+    return data
+
 
 
 def _get_wallet_info(user, kwargs):
@@ -501,6 +501,7 @@ def _get_home_screen(user, kwargs=''):
     loan = mifosx_loan(user)
     if loan['success']:
         response = {
+            'wallet': balance,
             'wallet_balance': balance['balance'],
             'loan_info': loan['loans'],
             'next_repayment_info': next_repayment,
@@ -565,9 +566,6 @@ def _testing():
     # from apiv1.email_confirm_bot import email_confirm_bot
     # return email_confirm_bot()
 
-
-
-
     # endpoint = '/api/v3/crypto-routes/'
     # url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
     #
@@ -575,83 +573,25 @@ def _testing():
     # php_address = _data['monitored_address']
     # return _data
 
-    # update_coins_token()
-
-    user_id = get_user_model().objects.get(username='jmonkey212')
-    pending = PendingDeposit(amount=12, user=user_id, order_id=123456, time=datetime.datetime.now()+datetime.timedelta(days=3))
-    # pending = PendingDeposit(amount=12, user=user_id, order_id=res['order']['id'])
-    try:
-        pending.save()
-    except Exception as e:
-        response = "We are sorry, there has been an error with your deposit. %s" % (str(e))
-        return response
-    latest = PendingDeposit.objects.filter(user=user_id, confirmed=False).latest('time')
-    return {'time': latest.time, 'amount': latest.amount}
-
-
-
-    # wallet = get_temp_wallet(user)
-    # try:
-    #     data = wallet.get_crypto_routes()
-    #     if data['success']:
-    #         pass
-    #     return data
-    # except Exception as e:
-    #     return e
-
-    # return _get_home_screen(user)
-    # # return get_user_token(user)
     # return update_coins_token()
-    #
-    # btc_wallet = Wallet.objects.get(user_id=user, type=Wallet.COINS_PH, currency='BTC')
-    # php_wallet = Wallet.objects.get(user_id=user, type=Wallet.COINS_PH, currency='PHP')
-    #
-    # endpoint = '/user/oauthtoken'
-    # url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
-    # data = {
-    #     'client_id': settings.COINS_API_KEY,
-    #     'client_secret': settings.COINS_SECRET,
-    #     'refresh_token': btc_wallet.refresh_token,
-    #     'grant_type': 'refresh_token',
-    #     'redirect_uri': 'https://haedrian.io'
-    # }
-    # token = requests.post(url, data=data)
-    #
-    # # token.raise_for_status()
-    # if token.status_code == 200:
-    #     token = token.json()
-    #     btc_wallet.expires_at = datetime.fromtimestamp(token['expires_at'])
-    #     btc_wallet.access_token = token['access_token']
-    #     btc_wallet.refresh_token = token['refresh_token']
-    #     btc_wallet.save()
-    #
-    #     if php_wallet:
-    #         php_wallet.expires_at = datetime.fromtimestamp(token['expires_at'])
-    #         php_wallet.access_token = token['access_token']
-    #         php_wallet.refresh_token = token['refresh_token']
-    #         php_wallet.save()
-    #
-    #
-    #     return token['access_token']
 
-    # from apiv1.tasks import verify_send_que
-    # return verify_send_que()
-    # return _get_next_repayment(user)
+    user_id = get_user_model().objects.get(username='test44')
+    response = _get_home_screen(user_id)
+    loan_total = round(response['consolidated']['loan_total'], 0)
+    wallet_balance = round(response['wallet']['_balance'], 0)
+    currency = response['wallet']['currency']
+    pending = round(response['wallet']['_pending'], 0)
+    next_payment_amount = round(response['next_repayment_info'].get('amount', -1), 0)
+    next_payment_date = response['next_repayment_info'].get('date', -1)
 
-    # transaction = Transaction(sender=user,
-    # receiver=get_user_model().objects.get(username='mentors_international'),
-    # amount_btc=2.568,
-    # amount_btc_currency='BTC',
-    #                           amount_local=568,
-    #                           amount_local_currency='USD')
-    # try:
-    #     transaction.save()
-    # except Exception as e:
-    #     return {"success": False, "error": str(e)}
-    #
-    # repay_outstanding_loan({
-    #     'clientId': user.userdata.app_id,
-    #     'transactionId': transaction.id
-    # })
+    funny_response = ': )' if wallet_balance > 0 else ': ('
+    pending = '' if pending == 0 else 'and a pending balance of {}.'.format(pending)
+    loan_total = 'No loan out.' if loan_total == 0 else 'Loan balance: {}'.format(loan_total)
+    next_pay = 'Next payment of {} is due on {}'.format(next_payment_amount, next_payment_date) if next_payment_amount != -1 else ''
+
+    return ("You have %s %s available in your wallet %s %s\n%s\n%s" %
+                (currency, wallet_balance, funny_response, pending, loan_total, next_pay))
+
+
 
 

@@ -12,7 +12,7 @@ import phonenumbers
 import re
 from apiv1.internal.utils import format_currency_display
 
-from apiv1.internal.views import _get_exchange_types, _get_balance, _buy, _verify_buy
+from apiv1.internal.views import _get_exchange_types, _get_balance, _buy, _verify_buy, _get_home_screen
 from haedrian.models import UserData
 from models import Message, PendingDeposit
 
@@ -182,17 +182,31 @@ def sms_help(msg):
 # def sms_tulong(msg):  # Help
 #     msg.respond("""Halimbawa send: 'Send 15 @mi'\n Halimbawa balance: 'Balance'""")
 
+def format_sms_amounts(number):
+    number = int(number)
+    return "{:,}".format(number)
+
 
 def sms_balance(msg, user_id):
-    # TODO: figure out how to find the user ID from authusers
+    # Get all the values from android home screen call, and then format for SMS
+    response = _get_home_screen(user_id)
+    loan_total = (response['consolidated']['loan_total'])
+    wallet_balance = (response['wallet']['_balance'])
+    currency = response['wallet']['currency']
+    pending = (response['wallet']['_pending'])
+    next_payment_amount = (response['next_repayment_info'].get('amount', -1))
+    next_payment_date = response['next_repayment_info'].get('date', -1)
 
-    response = _get_balance(user_id)
-    # response = _get_home_screen(user_id)
-    funny_response = ': )' if response['_balance'] > 0 else ': ('
+    funny_response = ':)' if wallet_balance > 1 else ':('
+    pending = '' if pending == 0 else 'and a pending balance of {}.'.format(format_sms_amounts(pending))
+    loan_total = 'No loan out.' if loan_total == 0 else 'Loan balance: {}.'.format(format_sms_amounts(loan_total))
+    if next_payment_amount != -1:
+        next_pay = 'Next payment of {} is due on {}.'.format(format_sms_amounts(next_payment_amount), next_payment_date)
+    else:
+        next_pay = ''
 
-    msg.respond("You have %s %s available %s\nNo loan out. " % (response['currency'], response['_balance'], funny_response))
-
-    # msg.respond(_(("Wallet Balance: PHP %d\nRemaining Loan: PHP %d\nNext payment in %d days") % (100, 857, 6)))
+    msg.respond("You have %s %s available in your wallet %s  %s %s %s Sent with <3 from the Curo team." %
+                (currency, format_sms_amounts(wallet_balance), funny_response, pending, loan_total, next_pay))
 
 
 def save_message(msg):

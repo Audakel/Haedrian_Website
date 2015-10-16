@@ -63,7 +63,9 @@ INSTALLED_BACKENDS = {
 # it looks like the guest account is enough since this is a local install
 BROKER_URL = 'amqp://guest:guest@localhost:5672//'
 
-MIFOSX_USER = "aquila"
-MIFOSX_PASSWORD = "MifosxSaTeCoCeMuBu1"
+# MIFOSX_USER = "aquila"
+# MIFOSX_PASSWORD = "MifosxSaTeCoCeMuBu1"
+MIFOSX_USER = "mifos"
+MIFOSX_PASSWORD = "password"
 MIFOSX_TENANT = "default"
-MIFOSX_SERVER_URL = "https://mi-asia.haedrian.io/mifosng-provider/api/v1/"
+MIFOSX_SERVER_URL = "https://{}.haedrian.io/mifosng-provider/api/v1/"

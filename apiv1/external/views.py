@@ -56,6 +56,8 @@ class CreateUser(APIView):
             phone = '+17068019809'
             country = 'US'
             # fetch the rest of the client's info from Mifosx
+
+            # TODO:: ===================== pass in what db this should be hitting =====================
             res = mifosx_api("clients/{}".format(request.data['clientId']))
             if res['success']:
                 # external = res['response'].get('externalId', external)

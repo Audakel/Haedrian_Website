@@ -14,14 +14,13 @@ def mifosx_loan(user):
         }
 
     params = {"sqlSearch": "l.client_id={}".format(client_id)}
-    loan = mifosx_api('loans/', params=params)
+    loan = mifosx_api(endpoint='loans/', params=params, user=user)
     loans = []
+    default_currency = user.userdata.default_currency
+    consolidated_loan_total = 0
     if loan['success']:
         loan = loan['response']['pageItems']
         missing = 'missing'
-        default_currency = user.userdata.default_currency
-
-        consolidated_loan_total = 0
 
         for l in loan:
             if not l['status']['active']:
@@ -79,13 +78,13 @@ def mifosx_loan(user):
 
     return {'success': True, 'loans': loans, 'consolidated': {'loan_total': consolidated_loan_total, 'display': consolidated_balance_display}}
 
-def mifosx_auth(username=settings.MIFOSX_USER, password=settings.MIFOSX_PASSWORD, baseurl=settings.MIFOSX_SERVER_URL, tenant="default"):
+def mifosx_auth(base_url, username=settings.MIFOSX_USER, password=settings.MIFOSX_PASSWORD, tenant="default"):
     headers ={
         "X-Mifos-Platform-TenantId": tenant,
     }
     ssl_cert_check = not settings.DEBUG
     response = requests.post(
-        urlparse.urljoin(baseurl, 'authentication?username={}&password={}'
+        urlparse.urljoin(base_url, 'authentication?username={}&password={}'
             .format(username, password)),
         headers=headers,
         verify=ssl_cert_check,
@@ -96,11 +95,29 @@ def mifosx_auth(username=settings.MIFOSX_USER, password=settings.MIFOSX_PASSWORD
     else:
         return False, response
 
-def mifosx_api(endpoint, method='GET', params={}, body=None, baseurl=settings.MIFOSX_SERVER_URL, token=None, tenant="default"):
+def mifosx_api(endpoint, user='', app='', method='GET', params={}, body=None, token=None, tenant="default"):
     """Make a request to the Mifosx API to get the rest of the client info that we need"""
     # TODO: add the ability for multiple tenants
+
+    no_db_message = {
+                'error': "Please select an MFI institution to connect to the db",
+                'success': False
+            }
+
+    if user != '':
+        if UserData.objects.get(user=user).application:
+            base_url = settings.MIFOSX_SERVER_URL.format(UserData.objects.get(user=user).application)
+        else:
+            return no_db_message
+    elif app != '':
+        base_url = settings.MIFOSX_SERVER_URL.format(app)
+    else:
+        return no_db_message
+
+
+
     if not token:
-        token, err = mifosx_auth()
+        token, err = mifosx_auth(base_url=base_url)
     if token:
         headers = {
             "Authorization": "Basic {}".format(token),
@@ -109,9 +126,12 @@ def mifosx_api(endpoint, method='GET', params={}, body=None, baseurl=settings.MI
         # if not 'tenantIdentifier' in params.keys():
         #     params['tenantIdentifier'] = 'default'
         ssl_cert_check = not settings.DEBUG
+
+
+
         if method.lower() == 'get':
             response = requests.get(
-                urlparse.urljoin(baseurl, endpoint),
+                urlparse.urljoin(base_url, endpoint),
                 # "https://mentors.haedrian.io/mifosng-provider/api/v1/clients/{}".format(data['client_id']),
                 params=params,
                 headers=headers,
@@ -119,7 +139,7 @@ def mifosx_api(endpoint, method='GET', params={}, body=None, baseurl=settings.MI
             )
         elif method.lower() == 'post':
             response = requests.post(
-                urlparse.urljoin(baseurl, endpoint),
+                urlparse.urljoin(base_url, endpoint),
                 # "https://mentors.haedrian.io/mifosng-provider/api/v1/clients/{}".format(data['client_id']),
                 params=params,
                 headers=headers,
@@ -152,7 +172,6 @@ def _get_next_repayment_raw(user, data=''):
                          'exclude': 'guarantors',
                          'sqlSearch': 'l.client_id={}'.format(clientId)
                      },
-                     baseurl=settings.MIFOSX_SERVER_URL,
-                     tenant="default")
+                     user=user)
 
     return res

@@ -21,11 +21,11 @@ class UserData(models.Model):
     country = CountryField(blank_label='(Country)')
     default_currency = models.CharField(max_length=4, default='USD')
     app_id = models.CharField(max_length=50, blank=True, default=None, null=True)
-    MENTORS = 'MENTORS'
-    APPLICATIONS = (
-        (MENTORS, _('Mentors International'),),
-    )
-    application = models.CharField(max_length=7, blank=True, choices=APPLICATIONS)
+    # MENTORS = 'MENTORS'
+    # APPLICATIONS = (
+    #     (MENTORS, _('Mentors International'),),
+    # )
+    application = models.CharField(max_length=40, blank=True)
     class Meta:
         unique_together = (
             ("application", "app_id"),

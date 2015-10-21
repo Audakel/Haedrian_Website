@@ -1,13 +1,12 @@
-from collections import namedtuple
 import urlparse
 from datetime import timedelta, datetime
 from django.conf import settings
-import requests
 from celery import shared_task
 from django.contrib.auth import get_user_model
-from money import Money as Convert
-import logging
-
+import re
+import imaplib
+import email
+import requests
 from celery.utils.log import get_task_logger
 from apiv1.internal.utils import calculate_fees
 
@@ -246,3 +245,49 @@ def get_group_members(user):
         'office': res['response']['officeName'],
         'group_members': group
     }
+
+
+@app.task
+def email_confirm_bot(username=settings.GMAIL_USER, password=settings.GMAIL_PASSWORD, sender_of_interest='coins.ph'):
+    url_pattern = re.compile('(https://coins.ph/settings/confirm\?.*haedrian.io)')
+
+    # Login to INBOX
+    m = imaplib.IMAP4_SSL("imap.gmail.com", 993)
+    m.login(username, password)
+
+    mailbox = m.select('Email Confirm- Coins')
+    # Use search(), not status()
+    status, data = m.search('Email Confirm- Coins', '(UNSEEN)')#('INBOX', '(UNSEEN)')
+    unread_msg_nums = data[0].split()
+
+    # Print the count of all unread messages
+    print 'Unread messages :' + str(len(unread_msg_nums))
+
+    # Print all unread messages from a certain sender of interest
+    status, data = m.search(None, '(UNSEEN)', '(FROM "%s")' % (sender_of_interest))
+
+    if status != 'OK':
+        print "No new messages found!"
+        return
+
+    for num in reversed(data[0].split()):
+        rv, data = m.fetch(num, '(RFC822)')
+        if rv != 'OK':
+            print "ERROR getting message", num
+            return
+        email_message = email.message_from_string(data[0][1])
+        if email.utils.parseaddr(email_message['From'])[0] == sender_of_interest:
+            if email_message.is_multipart():
+                print 'email is multi_part'
+                for payload in email_message.get_payload():
+                    parsed_result = url_pattern.findall(payload.get_payload(decode=True))
+                    correct_url = parsed_result.replace("&amp;","&")
+                    if not parsed_result:
+                        print 'No match found for partern: {}'.format("(https://coins.ph/settings/confirm\?.*haedrian.io)")
+                    else:
+                        req = requests.request('GET', correct_url)
+                        break
+            else:
+                parsed_result  = url_pattern.findall(email_message.get_payload(decode=True))[0]
+                correct_url = parsed_result.replace("&amp;","&")
+                req = requests.request('GET',correct_url)

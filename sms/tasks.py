@@ -2,8 +2,10 @@ import datetime
 from django.utils import timezone
 from apiv1.internal.views import _get_balance, _send
 from sms.models import PendingDeposit
+from Haedrian_Website.celery import app
 
 
+@app.task
 def exchange_confirmed_checker():
     pending = PendingDeposit.objects.filter(user_confirmed=True, exchange_confirmed=False, expired=False)
     for p in pending:

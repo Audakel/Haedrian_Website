@@ -223,11 +223,11 @@ CELERYBEAT_SCHEDULE = {
         'task': 'apiv1.tasks.update_coins_token',
         'schedule': timedelta(hours=4),
     },
-    'confirm-coinsPH-emails': {
-        'task': 'apiv1.email_confirm_bot.email_confirm_bot',
+    'confirm-coinsph-emails': {
+        'task': 'apiv1.tasks.email_confirm_bot',
         'schedule': timedelta(minutes=10),
     },
-    'exchange_confirmed_checker': {
+    'exchange-confirmed-checker': {
         'task': 'sms.tasks.exchange_confirmed_checker',
         'schedule': timedelta(minutes=2),
         # 'schedule': timedelta(hours=2),

@@ -24,7 +24,6 @@ class Depositor(models.Model):
     long_name = models.CharField(max_length=40)
 
 class PendingDeposit(models.Model):
-    # time = models.DateTimeField(default=datetime.now)
     time = models.DateTimeField(auto_now_add=True)
     order_id = models.CharField(max_length=60)
     user_confirmed = models.BooleanField(default=False)

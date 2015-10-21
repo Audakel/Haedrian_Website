@@ -213,7 +213,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERYBEAT_SCHEDULE = {
     'check-verify-send-que': {
         'task': 'apiv1.tasks.verify_send_que',
-        'schedule': timedelta(seconds=30),
+        'schedule': timedelta(minutes=1),
     },
     'update-exchange-rates': {
         'task': 'haedrian.tasks.fetch_exchange_rates',
@@ -224,9 +224,15 @@ CELERYBEAT_SCHEDULE = {
         'schedule': timedelta(hours=4),
     },
     'confirm-coinsPH-emails': {
-	'task': 'apiv1.email_confirm_bot.email_confirm.bot',
-	'schedule': timedelta(minutes=10),
+        'task': 'apiv1.email_confirm_bot.email_confirm_bot',
+        'schedule': timedelta(minutes=10),
     },
+    'exchange_confirmed_checker': {
+        'task': 'sms.tasks.exchange_confirmed_checker',
+        'schedule': timedelta(minutes=2),
+        # 'schedule': timedelta(hours=2),
+    },
+
 }
 
 # countries conf

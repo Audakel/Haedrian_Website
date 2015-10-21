@@ -1,10 +1,11 @@
 import datetime
+from django.utils import timezone
 from apiv1.internal.views import _get_balance, _send
 from sms.models import PendingDeposit
 
 
 def exchange_confirmed_checker():
-    pending = PendingDeposit.objects.all().filter(user_confirmed=True, exchange_confirmed=False, expired=False)
+    pending = PendingDeposit.objects.filter(user_confirmed=True, exchange_confirmed=False, expired=False)
     for p in pending:
         balance = _get_balance(p.user)
         if not balance['success']:
@@ -18,7 +19,8 @@ def exchange_confirmed_checker():
                 "send_method": "username"
             })
 
-        if (p.time < datetime.datetime.now()-datetime.timedelta(days=1)) and p.exchange_confirmed is False:
+        # Older than a day
+        if (p.time < timezone.now()-datetime.timedelta(days=1)) and p.exchange_confirmed is False:
             p.expired = True
 
         try:

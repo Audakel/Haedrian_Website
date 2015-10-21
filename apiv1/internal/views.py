@@ -1,6 +1,7 @@
 import decimal
 import datetime
 import copy
+from django.utils import timezone
 from django.core.serializers import json
 import random
 import urlparse
@@ -581,26 +582,10 @@ def _testing():
 
     user_id = get_user_model().objects.get(username='test44')
 
-    try:
-        group = VerifyGroup(group_id=1,
-                            total_payment=123456,
-                            created_by=user_id,
-                            currency=UserData.objects.get(user=user_id).default_currency,
-                            size=1)
-        group.save()
-    except Exception as e:
-        return {'success': False, 'error': "Try again - Couldn't save to group database: {}".format(e)}
-    return 'all good yo'
-
-
-    pending = PendingDeposit(123, user=user_id, order_id=123321)
-    try:
-        pending.save()
-    except Exception as e:
-        response = "We are sorry, there has been an error with your deposit. %s" % (str(e))
-        return response
-    return 'All good yo'
-
+    pending = PendingDeposit.objects.filter()
+    for p in pending:
+        p.time = timezone.now()-datetime.timedelta(hours=random.randint(1, 72))
+        p.save()
 
     pending = PendingDeposit.objects.filter(user_confirmed=True, exchange_confirmed=False, expired=False)
     for p in pending:
@@ -616,7 +601,9 @@ def _testing():
                 "send_method": "username"
             })
 
-        if (p.time < datetime.datetime.now()-datetime.timedelta(days=1)) and p.exchange_confirmed is False:
+        # Older than a day
+        if (p.time < timezone.now()-datetime.timedelta(days=1)) and p.exchange_confirmed is False:
+            here=1
             p.expired = True
 
         try:

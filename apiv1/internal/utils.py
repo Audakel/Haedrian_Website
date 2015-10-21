@@ -5,7 +5,7 @@ from moneyed.localization import format_money
 from money import Money as Convert
 from moneyed import Money
 
-def format_currency_display(in_currency, out_currency, amount):
+def format_currency_display(in_currency, out_currency, amount, for_sms=False):
     # TODO fix rounding to be more acurate
     try:
         amount = float(amount)

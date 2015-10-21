@@ -190,17 +190,18 @@ def format_sms_amounts(number):
 def sms_balance(msg, user_id):
     # Get all the values from android home screen call, and then format for SMS
     response = _get_home_screen(user_id)
-    loan_total = (response['consolidated']['loan_total'])
-    wallet_balance = (response['wallet']['_balance'])
-    currency = response['wallet']['currency']
-    pending = (response['wallet']['_pending'])
-    next_payment_amount = (response['next_repayment_info'].get('amount', -1))
-    next_payment_date = response['next_repayment_info'].get('date', -1)
+
+    loan_total = response['consolidated'].get('loan_total', 0)
+    wallet_balance = response['wallet'].get('_balance', 0)
+    currency = response['wallet'].get('currency', 'Error: Missing currency')
+    pending = response['wallet'].get('_pending', 0)
+    next_payment_amount = response['next_repayment_info'].get('amount', 0)
+    next_payment_date = response['next_repayment_info'].get('date', 0)
 
     funny_response = ':)' if wallet_balance > 1 else ':('
     pending = '' if pending == 0 else 'and a pending balance of {}.'.format(format_sms_amounts(pending))
     loan_total = 'No loan out.' if loan_total == 0 else 'Loan balance: {}.'.format(format_sms_amounts(loan_total))
-    if next_payment_amount != -1:
+    if next_payment_amount > 0:
         next_pay = 'Next payment of {} is due on {}.'.format(format_sms_amounts(next_payment_amount), next_payment_date)
     else:
         next_pay = ''
@@ -235,6 +236,7 @@ def sms_where(msg, parts, user_id):
 
 
 def sms_repay(msg, parts, user_id):
+    # TODO:: fix hardcoded currency amount
     data = {
         "amount_local": parts[1],
         "currency": "PHP",
@@ -272,18 +274,22 @@ def sms_done(msg, parts, user_id):
         msg.respond("Sorry, we can't find any repayments for you : (")
         return
 
+    default_currency = user_id.userdata.default_currency
+
+
     latest = PendingDeposit.objects.filter(user=user_id, confirmed=False).latest('time')
     res = _verify_buy(user_id, {'order_id': latest.order_id})
     if res['success']:
-        latest.confirmed = True
+        latest.user_confirmed = True
         try:
             latest.save()
         except Exception as e:
             msg.respond('There has been some type of error with marking your order "done": Error %s') % (str(e))
             return
+        # TODO:: currency exchange for SMS amt
 
-        message = "Congrats! Your PHP %s deposit is '%s'. We will notify you when when your repayment " \
-                  "has been received by %s." % (latest.amount, res['order']['status'].replace('_', ' ').title(), 'Mentors International')
+        message = "Congrats! Your PHP %s deposit is '%s'. We will notify you when your repayment " \
+                  "has been received by %s." % (format_sms_amounts(latest.amount), res['order']['status'].replace('_', ' ').title(), 'Mentors International')
         msg.respond(message)
     else:
         msg.respond('There has been some type of error with marking your order "done"')
@@ -296,3 +302,17 @@ def get_deposit_types(user_id):
     for i in _data['payin-outlet-categories']:
         data.append(i['name'])
     return data
+
+# def exchange_confirmed_checker():
+    # create a
+    # mfi_transaction = Transaction(sender=user,
+    #                               receiver=receiver,
+    #                               amount_btc=calc_fees['amount_btc'].amount,
+    #                               amount_local=calc_fees['total_sent_local'].amount,
+    #                               amount_local_currency=currency,
+    #                               sent_payment_id=mfi_data['id'],
+    #                               group=group)
+    # try:
+    #     mfi_transaction.save()
+    # except Exception as e:
+    #     return {'success': False, 'error': e}

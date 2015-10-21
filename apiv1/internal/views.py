@@ -487,7 +487,7 @@ def _get_home_screen(user, kwargs=''):
     balance = _get_balance(user)
     if not balance['success']:
         # Issue with coins.ph wallet
-        balance['balance'] = format_currency_display('USD', default_currency, 0)
+        balance['balance'] = format_currency_display(balance['currency'], default_currency, 0)
 
     next_repayment = _get_next_repayment(user)
     if not next_repayment['success']:
@@ -513,6 +513,7 @@ def _get_home_screen(user, kwargs=''):
         }
     else:
         response = {
+            'wallet': balance,
             'wallet_balance': balance['balance'],
             'loan_info': [],
             'next_repayment_info': next_repayment,
@@ -560,6 +561,9 @@ def _exchange_worker(user, data):
             }
         }
 
+def format_sms_amounts(number):
+    number = int(number)
+    return "{:,}".format(number)
 
 
 def _testing():
@@ -576,21 +580,53 @@ def _testing():
     # return update_coins_token()
 
     user_id = get_user_model().objects.get(username='test44')
-    response = _get_home_screen(user_id)
-    loan_total = round(response['consolidated']['loan_total'], 0)
-    wallet_balance = round(response['wallet']['_balance'], 0)
-    currency = response['wallet']['currency']
-    pending = round(response['wallet']['_pending'], 0)
-    next_payment_amount = round(response['next_repayment_info'].get('amount', -1), 0)
-    next_payment_date = response['next_repayment_info'].get('date', -1)
 
-    funny_response = ': )' if wallet_balance > 0 else ': ('
-    pending = '' if pending == 0 else 'and a pending balance of {}.'.format(pending)
-    loan_total = 'No loan out.' if loan_total == 0 else 'Loan balance: {}'.format(loan_total)
-    next_pay = 'Next payment of {} is due on {}'.format(next_payment_amount, next_payment_date) if next_payment_amount != -1 else ''
+    try:
+        group = VerifyGroup(group_id=1,
+                            total_payment=123456,
+                            created_by=user_id,
+                            currency=UserData.objects.get(user=user_id).default_currency,
+                            size=1)
+        group.save()
+    except Exception as e:
+        return {'success': False, 'error': "Try again - Couldn't save to group database: {}".format(e)}
+    return 'all good yo'
 
-    return ("You have %s %s available in your wallet %s %s\n%s\n%s" %
-                (currency, wallet_balance, funny_response, pending, loan_total, next_pay))
+
+    pending = PendingDeposit(123, user=user_id, order_id=123321)
+    try:
+        pending.save()
+    except Exception as e:
+        response = "We are sorry, there has been an error with your deposit. %s" % (str(e))
+        return response
+    return 'All good yo'
+
+
+    pending = PendingDeposit.objects.filter(user_confirmed=True, exchange_confirmed=False, expired=False)
+    for p in pending:
+        balance = _get_balance(p.user)
+        if not balance['success']:
+            continue
+
+        if balance['_balance'] > 0:
+            p.exchange_confirmed = True
+            res = _send({
+                "send_to": p.user.userdata.application,
+                "amount_local": balance['_balance'],
+                "send_method": "username"
+            })
+
+        if (p.time < datetime.datetime.now()-datetime.timedelta(days=1)) and p.exchange_confirmed is False:
+            p.expired = True
+
+        try:
+            p.save()
+        except Exception as e:
+            return {'success': False, 'error': e}
+
+
+
+
 
 
 

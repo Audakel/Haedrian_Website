@@ -43,7 +43,7 @@ def update_coins_token():
         # token.raise_for_status()
         if token.status_code == 200:
             logger.info('Updating wallet for: {}'.format(btc_wallet.user_id))
-	    token = token.json()
+            token = token.json()
             btc_wallet.expires_at = datetime.fromtimestamp(token['expires_at'])
             btc_wallet.access_token = token['access_token']
             btc_wallet.refresh_token = token['refresh_token']
@@ -138,8 +138,8 @@ def fetch_mfi_client(new_user):
     :return: {'success': True|False, 'message': message}
     """
 
-    if new_user['app'] != '':
-        res = mifosx_api("clients/?externalId={}".format(new_user['id']), app=new_user['app'])
+    if new_user['app'] == UserData.MENTORS:
+        res = mifosx_api("clients/?externalId={}".format(new_user['id']))
         if res['success']:
             userdata = UserData.objects.get(pk=new_user['pk'])
             if not res['response']['pageItems']:

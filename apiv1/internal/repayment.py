@@ -14,9 +14,16 @@ def _get_next_repayment(user, data=''):
 
     total_due = 0
     loan_repay_data = []
+    due = None
+    default_currency = user.userdata.default_currency
+    currency = default_currency
 
 
     for res in res['response']['pageItems']:
+        # skip inactive loans
+        if not res['status']['active']:
+            continue
+
         loan_id = res['id']
 
         response = mifosx_api(
@@ -27,12 +34,6 @@ def _get_next_repayment(user, data=''):
         )
         res = response['response']
         periods = res['repaymentSchedule']['periods']
-
-        due = None
-        default_currency = user.userdata.default_currency
-        currency = default_currency
-
-
 
         for i, period in enumerate(periods):
             if i == 0:
@@ -51,12 +52,6 @@ def _get_next_repayment(user, data=''):
             'payment_amount': Money(amount=period['totalDueForPeriod'], currency=res['currency']['code']),
         })
 
-
-
-    # period = res['periods'][what_repayment_number]
-    # due = period['dueDate']
-    # currency = res['currency']['code']
-    # default_currency = user.userdata.default_currency
 
     return {
         'success': True,

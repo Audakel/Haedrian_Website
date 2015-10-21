@@ -1,7 +1,5 @@
-from django.db import models
-from django.contrib.auth.models import User
-from datetime import datetime
 from django.conf import settings
+from django.db import models
 
 
 # Create your models here.
@@ -26,8 +24,13 @@ class Depositor(models.Model):
     long_name = models.CharField(max_length=40)
 
 class PendingDeposit(models.Model):
-    time = models.DateTimeField(default=datetime.now)
+    # time = models.DateTimeField(default=datetime.now)
+    time = models.DateTimeField(auto_now_add=True)
     order_id = models.CharField(max_length=60)
-    confirmed = models.BooleanField(default=False)
+    user_confirmed = models.BooleanField(default=False)
+    exchange_confirmed = models.BooleanField(default=False)
+    expired = models.BooleanField(default=False)
     amount = models.DecimalField(max_digits=30, decimal_places=8)
+    currency = models.CharField(max_length=3, default='PHP')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
+

@@ -24,7 +24,8 @@ def mifosx_loan(user):
 
         for l in loan:
             if not l['status']['active']:
-                return {'success': False, 'error': 'Loan not active - {}'.format(l['status']['value'])}
+                # return {'success': False, 'error': 'Loan not active - {}'.format(l['status']['value'])}
+                continue
 
             # Get main display numbers for home screen
             currency = l['currency'].get('code', missing)

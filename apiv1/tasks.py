@@ -16,7 +16,7 @@ from apiv1.external.mifosx import mifosx_api
 from haedrian.models import UserData, Transaction, Wallet
 from apiv1.models import VerifyPerson, VerifyGroup
 from Haedrian_Website.celery import app
-from apiv1.internal.views_tasks import _get_history, repay_outstanding_loan
+from apiv1.internal.views_tasks import _get_history, repay_outstanding_loan, _get_transfer_history
 
 
 @app.task
@@ -67,67 +67,73 @@ def verify_send_que():
     # TODO:: Redo code duplication below and maybe create transaction somewhere else?
     transactions = Transaction.objects.filter(mifos_confirmed=False)
     for transaction in transactions:
-        history = _get_history(transaction.sender, {'id': transaction.sent_payment_id}, filter_transactions=False)
+        history = _get_transfer_history(transaction.sender, transaction.sent_payment_id)
 
-        if history['success'] and history['transactions'][0]['status'] == 'success':
-            transaction.payment_confirmed = True
-            transaction.save()
+        if not (history['success'] and history['transfer']['status'] == 'success'):
+            continue
 
-            if not transaction.type == Transaction.FEE:
-                if transaction.group:
-                    group = transaction.group
+        transaction.payment_confirmed = True
+        transaction.save()
 
-                    members = VerifyPerson.objects.filter(group_id=group)
-                    for member in members:
-                        calc_fees = calculate_fees(transaction.amount_local_currency, member.amount)
+        if transaction.type == Transaction.FEE:
+            continue
 
-                        # TODO:: FIX receiver from being hardcoded
-                        mfi_transaction = Transaction(sender=UserData.objects.get(app_id=member.mifos_id).user,
-                                                      receiver=get_user_model().objects.get(username='mentors_international'),
-                                                      amount_btc=calc_fees['amount_btc'].amount,
-                                                      amount_local=member.amount,
-                                                      amount_local_currency=transaction.amount_local_currency,
-                                                      sent_payment_id=transaction.sent_payment_id,
-                                                      group=group)
-                        try:
-                            mfi_transaction.save()
-                        except Exception as e:
-                            return {'success': False, 'error': str(e)}
+        if transaction.group:
+            group = transaction.group
 
-                        repay_outstanding_loan({
-                            'clientId': member.mifos_id,
-                            'transactionId': mfi_transaction.id
-                        })
+            members = VerifyPerson.objects.filter(group_id=group)
+            for member in members:
+                calc_fees = calculate_fees(transaction.amount_local_currency, member.amount)
 
-                    VerifyGroup.objects.filter(id=group.id).update(send_confirmed=True)
+                # TODO:: FIX receiver from being hardcoded
+                mfi_transaction = Transaction(sender=UserData.objects.get(app_id=member.mifos_id).user,
+                                              receiver=get_user_model().objects.get(username='mentors_international'),
+                                              amount_btc=calc_fees['amount_btc'].amount,
+                                              amount_local=member.amount,
+                                              amount_local_currency=transaction.amount_local_currency,
+                                              sent_payment_id=transaction.sent_payment_id,
+                                              group=group)
+                try:
+                    mfi_transaction.save()
+                except Exception as e:
+                    return {'success': False, 'error': str(e)}
 
-                else:
-                    userdata = UserData.objects.filter(user=transaction.sender)[0]
-                    try:
-                        verify_group = VerifyGroup(size=1,
-                                                   buy_order_id=transaction.sent_payment_id,
-                                                   buy_confirmed=True,
-                                                   total_payment=history['transactions'][0]['amount'],
-                                                   currency=userdata.default_currency,
-                                                   created_by=userdata.user)
+                repay_outstanding_loan({
+                    'clientId': member.mifos_id,
+                    'transactionId': mfi_transaction.id
+                })
 
-                        verify_group.save()
-                        verify_person = VerifyPerson(group=verify_group,
-                                                     mifos_id=userdata.app_id,
-                                                     phone=userdata.phone,
-                                                     amount=history['transactions'][0]['amount'])
-                        verify_person.save()
-                    except Exception as e:
-                        return {'success': False, 'error': str(e)}
+            VerifyGroup.objects.filter(id=group.id).update(send_confirmed=True)
 
-                    group = verify_group
-                    members = VerifyPerson.objects.filter(group_id=group)
-                    for member in members:
-                        repay_outstanding_loan({
-                            'clientId': member.mifos_id,
-                            'transactionId': transaction.id
-                        })
-                    VerifyGroup.objects.filter(id=group.id).update(send_confirmed=True)
+        else:
+            userdata = UserData.objects.filter(user=transaction.sender)[0]
+            try:
+                verify_group = VerifyGroup(size=1,
+                                           buy_order_id=transaction.sent_payment_id,
+                                           buy_confirmed=True,
+                                           total_payment=history['transfer']['amount'],
+                                           currency=history['transfer']['currency'],
+                                           created_by=userdata.user)
+
+                verify_group.save()
+                verify_person = VerifyPerson(group=verify_group,
+                                             mifos_id=userdata.app_id,
+                                             phone=userdata.phone,
+                                             amount=history['transfer']['amount'])
+                verify_person.save()
+            except Exception as e:
+                return {'success': False, 'error': str(e)}
+
+            group = verify_group
+            members = VerifyPerson.objects.filter(group_id=group)
+            for member in members:
+                rol = repay_outstanding_loan({
+                    'clientId': member.mifos_id,
+                    'transactionId': transaction.id
+                })
+                # rol['message'] = 'amt: {}{}'.format(transaction.amount_local_currency, transaction.amount_local)
+                # print(rol)
+            VerifyGroup.objects.filter(id=group.id).update(send_confirmed=True)
 
 
 @shared_task
@@ -255,39 +261,33 @@ def email_confirm_bot(username=settings.GMAIL_USER, password=settings.GMAIL_PASS
     m = imaplib.IMAP4_SSL("imap.gmail.com", 993)
     m.login(username, password)
 
-    mailbox = m.select('Email Confirm- Coins')
-    # Use search(), not status()
-    status, data = m.search('Email Confirm- Coins', '(UNSEEN)')#('INBOX', '(UNSEEN)')
-    unread_msg_nums = data[0].split()
-
-    # Print the count of all unread messages
+    m.select('Coins - Email Confirm')
+    status, data = m.search(None, '(UNSEEN)', '(FROM "%s")' % (sender_of_interest))
+    unread_msg_nums = data[0].split(' ')
     print 'Unread messages :' + str(len(unread_msg_nums))
 
-    # Print all unread messages from a certain sender of interest
-    status, data = m.search(None, '(UNSEEN)', '(FROM "%s")' % (sender_of_interest))
-
     if status != 'OK':
-        print "No new messages found!"
+        print 'Status is not OK'
         return
 
     for num in reversed(data[0].split()):
         rv, data = m.fetch(num, '(RFC822)')
         if rv != 'OK':
             print "ERROR getting message", num
-            return
+            continue
         email_message = email.message_from_string(data[0][1])
         if email.utils.parseaddr(email_message['From'])[0] == sender_of_interest:
             if email_message.is_multipart():
                 print 'email is multi_part'
                 for payload in email_message.get_payload():
                     parsed_result = url_pattern.findall(payload.get_payload(decode=True))
-                    correct_url = parsed_result.replace("&amp;","&")
+                    correct_url = parsed_result.replace("&amp;", "&")
                     if not parsed_result:
                         print 'No match found for partern: {}'.format("(https://coins.ph/settings/confirm\?.*haedrian.io)")
                     else:
-                        req = requests.request('GET', correct_url)
-                        break
+                        print 'Getting: {}'.format(correct_url)
+                        requests.request('GET', correct_url)
             else:
-                parsed_result  = url_pattern.findall(email_message.get_payload(decode=True))[0]
-                correct_url = parsed_result.replace("&amp;","&")
-                req = requests.request('GET',correct_url)
+                parsed_result = url_pattern.findall(email_message.get_payload(decode=True))[0]
+                correct_url = parsed_result.replace("&amp;", "&")
+                requests.request('GET', correct_url)

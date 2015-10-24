@@ -150,4 +150,12 @@ def _pay_back(trans, loan, amount):
         "paymentTypeId": "1",
         "note": "Payment through Haedrian Labs",
     }
-    return mifosx_api('loans/{}/transactions'.format(loan['loan_id']), params={'command': 'repayment'}, body=json.dumps(body), method='POST')
+    return mifosx_api(endpoint='loans/{}/transactions'.format(loan['loan_id']), user=trans.sender, method='POST', params={'command': 'repayment'}, body=json.dumps(body))
+
+
+def _get_transfer_history(user, id=''):
+    wallet = get_temp_wallet(user)
+    data = wallet.get_transfer_history(id)
+    if data['success']:
+        pass
+    return data

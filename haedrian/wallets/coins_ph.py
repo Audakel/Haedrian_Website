@@ -1,3 +1,4 @@
+import decimal
 import re
 from decimal import Decimal, ROUND_DOWN
 import urlparse
@@ -306,6 +307,18 @@ class CoinsPhWallet(BaseWallet):
         else:
             return data
 
+    def get_transfer_history(self, id):
+        endpoint = '/api/v3/transfers/'
+        url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
+        url = url + id if id else url
+
+        data = make_oauth_request(url, self.user)
+        if data['success']:
+            # _data = data.get('transfers', '')
+            # if _data:
+            data['transfer']['currency'] = 'PHP' if data['transfer']['currency'] == 'PBTC' else data['transfer']['currency']
+            return data
+
 
     def get_history(self, kwargs):
         endpoint = '/api/v3/crypto-payments/'
@@ -355,7 +368,7 @@ class CoinsPhWallet(BaseWallet):
         else:
             return data
 
-    def get_wallet_info(self, kwargs):
+    def get_wallet_info(self):
         endpoint = '/api/v3/crypto-accounts/'
         url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
         wallet_number = get_correct_wallet_number()
@@ -388,15 +401,17 @@ class CoinsPhWallet(BaseWallet):
 
 
     def send(self, receiver, currency, amount_btc, amount_local, target_address):
-        endpoint = '/api/v3/crypto-payments/'
+        endpoint = '/api/v3/transfers/'
         url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
 
-        user_wallet = Wallet.objects.get(user_id=self.user, currency='BTC')
+        user_wallet = Wallet.objects.get(user_id=self.user, currency=settings.COINS_WALLET_TYPE)
+        amt_php = int(Convert(decimal.Decimal(amount_local), currency).to('PHP').amount)
         body = {
             # 'amount': amount_local,
             # https://en.wikipedia.org/wiki/Rounding#Round_half_down
             # TODO:: Need to look at what the best rounding option is
-            'amount': amount_btc.quantize(Decimal('.00000001'), rounding=ROUND_DOWN),
+            # TODO:: Fix hard code PHP
+            'amount': amt_php,
             'account': user_wallet.provider_wallet_id,
             'target_address': target_address
         }
@@ -404,11 +419,11 @@ class CoinsPhWallet(BaseWallet):
         _data = make_oauth_request(url, self.user, json.dumps(body))
 
         if _data['success']:
-            if _data["crypto-payment"]['status'] == 'pending':
-                _data = _data["crypto-payment"]
+            if _data["transfer"]['status'] == 'pending':
+                _data = _data["transfer"]
                 data = {
                     "status": _data['status'],
-                    "fee": _data['fee_amount'],
+                    "fee": _data.get('fee_amount', 0),
                     "target": _data['target_address'],
                     "amount": _data['amount'],
                     "currency": user_wallet.currency,
@@ -436,6 +451,7 @@ class CoinsPhWallet(BaseWallet):
                 "currency": _data['currency'],
                 "success": True
             }
+            data['currency'] = 'PHP' if data['currency'] == 'PBTC' else data['currency']
             return data
         else:
             balance['error'] = balance['error']
@@ -458,10 +474,10 @@ class CoinsPhWallet(BaseWallet):
         url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
 
         _data = make_oauth_request(url, self.user)
-        # data = {
-        #     "default_address": _data['default_address'],
-        #     "currency": currency[0]
-        # }
+        if _data['success']:
+            _data = _data['crypto-routes'][0]
+            _data['success'] = True
+
         return _data
 
 
@@ -552,6 +568,21 @@ class CoinsPhWallet(BaseWallet):
         else:
             return _data
 
+
+    def get_extra_wallet_info(self):
+        endpoint = '/api/v3/crypto-accounts/'
+        url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
+        data_btc = make_oauth_request(url, self.user)['crypto-accounts']
+        data_php = self.get_crypto_routes()
+        data = {
+            'blockchain_address_btc': data_btc[0]['default_address'],
+            'provider_wallet_id_btc': data_btc[0]['id'],
+            'blockchain_address_php': data_php['monitored_address'],
+            'provider_wallet_id_php': data_php['id']
+        }
+        return data
+
+
     def create_wallet(self, user, data):
         endpoint = '/api/v2/user'
         url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
@@ -595,9 +626,10 @@ class CoinsPhWallet(BaseWallet):
                     'success': False
                 }
             # TODO:: Check for false on get address
-            additional_params = get_extra_wallet_info(user)
+            additional_params = self.get_extra_wallet_info()
             wallet.blockchain_address = additional_params['blockchain_address_btc']
             wallet.provider_wallet_id = additional_params['provider_wallet_id_btc']
+
             wallet2.blockchain_address = additional_params['blockchain_address_php']
             wallet2.provider_wallet_id = additional_params['provider_wallet_id_php']
             try:
@@ -634,17 +666,7 @@ def get_correct_wallet_number():
 
 
 # TODO:: fix this internal rewrite
-def get_extra_wallet_info(user):
-    endpoint = '/api/v3/crypto-accounts/'
-    url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
-    _data = make_oauth_request(url, user)['crypto-accounts']
-    data = {
-        'blockchain_address_btc': _data[0]['default_address'],
-        'provider_wallet_id_btc': _data[0]['id'],
-        'blockchain_address_php': _data[2]['default_address'],
-        'provider_wallet_id_php': _data[2]['id']
-    }
-    return data
+
 
 
 def make_oauth_request(url, user, body={}, put=False, headers="", content_type=True, get_params={}):
@@ -690,9 +712,9 @@ def make_oauth_request(url, user, body={}, put=False, headers="", content_type=T
             'error': response.reason
         }
     try:
-    	result = response.json()
+        result = response.json()
     except:
-	return {'success': False, error:'no json'}
+        return {'success': False, 'error':'no json'}
     
     if response.ok and (response.status_code == 200 or response.status_code == 201):
         result['success'] = True

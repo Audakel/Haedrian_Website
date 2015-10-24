@@ -15,6 +15,7 @@ def format_currency_display(in_currency, out_currency, amount, for_sms=False):
 
 
     in_currency = "PHP" if in_currency == "PBTC" else in_currency
+    out_currency = "PHP" if out_currency == "PBTC" else out_currency
 
     convert_data = CurrencySerializer(data={
         'in_currency': in_currency,

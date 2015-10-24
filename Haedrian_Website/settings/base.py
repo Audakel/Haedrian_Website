@@ -70,6 +70,7 @@ WSGI_APPLICATION = 'Haedrian_Website.wsgi.application'
 
 INSTALLED_APPS = (
     # django builtin
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

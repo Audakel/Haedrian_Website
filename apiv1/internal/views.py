@@ -1,10 +1,7 @@
 import decimal
 import datetime
 import copy
-from django.utils import timezone
-from django.core.serializers import json
 import random
-import urlparse
 
 from rest_framework.exceptions import ParseError
 from django.core.exceptions import ObjectDoesNotExist
@@ -16,21 +13,18 @@ from rest_framework.authtoken.models import Token
 import requests
 from rapidsms.router import send, lookup_connections
 from money import Money as Convert
-from apiv1.email_confirm_bot import confirm_emails
 
 from apiv1.internal.repayment import _get_next_repayment
-
 from apiv1.internal.utils import format_currency_display, calculate_fees
-from apiv1.internal.views_tasks import get_temp_wallet, repay_outstanding_loan
+from apiv1.internal.views_tasks import get_temp_wallet
 from apiv1.serializers import SendSerializer, ExchangeWorkerSerializer
 from haedrian.forms import NewUserForm, EmailUserForm
 from haedrian.models import UserData, Transaction, Wallet
 from apiv1.models import VerifyGroup, VerifyPerson
 from haedrian.views import _create_account
-from haedrian.wallets.coins_ph import CoinsPhWallet, make_oauth_request
-from apiv1.tasks import get_group_members, verify_send_que, update_coins_token
+from haedrian.wallets.coins_ph import CoinsPhWallet
+from apiv1.tasks import get_group_members, verify_send_que
 from apiv1.external.mifosx import mifosx_loan
-from sms.models import PendingDeposit
 
 
 __author__ = 'audakel'
@@ -158,7 +152,7 @@ def _send(user, kwargs):
     else:
         return {"success": False, "error": 'Please choose a user to send to'}
 
-    currency = user.userdata.default_currency
+    currency = send_data.data['currency']
     calc_fees = calculate_fees(currency, send_data.data['amount_local'])
 
     # TODO:: put logic in to find bitcoin address from coins.ph
@@ -176,12 +170,11 @@ def _send(user, kwargs):
 
     group_id = kwargs.get('payment_id', None)
     group = VerifyGroup.objects.get(id=group_id) if group_id else None
-
     mfi_transaction = Transaction(sender=user,
                                   receiver=receiver,
                                   amount_btc=calc_fees['amount_btc'].amount,
                                   amount_local=calc_fees['total_sent_local'].amount,
-                                  amount_local_currency=currency,
+                                  amount_local_currency=mfi_data['currency'],
                                   sent_payment_id=mfi_data['id'],
                                   group=group)
     try:
@@ -217,14 +210,14 @@ def _send(user, kwargs):
     #     except Exception as e:
     #         return {'success': False, 'error': e}
 
-    currency = mfi_data['currency']
+
 
     return {
         "status": mfi_data['status'],
         "fee": format_currency_display(currency, currency, mfi_data['fee']),
         "target": mfi_data['target'],
         "success": mfi_data['success'],
-        "currency": currency,
+        "currency": mfi_data['currency'],
         "amount": format_currency_display(currency, currency, mfi_data['amount']),
         "id": mfi_data['id'],
         'haedrian_fee': not calc_fees['amount_too_small']
@@ -263,9 +256,13 @@ def _get_balance(user, kwargs=''):
     wallet = get_temp_wallet(user)
     data = wallet.get_balance(kwargs)
     if data['success']:
+        data['currency'] = 'PHP' if data['currency'] == 'PBTC' else data['currency']
+        _bal = decimal.Decimal(data['balance'])
+        _bal = _bal.quantize(decimal.Decimal(".01"))
         default_currency = user.userdata.default_currency
-        data['_balance'] = decimal.Decimal(data['balance'])
-        data['balance'] = format_currency_display(data['currency'], default_currency, data['balance'])
+        data['_balance'] = _bal
+        data['_currency'] = data['currency']
+        data['balance'] = format_currency_display(data['currency'], default_currency, data['_balance'])
         data['_pending'] = decimal.Decimal(data['pending_balance'])
         data['pending_balance'] = format_currency_display(data['currency'], default_currency, data['pending_balance'])
         data['currency'] = default_currency
@@ -274,7 +271,7 @@ def _get_balance(user, kwargs=''):
 
 
 
-def _get_wallet_info(user, kwargs):
+def _get_wallet_info(user):
     """
     id - Unique identifier for the account.
     name - Descriptive name for the account.
@@ -284,13 +281,13 @@ def _get_wallet_info(user, kwargs):
     default_address - The default address used when the account is specified as a recipient.
     """
     wallet = get_temp_wallet(user)
-    data = wallet.get_wallet_info(kwargs)
+    data = wallet.get_wallet_info()
     if data['success']:
         default_currency = user.userdata.default_currency
         _data = data['wallets']
         data = {
             # Not nessarly bitcoin - can be either bitcoin or PHP depending on user preference
-            'bitcoin': {
+            _data['currency']: {
                 "name": _data["name"],
                 "total_received": format_currency_display(_data['currency'], default_currency,
                                                           _data["total_received"]),
@@ -299,7 +296,8 @@ def _get_wallet_info(user, kwargs):
                 "id": _data["id"],
                 "pending_balance": format_currency_display(_data['currency'], default_currency,
                                                            _data["pending_balance"]),
-                "btc_balance": format_currency_display(_data['currency'], 'BTC', _data["balance"]),
+                "btc_view": format_currency_display(_data['currency'], 'BTC', _data["balance"]),
+                "{}_view".format(_data['currency']).lower(): format_currency_display(_data['currency'], _data['currency'], _data["balance"]),
                 "currency": default_currency
             }
         }
@@ -339,6 +337,10 @@ def _verify_buy(user, kwargs):
         return data
     except Exception as e:
         return {'success': False, 'error': e}
+
+
+
+
 
 
 def _get_buy_history(user, kwargs):
@@ -568,9 +570,6 @@ def format_sms_amounts(number):
 
 
 def _testing():
-    # from apiv1.email_confirm_bot import email_confirm_bot
-    # return email_confirm_bot()
-
     # endpoint = '/api/v3/crypto-routes/'
     # url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
     #
@@ -578,38 +577,25 @@ def _testing():
     # php_address = _data['monitored_address']
     # return _data
 
-    # return update_coins_token()
+    user_id = get_user_model().objects.get(username='create_test')
+    # return _get_transfer_history(user_id)
+    # return verify_send_que()
 
-    user_id = get_user_model().objects.get(username='test44')
 
-    pending = PendingDeposit.objects.filter()
-    for p in pending:
-        p.time = timezone.now()-datetime.timedelta(hours=random.randint(1, 72))
-        p.save()
+    wallet = get_temp_wallet(user_id)
+    data = wallet.get_extra_wallet_info()
+    return data
 
-    pending = PendingDeposit.objects.filter(user_confirmed=True, exchange_confirmed=False, expired=False)
-    for p in pending:
-        balance = _get_balance(p.user)
-        if not balance['success']:
-            continue
+    # a = _get_wallet_info(user_id)
+    # user_id = get_user_model().objects.get(username='test')
+    # b = _get_wallet_info(user_id)
+    # return (a, b)
 
-        if balance['_balance'] > 0:
-            p.exchange_confirmed = True
-            res = _send({
-                "send_to": p.user.userdata.application,
-                "amount_local": balance['_balance'],
-                "send_method": "username"
-            })
+    # from apiv1.tasks import email_confirm_bot
+    # email_confirm_bot()
 
-        # Older than a day
-        if (p.time < timezone.now()-datetime.timedelta(days=1)) and p.exchange_confirmed is False:
-            here=1
-            p.expired = True
-
-        try:
-            p.save()
-        except Exception as e:
-            return {'success': False, 'error': e}
+    # from sms.tasks import exchange_confirmed_checker
+    # exchange_confirmed_checker()
 
 
 

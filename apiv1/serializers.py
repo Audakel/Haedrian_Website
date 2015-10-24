@@ -19,6 +19,7 @@ class SendSerializer(serializers.Serializer):
 
     send_method = serializers.ChoiceField(choices=METHODS)
     send_to = serializers.CharField()
+    currency = serializers.CharField(max_length=3, min_length=3)
     note = serializers.CharField(required=False, default="", allow_blank=True)
     amount_local = serializers.DecimalField(max_digits=32, decimal_places=16)
     payment_id = serializers.IntegerField(required=False)

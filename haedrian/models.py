@@ -68,6 +68,8 @@ class Wallet(models.Model):
     currency = models.CharField(max_length=6, choices=CURRENCY, default=BITCOIN)
     blockchain_address = models.CharField(max_length=80, default="")
     expires_at = models.DateTimeField(default=datetime.fromtimestamp(0))
+    def __str__(self):
+        return "{}'s {} wallet".format(self.user.username, self.currency)
 
 
 class Transaction(models.Model):

@@ -104,7 +104,7 @@ def mifosx_api(endpoint, user='', app='', method='GET', params={}, body=None, to
                 'error': "Please select an MFI institution to connect to the db",
                 'success': False
             }
-
+    '''You can put in either a user or app id'''
     if user != '':
         if UserData.objects.get(user=user).application:
             base_url = settings.MIFOSX_SERVER_URL.format(UserData.objects.get(user=user).application)

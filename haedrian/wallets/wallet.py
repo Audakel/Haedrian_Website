@@ -38,6 +38,11 @@ class BaseWallet(object):
         pass
 
     @abstractmethod
+    def get_transfer_history(self):
+        """Return transaction history for this wallet"""
+        pass
+
+    @abstractmethod
     def get_history(self):
         """Return transaction history for this wallet"""
         pass
@@ -47,6 +52,7 @@ class BaseWallet(object):
         """Make a new node on wallet provider backend"""
 
         pass
+
 
     @abstractmethod
     def get_wallet_info(self):

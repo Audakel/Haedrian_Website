@@ -13,16 +13,21 @@ def exchange_confirmed_checker():
         if not balance['success']:
             continue
 
-        if balance['_balance'] > 0:
-            p.exchange_confirmed = True
-            res = _send({
+        if balance['_balance'] >= p.amount:
+            res = _send(p.user, {
                 "send_to": p.user.userdata.application,
-                "amount_local": balance['_balance'],
+                "amount_local": p.amount,
+                'currency': p.currency,
                 "send_method": "username"
             })
 
+            if res['success']:
+                p.exchange_confirmed = True
+        else:
+            return {'success': False, 'error': 'Not enough funds. Trying to send {}, but you only have {} : ('.format(
+                p['amount'], balance['_balance'])}
         # Older than a day
-        if (p.time < timezone.now()-datetime.timedelta(days=1)) and p.exchange_confirmed is False:
+        if (p.time < timezone.now()-datetime.timedelta(days=3)) and p.exchange_confirmed is False:
             p.expired = True
 
         try:

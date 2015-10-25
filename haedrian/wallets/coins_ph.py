@@ -578,7 +578,7 @@ class CoinsPhWallet(BaseWallet):
             'blockchain_address_btc': data_btc[0]['default_address'],
             'provider_wallet_id_btc': data_btc[0]['id'],
             'blockchain_address_php': data_php['monitored_address'],
-            'provider_wallet_id_php': data_php['id']
+            'provider_wallet_id_php': data_btc[2]['id']
         }
         return data
 

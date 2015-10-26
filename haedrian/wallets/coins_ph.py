@@ -317,7 +317,7 @@ class CoinsPhWallet(BaseWallet):
             # _data = data.get('transfers', '')
             # if _data:
             data['transfer']['currency'] = 'PHP' if data['transfer']['currency'] == 'PBTC' else data['transfer']['currency']
-            return data
+        return data
 
 
     def get_history(self, kwargs):

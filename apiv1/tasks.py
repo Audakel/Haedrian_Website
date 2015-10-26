@@ -66,6 +66,9 @@ def update_coins_token():
 def verify_send_que():
     # TODO:: Redo code duplication below and maybe create transaction somewhere else?
     transactions = Transaction.objects.filter(mifos_confirmed=False)
+    if not transactions:
+        return
+
     for transaction in transactions:
         history = _get_transfer_history(transaction.sender, transaction.sent_payment_id)
 

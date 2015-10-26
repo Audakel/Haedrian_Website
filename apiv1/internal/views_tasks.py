@@ -156,6 +156,6 @@ def _pay_back(trans, loan, amount):
 def _get_transfer_history(user, id=''):
     wallet = get_temp_wallet(user)
     data = wallet.get_transfer_history(id)
-    if data['success']:
-        pass
+    # if data['success']:
+    #     pass
     return data

@@ -89,6 +89,7 @@ def verify_send_que():
                 calc_fees = calculate_fees(transaction.amount_local_currency, member.amount)
 
                 # TODO:: FIX receiver from being hardcoded
+                # TODO:: Sender is only looking at the app_id - needs to be also at application
                 mfi_transaction = Transaction(sender=UserData.objects.get(app_id=member.mifos_id).user,
                                               receiver=get_user_model().objects.get(username='mentors_international'),
                                               amount_btc=calc_fees['amount_btc'].amount,

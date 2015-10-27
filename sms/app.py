@@ -270,14 +270,14 @@ def sms_repay(msg, parts, user_id):
     #
 
 def sms_done(msg, parts, user_id):
-    if not PendingDeposit.objects.filter(user=user_id, confirmed=False).exists():
+    if not PendingDeposit.objects.filter(user=user_id, user_confirmed=False).exists():
         msg.respond("Sorry, we can't find any repayments for you : (")
         return
 
     default_currency = user_id.userdata.default_currency
 
 
-    latest = PendingDeposit.objects.filter(user=user_id, confirmed=False).latest('time')
+    latest = PendingDeposit.objects.filter(user=user_id, user_confirmed=False).latest('time')
     res = _verify_buy(user_id, {'order_id': latest.order_id})
     if res['success']:
         latest.user_confirmed = True

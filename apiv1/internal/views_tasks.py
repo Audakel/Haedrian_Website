@@ -100,7 +100,7 @@ def repay_outstanding_loan(_json):
 
     # user = UserData.objects.get(app_interal_id=id)
     trans = Transaction.objects.get(id=tr)
-    loan_schedule = _get_next_repayment(get_user_model().objects.get(id=UserData.objects.get(app_id=id).user_id))
+    loan_schedule = _get_next_repayment(Transaction.objects.get(id=tr).sender_id)
     # TODO:: Fix all the currency changing
 
     if loan_schedule['success']:

@@ -578,6 +578,13 @@ def _testing():
     # return _data
 
     user_id = get_user_model().objects.get(username='create_test')
+
+    tr = 70
+
+    trans = Transaction.objects.get(id=tr)
+    print 'amt:{}'.format(trans.amount_local)
+    loan_schedule = _get_next_repayment(get_user_model().objects.get(id=trans.sender_id))
+    return loan_schedule
     # return _get_transfer_history(user_id)
     # return verify_send_que()
 

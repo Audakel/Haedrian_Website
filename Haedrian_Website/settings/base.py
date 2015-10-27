@@ -69,8 +69,13 @@ ROOT_URLCONF = 'Haedrian_Website.urls'
 WSGI_APPLICATION = 'Haedrian_Website.wsgi.application'
 
 INSTALLED_APPS = (
+    # Admin tools dashboard
+    'admin_tools',
+    'admin_tools.theming',
+    'admin_tools.menu',
+    'admin_tools.dashboard',
+    'django.contrib.sites',
     # django builtin
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -214,7 +219,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERYBEAT_SCHEDULE = {
     'check-verify-send-que': {
         'task': 'apiv1.tasks.verify_send_que',
-        'schedule': timedelta(minutes=1),
+        'schedule': timedelta(hours=1),
     },
     'update-exchange-rates': {
         'task': 'haedrian.tasks.fetch_exchange_rates',
@@ -230,8 +235,8 @@ CELERYBEAT_SCHEDULE = {
     },
     'exchange-confirmed-checker': {
         'task': 'sms.tasks.exchange_confirmed_checker',
-        'schedule': timedelta(minutes=2),
-        # 'schedule': timedelta(hours=2),
+        # 'schedule': timedelta(minutes=2),
+        'schedule': timedelta(hours=2),
     },
 
 }

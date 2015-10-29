@@ -20,6 +20,7 @@ class UserData(models.Model):
     credit_score = models.IntegerField(max_length=4, default=0)
     country = CountryField(blank_label='(Country)')
     default_currency = models.CharField(max_length=4, default='USD')
+    sms_deposit_location = models.CharField(max_length=30, null=True)
     app_id = models.CharField(max_length=50, blank=True, default=None, null=True)
     # MENTORS = 'MENTORS'
     # APPLICATIONS = (

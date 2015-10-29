@@ -434,7 +434,7 @@ class CoinsPhWallet(BaseWallet):
         else:
             return _data
 
-    def get_balance(self, kwargs):
+    def get_balance(self):
         # TODO:: fix hard code
         endpoint = '/api/v3/crypto-accounts/'
         url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
@@ -532,7 +532,7 @@ class CoinsPhWallet(BaseWallet):
             return outlet_fees
         return data
 
-    def get_exchange_types(self, data=''):
+    def get_exchange_types(self):
         endpoint = '/d/api/payin-outlet-categories/'
         url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
         _data = make_oauth_request(url, self.user)

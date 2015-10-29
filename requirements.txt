@@ -1,5 +1,5 @@
 pillow
-django==1.7.8
+django==1.8.*
 requests
 Celery
 # It'd be nice to consolidate these, but till then this is how each is used
@@ -38,4 +38,14 @@ git+https://github.com/Audakel/rapidsms-telerivet.git
 django-kombu
 simplejson
 babel
+# Dashboard stuff
 django-admin-tools
+django-admin-tools-stats
+python-dateutil >= 1.5
+django-cache-utils
+django-jsonfield >= 0.6
+django-nvd3 >= 0.5.0
+python-memcached >= 1.47
+django-qsstats-magic >= 0.6.1
+django-chart-tools >= 0.2.1
+django-admin-user-stats

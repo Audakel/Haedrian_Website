@@ -71,7 +71,7 @@ def _new_user(kwargs):
                 raise ParseError(detail="Currency could not be updated to match the locale")
             return {
                 "success": True,
-                "token": token.key,
+                "token": token.key
             }
         else:
             get_user_model().objects.get(username=kwargs['username']).delete()
@@ -111,9 +111,9 @@ def _get_exchange_fees(user, kwargs):
         return "#fail " + e
 
 
-def _get_exchange_types(user, kwargs):
+def _get_exchange_types(user):
     wallet = get_temp_wallet(user)
-    data = wallet.get_exchange_types(kwargs)
+    data = wallet.get_exchange_types()
     if data['success']:
         return {
             'success': True,
@@ -252,9 +252,9 @@ def _get_pending_balance(user, kwargs):
         return False
 
 
-def _get_balance(user, kwargs=''):
+def _get_balance(user):
     wallet = get_temp_wallet(user)
-    data = wallet.get_balance(kwargs)
+    data = wallet.get_balance()
     if data['success']:
         data['currency'] = 'PHP' if data['currency'] == 'PBTC' else data['currency']
         _bal = decimal.Decimal(data['balance'])
@@ -577,21 +577,44 @@ def _testing():
     # php_address = _data['monitored_address']
     # return _data
 
-    user_id = get_user_model().objects.get(username='create_test')
+    # username = get_user_model().objects.get(username='create_test')
+    username = 'railgun'
+    from sms.app import sms_location,get_deposit_types,sms_repay
+    responses = []
 
-    tr = 70
+    potnetials = get_deposit_types(get_user_model().objects.get(username=username))
+    size = len(potnetials)
+    print 'size: {}'.format(size)
+    print 'potnetials: {}'.format(potnetials)
+    for i in range(0, size):
+        user = get_user_model().objects.get(username=username)
+        print 'potnetials: {}'.format(potnetials)
+        print 'number: {}'.format(i)
+        x=sms_location('f', ['location', i], user)
+        print('location: {}'.format(x))
+        ud = UserData.objects.get(user=user)
+        db=ud.sms_deposit_location
+        place= get_deposit_types(user, i)
+        instructions=  sms_repay('r', ['repay', '20'], user)
+        print 'place: {}'.format(place)
+        print 'db: {}'.format(db)
+        print instructions
+        res = {
+            'place': place,
+            'db': db,
+            'instructions': instructions
+        }
+        responses.append(res)
+        print 'xxxx-----'
+    return responses
 
-    trans = Transaction.objects.get(id=tr)
-    print 'amt:{}'.format(trans.amount_local)
-    loan_schedule = _get_next_repayment(get_user_model().objects.get(id=trans.sender_id))
-    return loan_schedule
     # return _get_transfer_history(user_id)
     # return verify_send_que()
 
 
-    wallet = get_temp_wallet(user_id)
-    data = wallet.get_extra_wallet_info()
-    return data
+    # wallet = get_temp_wallet(user_id)
+    # data = wallet.get_extra_wallet_info()
+    # return data
 
     # a = _get_wallet_info(user_id)
     # user_id = get_user_model().objects.get(username='test')

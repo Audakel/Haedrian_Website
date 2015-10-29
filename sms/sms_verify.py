@@ -84,6 +84,15 @@ def sms_create_user(username, msg):
         # "application": kwargs.get("application", None),
         # "app_id": kwargs.get("app_id", None)
     }
+    nu = _new_user(user_data)
 
-    _new_user(user_data)
+    if nu['success']:
+        user = get_user_model().objects.get(username=username)
+        ud = UserData.objects.get(user=user)
+        ud.sms_deposit_location = 'bdo_deposit'
+        ud.save()
+
+
+
+
 

@@ -4,10 +4,10 @@ contains the two classes for the main dashboard and app index dashboard.
 You can customize these classes as you want.
 
 To activate your index dashboard add the following to your settings.py::
-    ADMIN_TOOLS_INDEX_DASHBOARD = 'Haedrian_Website.dashboard.CustomIndexDashboard'
+    ADMIN_TOOLS_INDEX_DASHBOARD = 'Haedrian_Website.admin_dashboard.CustomIndexDashboard'
 
 And to activate the app index dashboard::
-    ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'Haedrian_Website.dashboard.CustomAppIndexDashboard'
+    ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'Haedrian_Website.admin_dashboard.CustomAppIndexDashboard'
 """
 
 from django.utils.translation import ugettext_lazy as _
@@ -16,11 +16,21 @@ from django.core.urlresolvers import reverse
 from admin_tools.dashboard import modules, Dashboard, AppIndexDashboard
 from admin_tools.utils import get_admin_site_name
 
+from admin_tools_stats.modules import DashboardCharts, get_active_graph
+from admin_user_stats.modules import RegistrationCharts
+from admin_user_stats.modules import RegistrationChart
+from admin_user_stats.base_modules import BaseChart
+from admin_user_stats.base_modules import BaseCharts
+
+from haedrian.models import Transaction
 
 class CustomIndexDashboard(Dashboard):
     """
     Custom index dashboard for Haedrian_Website.
     """
+    # we want a 3 columns layout
+    columns = 2
+
     def init_with_context(self, context):
         site_name = get_admin_site_name(context)
         # append a link list module for "quick links"
@@ -37,6 +47,7 @@ class CustomIndexDashboard(Dashboard):
                 [_('Log out'), reverse('%s:logout' % site_name)],
             ]
         ))
+
 
         # append an app list module for "Applications"
         self.children.append(modules.AppList(
@@ -82,6 +93,37 @@ class CustomIndexDashboard(Dashboard):
             ]
         ))
 
+        # Copy following code into your custom dashboard
+        # append following code after recent actions module or
+        # a link list module for "quick links"
+        # graph_list = get_active_graph()
+        # for i in graph_list:
+        #     kwargs = {}
+        #     kwargs['graph_key'] = i.graph_key
+        #     kwargs['require_chart_jscss'] = False
+        #
+        #     if context['request'].POST.get('select_box_' + i.graph_key):
+        #         kwargs['select_box_' + i.graph_key] = context['request'].POST['select_box_' + i.graph_key]
+        #     self.children.append(DashboardCharts(**kwargs))
+
+
+        # append an app list module for "Country_prefix"
+        self.children.append(modules.AppList(
+            _('Dashboard Stats Settings'),
+            models=('admin_tools_stats.*', ),
+        ))
+
+
+
+
+
+        # This app provides django-admin-tools dashboard modules with user registration stats/charts
+        # https://github.com/kmike/django-admin-user-stats
+        self.children += [RegistrationCharts()]
+
+        # Custom built charts from Haedrian
+        self.children += [TransactionCharts()]
+
 
 class CustomAppIndexDashboard(AppIndexDashboard):
     """
@@ -104,8 +146,35 @@ class CustomAppIndexDashboard(AppIndexDashboard):
             )
         ]
 
+
+
     def init_with_context(self, context):
         """
         Use this method if you need to access the request context.
         """
+
+
         return super(CustomAppIndexDashboard, self).init_with_context(context)
+
+
+class TransactionChart(BaseChart):
+    """
+    Dashboard module with Activity charts.
+    """
+    title = _('How many Transactions')
+    template = 'admin_user_stats/modules/chart.html'
+    chart_size = "580x100"
+    days = None
+    values_count = 'days' #use either days or values_count
+    interval = 'days'
+    queryset = Transaction.objects.filter(payment_confirmed=True)
+    date_field = 'date_modified'
+    # aggregate = Sum('amount')
+
+    # payment_confirmed = models.BooleanField(default=False)
+    # mifos_confirmed
+
+class TransactionCharts(BaseCharts):
+    """ Group module with 3 default registration charts """
+    title = _('User Confirmed Transactions')
+    chart_model = TransactionChart

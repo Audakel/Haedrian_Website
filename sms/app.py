@@ -18,18 +18,13 @@ from models import Message, PendingDeposit
 
 from sms_verify import verify_sender
 
-
 from rapidsms.apps.base import AppBase
 
 from strings import *
 
+
 class SMSApplication(AppBase):
     def handle(self, msg):
-        # sms sender is in our DB
-        # msg.respond("Error: Not enough funds")
-        # return True
-
-
         try:
             # TODO:: why are the numbers not in i17n form?
             # TODO:: right now just default to all US numbers
@@ -49,32 +44,32 @@ class SMSApplication(AppBase):
         if verify_sender(msg):
             parts = msg.text.lower().strip().split(" ")
             command = parts[0]
-            # TODO:: redo message logging in db
-            # save_message(msg)
             _user_id = UserData.objects.get(phone=msg.connections[0].identity).user_id
-            user_id = get_user_model().objects.get(id=_user_id)
+            user = get_user_model().objects.get(id=_user_id)
 
             if command == _('balance'):
-                sms_balance(msg, user_id)
+                sms_balance(msg, user)
             elif command == _('send'):
                 sms_send(msg, parts)
             elif command == _('help'):
                 sms_help(msg)
             # elif command == _('tulong'):  # Tagolog help
-            #     sms_tulong(msg)
+            # sms_tulong(msg)
             elif command == _('whoami'):
                 sms_whoami(msg)
             elif command == _('repay'):
-                sms_repay(msg, parts, user_id)
+                sms_repay(msg, parts, user)
             elif command == _('done'):
-                sms_done(msg, parts, user_id)
+                sms_done(msg, parts, user)
             elif command == _('where'):
-                sms_where(msg, parts, user_id)
+                sms_where(msg, parts, user)
+            elif command == _('location'):
+                sms_location(msg, parts, user)
             else:
-                # sms_help(msg)
+                # msg.respond(_(str_error_unknown))
                 return True
 
-                # we handled sms, no need to keep looking
+        # we handled sms, no need to keep looking
         return True
 
 
@@ -110,86 +105,19 @@ def sms_send(msg, parts):
     user.sms_balance = F('sms_balance') - amount
     user.save()
 
-    """
-    data = {
-        "receiver": receiver_name,
-        "amount_local": amount,
-    }
-    try:
-        response = _send(user, data)
-    except Exception as e:
-        msg.respond("Error something went wrong %s" % e)
-        return
-    # print(dir(response))
-    if response.status_code != status.HTTP_200_OK:
-        msg.respond("Error while sending money.")
-        return
-    msg.respond("Sent %d to %s successfully!" % (amount, receiver_name))
-    return
-    """
-
 
 def sms_help(msg):
     msg.respond(str_usage_commands)
 
-
-# def sms_deposite(msg, parts):
-    pass
-#     try:
-#         amount = Decimal(parts[1])
-#     except:
-#         msg.respond("Error: Enter a monetary amount to deposit.")
-#         return
-#
-#     if amount < 0:
-#         msg.respond("Error: The amount to deposit must be positive")
-#         return
-#
-#     receiver_name = parts[2]
-#     if receiver_name[0] != '@':
-#         msg.respond("Error: The deposit receiver must be an @ handle.")
-#         return
-#     try:
-#         UserModel = get_user_model()
-#         UserModel.objects.filter(username=receiver_name[1:]).exists()
-#     except:
-#         msg.respond("Sorry, %s was not found.\nPlease check the @handle\n: (" % receiver_name)
-#         return
-#
-#     msg.respond("Deposited %d to %s successfully!" % (amount, receiver_name))
-#     user = UserData.objects.get(phone=msg.connections[0].identity)
-#     user.sms_balance = F('sms_balance') + amount
-#     user.save()
-
-    """
-    data = {
-        "receiver": receiver_name,
-        "amount_local": amount,
-    }
-    try:
-        response = _send(user, data)
-    except Exception as e:
-        msg.respond("Error something went wrong %s" % e)
-        return
-    # print(dir(response))
-    if response.status_code != status.HTTP_200_OK:
-        msg.respond("Error while sending money.")
-        return
-    msg.respond("Sent %d to %s successfully!" % (amount, receiver_name))
-    return
-    """
-
-# def sms_tulong(msg):  # Help
-#     msg.respond("""Halimbawa send: 'Send 15 @mi'\n Halimbawa balance: 'Balance'""")
 
 def format_sms_amounts(number):
     number = int(number)
     return "{:,}".format(number)
 
 
-def sms_balance(msg, user_id):
+def sms_balance(msg, user):
     # Get all the values from android home screen call, and then format for SMS
-    response = _get_home_screen(user_id)
+    response = _get_home_screen(user)
 
     loan_total = response['consolidated'].get('loan_total', 0)
     wallet_balance = response['wallet'].get('_balance', 0)
@@ -226,26 +154,26 @@ def verify(msg):
 
 
 def sms_whoami(msg):
-
     user_id = UserData.objects.get(phone=msg.connections[0].identity).user_id
     msg.respond('User: @{}'.format(get_user_model().objects.get(id=user_id).username))
 
 
-def sms_where(msg, parts, user_id):
+def sms_where(msg, parts, user):
     pass
 
 
-def sms_repay(msg, parts, user_id):
+def sms_repay(msg, parts, user):
     # TODO:: fix hardcoded currency amount
     data = {
         "amount_local": parts[1],
         "currency": "PHP",
-        "payment_method": "bdo_deposit",
+        "payment_method": user.userdata.sms_deposit_location,
     }
 
-    res = _buy(user_id, data)
+    res = _buy(user, data)
     if res['success']:
-        pending = PendingDeposit(amount=res['order']['instructions_details']['amount'], user=user_id, order_id=res['order']['id'])
+        pending = PendingDeposit(amount=res['order']['instructions_details']['amount'], user=user,
+                                 order_id=res['order']['id'])
         try:
             pending.save()
         except Exception as e:
@@ -253,32 +181,28 @@ def sms_repay(msg, parts, user_id):
             msg.respond(response)
             return
 
+        place = res['order']['payment_outlet_title']
         res = res['order']['instructions_details']
-        response = "Please deposit the exact cash amount (%s PHP) at any BDO branch to the following account: " \
-                   "\nAccount name: %s\nAccount number: %s\nAccount type: %s\nYour reference number is: %s" \
-                   "\nOnce you have deposited the money, reply with 'done' to mark you deposit as complete." \
-                   % (res['amount'],res['account_name'],res['account_number'],res['account_type'],res['ref_number'])
+        ref_number = '' if res['ref_number'] == 'error' else '\nYour reference number is: {}'.format(res['ref_number'])
+
+        response = "Please deposit the exact cash amount (%s PHP) at any %s location to the following account: " \
+                   "\nAccount name: %s\nAccount number: %s\nAccount type: %s%s" \
+                   "\nIMPORTANT! Once you have deposited the money, reply with 'done' to mark you deposit as complete. Thanks!" \
+                   % (res['amount'], place, res['account_name'], res['account_number'], res['account_type'], ref_number)
     else:
         response = "We are sorry, there has been an error with your deposit. %s" % (res['error'])
     msg.respond(response)
 
-    # _deposit_list = get_deposit_types(user_id)
-    # deposit_list = []
-    # for i, val in enumerate(_deposit_list):
-    #     deposit_list.append("%d-%s" % (i, val))
-    # # msg.respond(', '.join(deposit_list))
-    #
 
-def sms_done(msg, parts, user_id):
-    if not PendingDeposit.objects.filter(user=user_id, user_confirmed=False).exists():
+def sms_done(msg, parts, user):
+    if not PendingDeposit.objects.filter(user=user, user_confirmed=False).exists():
         msg.respond("Sorry, we can't find any repayments for you : (")
         return
 
-    default_currency = user_id.userdata.default_currency
+    default_currency = user.userdata.default_currency
 
-
-    latest = PendingDeposit.objects.filter(user=user_id, user_confirmed=False).latest('time')
-    res = _verify_buy(user_id, {'order_id': latest.order_id})
+    latest = PendingDeposit.objects.filter(user=user, user_confirmed=False).latest('time')
+    res = _verify_buy(user, {'order_id': latest.order_id})
     if res['success']:
         latest.user_confirmed = True
         try:
@@ -289,30 +213,66 @@ def sms_done(msg, parts, user_id):
         # TODO:: currency exchange for SMS amt
 
         message = "Congrats! Your PHP %s deposit is '%s'. We will notify you when your repayment " \
-                  "has been received by %s." % (format_sms_amounts(latest.amount), res['order']['status'].replace('_', ' ').title(), 'Mentors International')
+                  "has been received by %s." % (
+                      format_sms_amounts(latest.amount), res['order']['status'].replace('_', ' ').title(),
+                      'Mentors International')
         msg.respond(message)
     else:
         msg.respond('There has been some type of error with marking your order "done"')
 
 
-def get_deposit_types(user_id):
-    _data = _get_exchange_types(user_id)
+def get_deposit_types(user, location=''):
+    data = _get_exchange_types(user)
 
-    data = []
-    for i in _data['payin-outlet-categories']:
-        data.append(i['name'])
-    return data
+    if not data['success']:
+        return data
 
-# def exchange_confirmed_checker():
-    # create a
-    # mfi_transaction = Transaction(sender=user,
-    #                               receiver=receiver,
-    #                               amount_btc=calc_fees['amount_btc'].amount,
-    #                               amount_local=calc_fees['total_sent_local'].amount,
-    #                               amount_local_currency=currency,
-    #                               sent_payment_id=mfi_data['id'],
-    #                               group=group)
-    # try:
-    #     mfi_transaction.save()
-    # except Exception as e:
-    #     return {'success': False, 'error': e}
+    data = data['locations'][0]['outlets']
+    # Clean out dragonPay stuff for now
+    dragonPay = ['Dragonpay Rcbx Deposit',
+                 'Bdo Deposit Cashcard',
+                 'Dragonpay Mbtx Deposit',
+                 'Dragonpay Cbcx Deposit']
+
+    _data = []
+    for d in data:
+        if d['name'] not in dragonPay:
+            _data.append(d)
+    data = _data
+
+    if location is not '':
+        return data[location]['id']
+    else:
+        return [(i, j['name']) for i, j in enumerate(data)]
+
+
+
+def sms_location(msg, parts, user):
+    if len(parts) is 1:
+        locations = get_deposit_types(user)
+        # if not locations.get('success', True):
+        #     msg.respond(_(str_error_unknown))
+        #     return
+
+        formated_locations = ''
+        for location in locations:
+            formated_locations += '({}-{}) '.format(location[0], location[1])
+        msg.respond("Please reply with 'location' and the number of your desired deposit "
+                "location: {}- Thanks! (ex: location 3)".format(formated_locations))
+        return
+
+    elif len(parts) is 2:
+        try:
+            number = int(parts[1])
+        except:
+            msg.respond(_("Sorry, we are not that clever : (  your command is unknown. Try again?"))
+            return
+
+        new_location = get_deposit_types(user, number)
+        ud = UserData.objects.get(user=user)
+        ud.sms_deposit_location = new_location
+        ud.save()
+        _ud = UserData.objects.get(user=user)
+        msg.respond(_("Your new deposit location is '{}'. Nice! Sent with <3 from Curo team.").format(
+            _ud.sms_deposit_location.replace("_", " ").replace('-', ' ').title()))
+

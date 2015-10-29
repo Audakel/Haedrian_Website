@@ -7,6 +7,13 @@ gettext_noop = lambda s: s
 PROJECT_APP_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 PROJECT_ROOT = os.path.abspath(os.path.dirname(PROJECT_APP_ROOT))
 PUBLIC_ROOT = os.path.abspath(os.path.join(PROJECT_ROOT, 'public'))
+STATIC_ROOT = os.path.join(PUBLIC_ROOT, 'static')
+MEDIA_ROOT = os.path.join(PUBLIC_ROOT, 'media')
+LOCALE_PATHS = (os.path.join(PROJECT_ROOT, 'locale'),)
+
+
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 
 #TODO fix this shiz
 TWILIO_ACCOUNT_SID = 'AC4f7dec744e3bcad378e19888b8213af3'
@@ -27,7 +34,10 @@ GMAIL_PASSWORD = 'GmailSaTeCoCeMuBu1'
 # BTC or PHP
 COINS_WALLET_TYPE = 'PHP'
 
-
+# Django Admin Menu
+ADMIN_TOOLS_MENU = 'haedrian.admin_menu.CustomMenu'
+ADMIN_TOOLS_INDEX_DASHBOARD = 'haedrian.admin_dashboard.CustomIndexDashboard'
+ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'haedrian.admin_dashboard.CustomAppIndexDashboard'
 
 try:
     SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
@@ -75,6 +85,11 @@ INSTALLED_APPS = (
     'admin_tools.menu',
     'admin_tools.dashboard',
     'django.contrib.sites',
+    # Admin graph stats dashboard
+    'admin_tools_stats',
+    'admin_user_stats',
+    'django_nvd3',
+    'chart_tools',
     # django builtin
     'django.contrib.admin',
     'django.contrib.auth',
@@ -150,27 +165,70 @@ MIDDLEWARE_CLASSES = [
 ]
 
 # Templates
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
+# TEMPLATE_LOADERS = (
+#     'django.template.loaders.filesystem.Loader',
+#     'django.template.loaders.app_directories.Loader',
+# )
+#
+# TEMPLATE_CONTEXT_PROCESSORS = (
+#     'django.contrib.auth.context_processors.auth',
+#     'django.core.context_processors.debug',
+#     'django.core.context_processors.i18n',
+#     'django.core.context_processors.media',
+#     'django.core.context_processors.request',
+#     'django.core.context_processors.static',
+#     'django.core.context_processors.tz',
+#     'django.contrib.messages.context_processors.messages',
+# )
+
+# TEMPLATE_DIRS = (
+#     os.path.join(PROJECT_ROOT, 'templates'),
+#     os.path.join(PROJECT_ROOT, 'haedrian', 'templates'),
+#     os.path.join(PROJECT_ROOT, 'dashboard', 'templates'),
+# )
+
+# Static files (CSS, JavaScript, Images)
+
+
+
+
+
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_ROOT, 'static'),
 )
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.request',
-    'django.core.context_processors.static',
-    'django.core.context_processors.tz',
-    'django.contrib.messages.context_processors.messages',
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
-TEMPLATE_DIRS = (
-    os.path.join(PROJECT_ROOT, 'templates'),
-    os.path.join(PROJECT_ROOT, 'haedrian', 'templates'),
-    os.path.join(PROJECT_ROOT, 'dashboard', 'templates'),
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            # insert your TEMPLATE_DIRS here
+            os.path.join(PROJECT_ROOT, 'templates'),
+            os.path.join(PROJECT_ROOT, 'haedrian', 'templates'),
+            os.path.join(PROJECT_ROOT, 'dashboard', 'templates'),
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                # Insert your TEMPLATE_CONTEXT_PROCESSORS here or use this
+                # list if you haven't customized them:
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
+            ],
+
+        },
+    },
+]
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
@@ -186,24 +244,9 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-LOCALE_PATHS = (os.path.join(PROJECT_ROOT, 'locale'),)
 
-# Static files (CSS, JavaScript, Images)
 
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
 
-STATIC_ROOT = os.path.join(PUBLIC_ROOT, 'static')
-MEDIA_ROOT = os.path.join(PUBLIC_ROOT, 'media')
-
-STATICFILES_DIRS = (
-    os.path.join(PROJECT_ROOT, 'static'),
-)
-
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-)
 
 # Common celery settings
 

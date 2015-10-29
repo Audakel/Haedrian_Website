@@ -1,5 +1,5 @@
 pillow
-django==1.8.*
+django==1.8.1
 requests
 Celery
 # It'd be nice to consolidate these, but till then this is how each is used
@@ -49,3 +49,4 @@ python-memcached >= 1.47
 django-qsstats-magic >= 0.6.1
 django-chart-tools >= 0.2.1
 django-admin-user-stats
+Sphinx

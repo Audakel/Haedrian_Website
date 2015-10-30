@@ -26,7 +26,7 @@ sys.path.append(os.path.abspath('../../lib/python2.7/site-packages/'))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Haedrian_Website.settings.development")
 django.setup()
 
-
+html_style = '/default.css'
 
 
 # If extensions (or modules to document with autodoc) are in another directory,

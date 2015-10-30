@@ -1,0 +1,221 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to Haedrian’s documentation! &mdash; Haedrian 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="static/jquery.js"></script>
+    <script type="text/javascript" src="static/underscore.js"></script>
+    <script type="text/javascript" src="static/doctools.js"></script>
+    <link rel="top" title="Haedrian 0.1 documentation" href="#" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-haedrian-s-documentation">
+<h1>Welcome to Haedrian&#8217;s documentation!<a class="headerlink" href="#welcome-to-haedrian-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span>Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span>Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span>Search Page</span></a></li>
+</ul>
+<div class="section" id="module-sms">
+<span id="sms-package"></span><h2><a class="reference internal" href="#module-sms" title="sms"><code class="xref py py-mod docutils literal"><span class="pre">sms</span></code></a> Package<a class="headerlink" href="#module-sms" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-sms.app">
+<span id="app-module"></span><h2><code class="xref py py-mod docutils literal"><span class="pre">app</span></code> Module<a class="headerlink" href="#module-sms.app" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="sms.app.SMSApplication">
+<em class="property">class </em><code class="descclassname">sms.app.</code><code class="descname">SMSApplication</code><span class="sig-paren">(</span><em>router</em><span class="sig-paren">)</span><a class="reference internal" href="modules/sms/app.html#SMSApplication"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sms.app.SMSApplication" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="sms.app.SMSApplication.handle">
+<code class="descname">handle</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="modules/sms/app.html#SMSApplication.handle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sms.app.SMSApplication.handle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sms.app.sms_send">
+<code class="descclassname">sms.app.</code><code class="descname">sms_send</code><span class="sig-paren">(</span><em>msg</em>, <em>parts</em><span class="sig-paren">)</span><a class="reference internal" href="modules/sms/app.html#sms_send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sms.app.sms_send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send money to someone</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>msg</strong> &#8211; A full telerivet message object</li>
+<li><strong>parts</strong> &#8211; A list of words in the SMS</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A SMS response that the message has been sent</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sms.app.sms_help">
+<code class="descclassname">sms.app.</code><code class="descname">sms_help</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="modules/sms/app.html#sms_help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sms.app.sms_help" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a help message</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>msg</strong> &#8211; A full telerivet message object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A SMS response with full command usage list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sms.app.format_sms_amounts">
+<code class="descclassname">sms.app.</code><code class="descname">format_sms_amounts</code><span class="sig-paren">(</span><em>number</em><span class="sig-paren">)</span><a class="reference internal" href="modules/sms/app.html#format_sms_amounts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sms.app.format_sms_amounts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sms.app.sms_balance">
+<code class="descclassname">sms.app.</code><code class="descname">sms_balance</code><span class="sig-paren">(</span><em>msg</em>, <em>user</em><span class="sig-paren">)</span><a class="reference internal" href="modules/sms/app.html#sms_balance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sms.app.sms_balance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sms.app.save_message">
+<code class="descclassname">sms.app.</code><code class="descname">save_message</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="modules/sms/app.html#save_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sms.app.save_message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sms.app.verify">
+<code class="descclassname">sms.app.</code><code class="descname">verify</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="modules/sms/app.html#verify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sms.app.verify" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sms.app.sms_whoami">
+<code class="descclassname">sms.app.</code><code class="descname">sms_whoami</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="modules/sms/app.html#sms_whoami"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sms.app.sms_whoami" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sms.app.sms_where">
+<code class="descclassname">sms.app.</code><code class="descname">sms_where</code><span class="sig-paren">(</span><em>msg</em>, <em>parts</em>, <em>user</em><span class="sig-paren">)</span><a class="reference internal" href="modules/sms/app.html#sms_where"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sms.app.sms_where" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sms.app.sms_repay">
+<code class="descclassname">sms.app.</code><code class="descname">sms_repay</code><span class="sig-paren">(</span><em>msg</em>, <em>parts</em>, <em>user</em><span class="sig-paren">)</span><a class="reference internal" href="modules/sms/app.html#sms_repay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sms.app.sms_repay" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sms.app.sms_done">
+<code class="descclassname">sms.app.</code><code class="descname">sms_done</code><span class="sig-paren">(</span><em>msg</em>, <em>parts</em>, <em>user</em><span class="sig-paren">)</span><a class="reference internal" href="modules/sms/app.html#sms_done"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sms.app.sms_done" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sms.app.get_deposit_types">
+<code class="descclassname">sms.app.</code><code class="descname">get_deposit_types</code><span class="sig-paren">(</span><em>user</em>, <em>location=''</em><span class="sig-paren">)</span><a class="reference internal" href="modules/sms/app.html#get_deposit_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sms.app.get_deposit_types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sms.app.sms_location">
+<code class="descclassname">sms.app.</code><code class="descname">sms_location</code><span class="sig-paren">(</span><em>msg</em>, <em>parts</em>, <em>user</em><span class="sig-paren">)</span><a class="reference internal" href="modules/sms/app.html#sms_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sms.app.sms_location" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to Haedrian&#8217;s documentation!</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a><ul>
+<li><a class="reference internal" href="#module-sms"><code class="docutils literal"><span class="pre">sms</span></code> Package</a></li>
+<li><a class="reference internal" href="#module-sms.app"><code class="docutils literal"><span class="pre">app</span></code> Module</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="sources/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, audakel, jroweboy.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="sources/index.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

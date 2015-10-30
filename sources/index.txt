@@ -1,0 +1,38 @@
+.. Haedrian documentation master file, created by
+   sphinx-quickstart on Thu Oct 29 15:35:51 2015.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive. ======== autoclass:: SMSApplication
+    :members: ====.. automodule:: sms.models
+    :members:
+
+
+Welcome to Haedrian's documentation!
+====================================
+
+Contents:
+
+.. toctree::
+    :maxdepth: 4
+
+    sms
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
+:mod:`sms` Package
+-------------------------
+
+.. automodule:: sms
+    :undoc-members:
+    :members:
+    :show-inheritance:
+
+:mod:`app` Module
+-----------------
+.. automodule:: sms.app
+    :undoc-members:
+    :members:

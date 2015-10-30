@@ -50,3 +50,4 @@ django-qsstats-magic >= 0.6.1
 django-chart-tools >= 0.2.1
 django-admin-user-stats
 Sphinx
+sphinxtogithub

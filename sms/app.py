@@ -24,6 +24,8 @@ from strings import *
 
 
 class SMSApplication(AppBase):
+
+
     def handle(self, msg):
         try:
             # TODO:: why are the numbers not in i17n form?
@@ -74,6 +76,13 @@ class SMSApplication(AppBase):
 
 
 def sms_send(msg, parts):
+    """Send money to someone
+
+    :param msg: A full telerivet message object
+    :param parts: A list of words in the SMS
+
+    :returns: A SMS response that the message has been sent
+    """
     try:
         amount = Decimal(parts[1])
     except:
@@ -107,6 +116,11 @@ def sms_send(msg, parts):
 
 
 def sms_help(msg):
+    """Send a help message
+
+    :param msg: A full telerivet message object
+    :returns: A SMS response with full command usage list
+    """
     msg.respond(str_usage_commands)
 
 

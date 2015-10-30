@@ -1,15 +1,15 @@
-from random import randint
+import random
 
 __author__ = 'audakel'
 
 def rando(type):
     if type is 'smiley':
         options = [':)', ':}', ':/', ';)', ':P', ':(']
-        return options[randint(0, len(options))]
-
     elif type is 'monkey':
         options = ['spider', 'squirrel', 'howler', 'woolly', 'hacker', 'capuchins']
-        return options[randint(0, len(options))]
+
+    return random.choice(options)
+
 
 
 str_usage_commands = "Usage Commands Examples {}\nRepay PHP150: 'repay 150'\nCheck balance: 'balance'" \

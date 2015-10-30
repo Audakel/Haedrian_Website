@@ -23,6 +23,13 @@ class Depositor(models.Model):
     short_name = models.CharField(max_length=6, unique=True)
     long_name = models.CharField(max_length=40)
 
+
+"""Send Bitcoins amount from this wallet to the user provided
+Each wallet is responsible for finding the appropriate handle or address to send to
+
+:param user - the Haedrian User to send the BTC to
+:param amount_btc - Amount to send in BTC
+:exception UserNotFound if the wallet cannot find the user to send to"""
 class PendingDeposit(models.Model):
     time = models.DateTimeField(auto_now_add=True)
     order_id = models.CharField(max_length=60)

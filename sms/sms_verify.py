@@ -9,24 +9,24 @@ from haedrian.views import _create_account
 from strings import *
 
 def verify_sender(msg):
-    if msg.text == str_please_create_username:
+    if msg.text == str_rsp_create_username:
         return False
     
     if check_number_exist(msg):
         return True
     elif not currently_signing_up(msg):
         # add them to the signup database
-        if msg.text is str_please_create_username:
+        if msg.text is str_rsp_create_username:
             return False
         signup = Signup(phone_number=msg.connections[0].identity)
         signup.save()
-        msg.respond(str_please_create_username)
+        msg.respond(str_rsp_create_username)
         return False
     else:
         if msg.text[0] == '@':
             create_handle(msg)
         else:
-            msg.respond(str_please_create_username)
+            msg.respond(str_rsp_create_username)
         return False
 
 
@@ -70,7 +70,7 @@ def create_handle(msg):
         # Handle does not exist
         sms_create_user(msg_handle, msg)
         Signup.objects.get(phone_number=msg.connections[0].identity).delete()
-        msg.respond("Welcome @%s!\n%s" % (msg_handle, str_usage_commands))
+        msg.respond("Welcome @%s!\n%s" % (msg_handle, str_rsp_usage_commands))
 
 
 def sms_create_user(username, msg):

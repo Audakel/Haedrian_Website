@@ -16,11 +16,11 @@ from django.core.urlresolvers import reverse
 from admin_tools.dashboard import modules, Dashboard, AppIndexDashboard
 from admin_tools.utils import get_admin_site_name
 
-from admin_tools_stats.modules import DashboardCharts, get_active_graph
-from admin_user_stats.modules import RegistrationCharts
-from admin_user_stats.modules import RegistrationChart
-from admin_user_stats.base_modules import BaseChart
-from admin_user_stats.base_modules import BaseCharts
+# from admin_tools_stats.modules import DashboardCharts, get_active_graph
+# from admin_user_stats.modules import RegistrationCharts
+# from admin_user_stats.modules import RegistrationChart
+# from admin_user_stats.base_modules import BaseChart
+# from admin_user_stats.base_modules import BaseCharts
 
 from haedrian.models import Transaction
 
@@ -49,9 +49,9 @@ class CustomIndexDashboard(Dashboard):
         ))
 
 
-        # append an app list module for "Applications"
+        # append an app list module for "applications"
         self.children.append(modules.AppList(
-            _('Applications'),
+            _('applications'),
             exclude=('django.contrib.*',),
         ))
 
@@ -119,10 +119,10 @@ class CustomIndexDashboard(Dashboard):
 
         # This app provides django-admin-tools dashboard modules with user registration stats/charts
         # https://github.com/kmike/django-admin-user-stats
-        self.children += [RegistrationCharts()]
+        # self.children += [RegistrationCharts()]
 
         # Custom built charts from Haedrian
-        self.children += [TransactionCharts()]
+        # self.children += [TransactionCharts()]
 
 
 class CustomAppIndexDashboard(AppIndexDashboard):
@@ -157,24 +157,24 @@ class CustomAppIndexDashboard(AppIndexDashboard):
         return super(CustomAppIndexDashboard, self).init_with_context(context)
 
 
-class TransactionChart(BaseChart):
-    """
-    Dashboard module with Activity charts.
-    """
-    title = _('How many Transactions')
-    template = 'admin_user_stats/modules/chart.html'
-    chart_size = "580x100"
-    days = None
-    values_count = 'days' #use either days or values_count
-    interval = 'days'
-    queryset = Transaction.objects.filter(payment_confirmed=True)
-    date_field = 'date_modified'
-    # aggregate = Sum('amount')
-
-    # payment_confirmed = models.BooleanField(default=False)
-    # mifos_confirmed
-
-class TransactionCharts(BaseCharts):
-    """ Group module with 3 default registration charts """
-    title = _('User Confirmed Transactions')
-    chart_model = TransactionChart
+# class TransactionChart(BaseChart):
+#     """
+#     Dashboard module with Activity charts.
+#     """
+#     title = _('How many Transactions')
+#     template = 'admin_user_stats/modules/chart.html'
+#     chart_size = "580x100"
+#     days = None
+#     values_count = 'days' #use either days or values_count
+#     interval = 'days'
+#     queryset = Transaction.objects.filter(payment_confirmed=True)
+#     date_field = 'date_modified'
+#     # aggregate = Sum('amount')
+#
+#     # payment_confirmed = models.BooleanField(default=False)
+#     # mifos_confirmed
+#
+# class TransactionCharts(BaseCharts):
+#     """ Group module with 3 default registration charts """
+#     title = _('User Confirmed Transactions')
+#     chart_model = TransactionChart

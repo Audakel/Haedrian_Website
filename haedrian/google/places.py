@@ -858,7 +858,7 @@ class Place(object):
     @property
     def url(self):
         """Contains the official Google Place Page URL of this establishment.
-        Applications must link to or embed the Google Place page on any screen
+        applications must link to or embed the Google Place page on any screen
         that shows detailed results about this Place to the user.
         """
         self._validate_status()

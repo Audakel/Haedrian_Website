@@ -2,6 +2,7 @@
 import os
 from datetime import timedelta
 from celery.schedules import crontab
+
 gettext_noop = lambda s: s
 
 PROJECT_APP_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
@@ -11,11 +12,10 @@ STATIC_ROOT = os.path.join(PUBLIC_ROOT, 'static')
 MEDIA_ROOT = os.path.join(PUBLIC_ROOT, 'media')
 LOCALE_PATHS = (os.path.join(PROJECT_ROOT, 'locale'),)
 
-
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
-#TODO fix this shiz
+# TODO fix this shiz
 TWILIO_ACCOUNT_SID = 'AC4f7dec744e3bcad378e19888b8213af3'
 TWILIO_AUTH_TOKEN = '0c7b01582cbe2ce27123e2dc7ac983d6'
 
@@ -47,7 +47,6 @@ except KeyError:
     # sys.exit(1)
 
 #DEBUG = False
-#TEMPLATE_DEBUG = False
 
 SITE_ID = 1
 
@@ -73,10 +72,10 @@ AUTHENTICATION_BACKENDS = (
 
 LOGIN_REDIRECT_URL = "/"
 
-# Application definition
+# application definition
 
 ROOT_URLCONF = 'Haedrian_Website.urls'
-WSGI_APPLICATION = 'Haedrian_Website.wsgi.application'
+WSGI_application = 'Haedrian_Website.wsgi.application'
 
 INSTALLED_APPS = (
     # Admin tools dashboard
@@ -97,7 +96,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # external applications 
+    # external applications
     'django_countries',
     'rest_framework',
     'rest_framework.authtoken',
@@ -121,6 +120,9 @@ INSTALLED_APPS = (
     'rapidsms.contrib.messagelog',
     # 'django_google_places',
     'kombu.transport.django',
+    'django_nose',
+    'rednose',
+    # 'nose-progressive',
 )
 
 INSTALLED_BACKENDS = {
@@ -150,7 +152,7 @@ INSTALLED_BACKENDS = {
 #     'sms.myhandlers.BalanceHandler',
 #  ]
 
-SESSION_COOKIE_AGE = 60 * 60 * 24 * 30 # One month
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 30  # One month
 
 MIDDLEWARE_CLASSES = [
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -230,7 +232,31 @@ TEMPLATES = [
     },
 ]
 
+# Use nose to run all tests
+# TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+NOSE_ARGS = [
+    # '--exclude-dir=migrations/'
+    # '--exclude-dir-file={}'.format(os.path.join(PROJECT_ROOT, 'Haedrian_Website/nose_exclude.txt')),
+    # '--exclude-dir={}'.format(os.path.join(PROJECT_ROOT, 'sms/')),
+    '--exclude-dir={}'.format(os.path.join(PROJECT_ROOT, 'sms/migrations')),
+
+
+    '--with-coverage',
+    # '--cover-package=sms,apiv1,haedrian',
+    '--cover-package=sms',
+
+    # nice HTML report that highlights the missing lines in your source code.
+    '--cover-html',
+    '--rednose',
+    # '--with-progressive'
+    # '--with-progressive --logging-clear-handlers'
+
+    # The option may be used multiple times to exclude multiple directories from testing.
+    # The directory paths provided may be absolute or relative.
+    # '--exclude-dir={}'.format(os.path.join(PROJECT_ROOT, 'apiv1/migrations')),
+
+]
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
@@ -313,7 +339,7 @@ import moneyed
 from moneyed.localization import _FORMATTER
 from decimal import Decimal, ROUND_HALF_EVEN
 
-FEE_AMOUNT = Decimal(".01") # as a decimal number 1 = 100% .01 = 1%
+FEE_AMOUNT = Decimal(".01")  # as a decimal number 1 = 100% .01 = 1%
 
 # see http://en.wikipedia.org/wiki/ISO_4217#Unofficial_currency_codes
 
@@ -396,7 +422,7 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['mail_admins',],
+            'handlers': ['mail_admins', ],
             'level': 'ERROR',
             'propagate': False,
         },

@@ -6,7 +6,7 @@ from apiv1.internal.utils import format_currency_display
 from haedrian.models import UserData
 
 def mifosx_loan(user):
-    client_id = UserData.objects.get(user=user).app_id
+    client_id = UserData.objects.get(user=user).org_id
     if not client_id:
         return {
             'success': False,
@@ -163,7 +163,7 @@ def mifosx_api(endpoint, user='', app='', method='GET', params={}, body=None, to
 
 
 def _get_next_repayment_raw(user, data=''):
-    clientId = UserData.objects.get(user=user).app_id
+    clientId = UserData.objects.get(user=user).org_id
     res = mifosx_api('loans',
                      method='GET',
                      params={

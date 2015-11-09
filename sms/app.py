@@ -2,6 +2,7 @@
 # https://haedrian.io/sms/telerivet/
 
 from decimal import Decimal
+import bleach
 from django.utils import translation
 from django.utils.translation import ugettext as _
 from django.contrib.auth import get_user_model
@@ -10,11 +11,15 @@ from phonenumbers import geocoder
 import pycountry
 import phonenumbers
 import re
+import pickle
+import os
 from apiv1.internal.utils import format_currency_display
 
 from apiv1.internal.views import _get_exchange_types, _get_balance, _buy, _verify_buy, _get_home_screen
+from haedrian.forms import NewUserForm
 from haedrian.models import UserData
 from models import Message, PendingDeposit
+from sms.serializers import SmsIdSerializer
 
 from sms_verify import verify_sender
 
@@ -23,13 +28,21 @@ from rapidsms.apps.base import AppBase
 from strings import *
 
 
-class SMSApplication(AppBase):
-
-
+class SMSapplication(AppBase):
     def handle(self, msg):
+        '''
+        For testing - to get a new msg obj into our test file
         try:
-            # TODO:: why are the numbers not in i17n form?
-            # TODO:: right now just default to all US numbers
+            fileObject = open("sms/sms_msg.txt",'wb')
+            pickle.dump(msg, fileObject)
+            fileObject.close()
+        except Exception as e:
+            print (str(e))
+        '''
+
+        try:
+            # TODO :: why are the numbers not in i17n form?
+            # TODO :: right now just default to all US numbers
             country_name = geocoder.country_name_for_number(phonenumbers.parse(
                 msg.connections[0].identity), 'en')
         except Exception as e:
@@ -43,30 +56,31 @@ class SMSApplication(AppBase):
             print("Could not look up the short name for the country {}".format(country_name))
         except AttributeError as f:
             print("Translation for the country {} not found".format(country))
+
+        msg.text = bleach.clean(msg.text)
+
         if verify_sender(msg):
             parts = msg.text.lower().strip().split(" ")
             command = parts[0]
             _user_id = UserData.objects.get(phone=msg.connections[0].identity).user_id
             user = get_user_model().objects.get(id=_user_id)
 
-            if command == _('balance'):
+            if command == _(str_cmd_balance):
                 sms_balance(msg, user)
-            elif command == _('send'):
+            elif command == _(str_cmd_send):
                 sms_send(msg, parts)
-            elif command == _('help'):
+            elif command == _(str_cmd_help):
                 sms_help(msg)
-            # elif command == _('tulong'):  # Tagolog help
-            # sms_tulong(msg)
-            elif command == _('whoami'):
+            elif command == _(str_cmd_whoami):
                 sms_whoami(msg)
-            elif command == _('repay'):
+            elif command == _(str_cmd_repay):
                 sms_repay(msg, parts, user)
-            elif command == _('done'):
+            elif command == _(str_cmd_done):
                 sms_done(msg, parts, user)
-            elif command == _('where'):
-                sms_where(msg, parts, user)
-            elif command == _('location'):
+            elif command == _(str_cmd_location):
                 sms_location(msg, parts, user)
+            elif command == _(str_cmd_id):
+                sms_id(msg, parts, user)
             else:
                 # msg.respond(_(str_error_unknown))
                 return True
@@ -121,7 +135,7 @@ def sms_help(msg):
     :param msg: A full telerivet message object
     :returns: A SMS response with full command usage list
     """
-    msg.respond(str_usage_commands)
+    msg.respond(str_rsp_usage_commands)
 
 
 def format_sms_amounts(number):
@@ -148,8 +162,7 @@ def sms_balance(msg, user):
     else:
         next_pay = ''
 
-    msg.respond("You have %s %s available in your wallet %s  %s %s %s Sent with <3 from the Curo team." %
-                (currency, format_sms_amounts(wallet_balance), funny_response, pending, loan_total, next_pay))
+    msg.respond(str_rsp_balance % (currency, format_sms_amounts(wallet_balance), funny_response, pending, loan_total, next_pay))
 
 
 def save_message(msg):
@@ -199,10 +212,7 @@ def sms_repay(msg, parts, user):
         res = res['order']['instructions_details']
         ref_number = '' if res['ref_number'] == 'error' else '\nYour reference number is: {}'.format(res['ref_number'])
 
-        response = "Please deposit the exact cash amount (%s PHP) at any %s location to the following account: " \
-                   "\nAccount name: %s\nAccount number: %s\nAccount type: %s%s" \
-                   "\nIMPORTANT! Once you have deposited the money, reply with 'done' to mark you deposit as complete. Thanks!" \
-                   % (res['amount'], place, res['account_name'], res['account_number'], res['account_type'], ref_number)
+        response = str_rsp_repay % (res['amount'], place, res['account_name'], res['account_number'], res['account_type'], ref_number)
     else:
         response = "We are sorry, there has been an error with your deposit. %s" % (res['error'])
     msg.respond(response)
@@ -226,10 +236,8 @@ def sms_done(msg, parts, user):
             return
         # TODO:: currency exchange for SMS amt
 
-        message = "Congrats! Your PHP %s deposit is '%s'. We will notify you when your repayment " \
-                  "has been received by %s." % (
-                      format_sms_amounts(latest.amount), res['order']['status'].replace('_', ' ').title(),
-                      'Mentors International')
+        message = str_rsp_done % (format_sms_amounts(latest.amount), res['order']['status'].replace('_', ' ').title(),
+                                  user.userdata.application.title())
         msg.respond(message)
     else:
         msg.respond('There has been some type of error with marking your order "done"')
@@ -260,6 +268,8 @@ def get_deposit_types(user, location=''):
         return [(i, j['name']) for i, j in enumerate(data)]
 
 
+def frmt_db_lctn(location):
+    return location.replace("_", " ").replace('-', ' ').title()
 
 def sms_location(msg, parts, user):
     if len(parts) is 1:
@@ -271,8 +281,8 @@ def sms_location(msg, parts, user):
         formated_locations = ''
         for location in locations:
             formated_locations += '({}-{}) '.format(location[0], location[1])
-        msg.respond("Please reply with 'location' and the number of your desired deposit "
-                "location: {}- Thanks! (ex: location 3)".format(formated_locations))
+        my_location = frmt_db_lctn(user.userdata.sms_deposit_location)
+        msg.respond(str_rsp_location_list.format(formated_locations, my_location))
         return
 
     elif len(parts) is 2:
@@ -287,6 +297,61 @@ def sms_location(msg, parts, user):
         ud.sms_deposit_location = new_location
         ud.save()
         _ud = UserData.objects.get(user=user)
-        msg.respond(_("Your new deposit location is '{}'. Nice! Sent with <3 from Curo team.").format(
-            _ud.sms_deposit_location.replace("_", " ").replace('-', ' ').title()))
+        msg.respond(_(str_rsp_location_new).format(frmt_db_lctn(_ud.sms_deposit_location)))
+
+
+def sms_id(msg, parts, user):
+    if len(parts) is 1:
+        msg.respond(str_rsp_id)
+        return
+
+    elif len(parts) is not 3:
+        msg.respond(_(str_err_known.format(str_err_no_mfi_or_id)))
+        return
+
+    send_data = SmsIdSerializer(data={'application': parts[1], 'app_id': parts[2]})
+    if not send_data.is_valid():
+        msg.respond(_(str_err_known.format(str_err_mfi)))
+
+    new_data = {
+        "phone": msg.connections[0].identity,
+        # Fix hard code PH
+        "country": 'PH',
+        "application": send_data.data['application'],
+        "app_id": send_data.data['app_id']
+    }
+    data_form = NewUserForm(new_data)
+    if data_form.is_valid():
+        user.first_name = data_form.first_name
+        user.last_name = data_form.last_name
+        ud = UserData.objects.get(user=user)
+        ud.application = send_data.data['application']
+        ud.org_id = send_data.data['app_id']
+        try:
+            user.save()
+            ud.save
+        except Exception as e:
+            print str(e)
+            return
+
+        active = 'active' if data_form.active else 'inactive'
+        print('-----')
+        print(user.first_name, type(user.first_name))
+        print(user.last_name, type(user.last_name))
+        print(active, type(active))
+        print(data_form.office_name, type(data_form.office_name))
+        print(str_rsp_acct_found, type(str_rsp_acct_found))
+        print((str_rsp_acct_found) % (user.first_name, user.last_name, active, data_form.office_name))
+        print('-----')
+
+        msg.respond((str_rsp_acct_found) % (user.first_name, user.last_name, active, data_form.office_name))
+    elif data_form.errors.get('app_id', False):
+        msg.respond(_(str_err_id % (send_data.data['app_id'], send_data.data['application'].title())))
+
+
+
+
+
+
+
 

@@ -231,11 +231,11 @@ class CoinsPhWallet(BaseWallet):
                 "expiration_time": data['expiration_time'],
                 "instructions": instructions,
                 "instructions_details": {
-                    'amount': amount,
-                    'account_name': account_name,
-                    'account_number': account_number,
-                    'account_type': account_type,
-                    'ref_number': ref_number
+                    'amount': amount.strip(),
+                    'account_name': account_name.strip(),
+                    'account_number': account_number.strip(),
+                    'account_type': account_type.strip(),
+                    'ref_number': ref_number.strip()
                 },
                 "wallet_address": data['wallet_address'],
                 "id": data['id'],

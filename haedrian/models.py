@@ -15,23 +15,38 @@ class BetaApplicant(models.Model):
 
 # stores app specific data about a user
 class UserData(models.Model):
+
     user = models.OneToOneField(User, primary_key=True)
     phone = models.CharField(max_length=15)
-    credit_score = models.IntegerField(max_length=4, default=0)
+    credit_score = models.IntegerField(default=0)
     country = CountryField(blank_label='(Country)')
     default_currency = models.CharField(max_length=4, default='USD')
     sms_deposit_location = models.CharField(max_length=30, null=True)
-    app_id = models.CharField(max_length=50, blank=True, default=None, null=True)
-    # MENTORS = 'MENTORS'
-    # APPLICATIONS = (
-    #     (MENTORS, _('Mentors International'),),
-    # )
-    application = models.CharField(max_length=40, blank=True)
+    org_id = models.CharField(max_length=50, blank=True, default=None, null=True)
+
+    MI_ASIA = 'mi-asia'
+    MI_AFRICA = 'mi-africa'
+    MI_LATAM = 'mi-latam'
+    ASHI = 'ashi'
+    TEST = 'test'
+
+    applicationS = (
+        (MI_ASIA, _('Mentors Asia'),),
+        (MI_AFRICA, _('Mentors Africa'),),
+        (MI_LATAM, _('Mentors Latin America'),),
+        (ASHI, _('Ahon sa Hirap, Inc'),),
+        (TEST, _('Haedrian Test'),),
+    )
+
+    application = models.CharField(choices=applicationS, blank=True, max_length=30)
+
     class Meta:
         unique_together = (
             ("application", "app_id"),
         )
 
+    def __str__(self):
+        return "UserData for {}".format(self.user.username)
 
 class Wallet(models.Model):
     COINS_PH = 'CH'

@@ -39,25 +39,30 @@ class NewUserForm(ModelForm):
         super(NewUserForm, self).__init__(*args, **kwargs)
         self.first_name = ''
         self.last_name = ''
+        self.active = False
+        self.office_name = ''
 
     def clean_phone(self):
         data = self.cleaned_data['phone']
         return data
 
-    def clean_app_id(self):
-        _id = self.cleaned_data['app_id']
+    def clean_org_id(self):
+        _id = self.cleaned_data['org_id']
         if not _id:
             return _id
         # TODO:: Put what db this should be hitting (in app)
-        res = mifosx_api('clients', params={"externalId": _id}, app=self.cleaned_data['app'])
+        res = mifosx_api('clients', app=self.cleaned_data['application'], params={"externalId": _id})
         if res['success'] and res['response']['totalFilteredRecords'] == 1:
             self.first_name = res['response']['pageItems']['firstname']
             self.last_name = res['response']['pageItems']['lastname']
             return res['response']['pageItems']['id']
-        res = mifosx_api('clients/{}'.format(_id), params={"fields": "id,firstname,lastname"}, app=self.cleaned_data['app'])
+        res = mifosx_api('clients/{}'.format(_id), app=self.cleaned_data['application'])
+                         # params={"fields": "id,firstname,lastname,officeName"})
         if res['success']:
             self.first_name = res['response']['firstname']
             self.last_name = res['response']['lastname']
+            self.active = res['response']['active']
+            self.office_name = res['response']['officeName']
             return _id
         raise ValidationError(_("The ID provided is not a member of the application chosen"))
 

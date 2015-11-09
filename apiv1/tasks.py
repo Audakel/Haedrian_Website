@@ -40,7 +40,9 @@ def update_coins_token():
         token = requests.post(url, data=data)
 
         # token.raise_for_status()
+        print('about to get wallet')
         if token.status_code == 200:
+            print('Updating wallet for: {}'.format(btc_wallet.user_id))
             logger.info('Updating wallet for: {}'.format(btc_wallet.user_id))
             token = token.json()
             btc_wallet.expires_at = datetime.fromtimestamp(token['expires_at'])
@@ -90,7 +92,7 @@ def verify_send_que():
 
                 # TODO:: FIX receiver from being hardcoded
                 # TODO:: Sender is only looking at the app_id - needs to be also at application
-                mfi_transaction = Transaction(sender=UserData.objects.get(app_id=member.mifos_id).user,
+                mfi_transaction = Transaction(sender=UserData.objects.get(org_id=member.mifos_id).user,
                                               receiver=get_user_model().objects.get(username='mentors_international'),
                                               amount_btc=calc_fees['amount_btc'].amount,
                                               amount_local=member.amount,
@@ -121,7 +123,7 @@ def verify_send_que():
 
                 verify_group.save()
                 verify_person = VerifyPerson(group=verify_group,
-                                             mifos_id=userdata.app_id,
+                                             mifos_id=userdata.org_id,
                                              phone=userdata.phone,
                                              amount=history['transfer']['amount'])
                 verify_person.save()
@@ -142,7 +144,7 @@ def verify_send_que():
 
 @shared_task
 def fetch_mfi_client(new_user):
-    """Create a link between the External Application users and our Wallet Users
+    """Create a link between the External application users and our Wallet Users
     :param new_user: JSON containing the fields 'pk', 'app', 'id'
     :return: {'success': True|False, 'message': message}
     """
@@ -156,7 +158,7 @@ def fetch_mfi_client(new_user):
             r = res['response']['pageItems'][0]
             userdata.user.first_name = r['firstname']
             userdata.user.last_name = r['lastname']
-            userdata.app_id = res['response']['id']
+            userdata.org_id = res['response']['id']
             userdata.user.save()
             # TODO text the user to let them know they are successfully connected to Mifosx
             return {'success': True, 'message': 'User updated'}
@@ -164,7 +166,7 @@ def fetch_mfi_client(new_user):
             return {
                 'success': False,
                 'message': "Error: " + res['message'],
-                # Unable to retrieve the client's information from the External Application.
+                # Unable to retrieve the client's information from the External application.
             }
     '''
     Moved repay_outstanding_loan due to circular dependency
@@ -211,7 +213,7 @@ def get_group_members(user):
     :param clientId: JSON containing the internal (MIFOSX) ID to query the user by
     :return: {'success': True|False, 'message': message}
     """
-    id = UserData.objects.get(user_id=user).app_id
+    id = UserData.objects.get(user_id=user).org_id
     if id == None:
         return {
             'success': True,

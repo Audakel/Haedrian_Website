@@ -51,3 +51,12 @@ django-chart-tools >= 0.2.1
 django-admin-user-stats
 Sphinx
 sphinxtogithub
+bleach
+
+django-nose
+rednose
+nose-progressive
+
+#   If you're on ubuntu, you may run into trouble installing  pyopenssl, you'll need these dependencies:
+#   apt-get install libffi-dev libssl-dev
+pyopenssl ndg-httpsclient pyasn1

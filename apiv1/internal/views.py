@@ -2,6 +2,7 @@ import decimal
 import datetime
 import copy
 import random
+import pickle
 
 from rest_framework.exceptions import ParseError
 from django.core.exceptions import ObjectDoesNotExist
@@ -44,9 +45,10 @@ def _new_user(kwargs):
 
     # Create email for user
     user_email = kwargs.get('email', None) or 'aquila+{}@haedrian.io'.format(kwargs['username'])
+    username = kwargs['username'].lower().strip()
 
     new_data = {
-        "username": kwargs['username'],
+        "username": username,
         "email": user_email,
         "password1": kwargs['password1'],
         "password2": kwargs['password1'],
@@ -570,43 +572,15 @@ def format_sms_amounts(number):
 
 
 def _testing():
-    # endpoint = '/api/v3/crypto-routes/'
-    # url = urlparse.urljoin(settings.COINS_BASE_URL, endpoint)
+    from apiv1.tasks import update_coins_token
+    print('in testing')
+    return update_coins_token()
+
+    # from sms.app import sms_id
+    # user = get_user_model().objects.get(username='jake')
+    # return sms_id('f', ['id', 'test', '18'], user)
     #
-    # _data = make_oauth_request(url, user)
-    # php_address = _data['monitored_address']
-    # return _data
 
-    # username = get_user_model().objects.get(username='create_test')
-    username = 'railgun'
-    from sms.app import sms_location,get_deposit_types,sms_repay
-    responses = []
-
-    potnetials = get_deposit_types(get_user_model().objects.get(username=username))
-    size = len(potnetials)
-    print 'size: {}'.format(size)
-    print 'potnetials: {}'.format(potnetials)
-    for i in range(0, size):
-        user = get_user_model().objects.get(username=username)
-        print 'potnetials: {}'.format(potnetials)
-        print 'number: {}'.format(i)
-        x=sms_location('f', ['location', i], user)
-        print('location: {}'.format(x))
-        ud = UserData.objects.get(user=user)
-        db=ud.sms_deposit_location
-        place= get_deposit_types(user, i)
-        instructions=  sms_repay('r', ['repay', '20'], user)
-        print 'place: {}'.format(place)
-        print 'db: {}'.format(db)
-        print instructions
-        res = {
-            'place': place,
-            'db': db,
-            'instructions': instructions
-        }
-        responses.append(res)
-        print 'xxxx-----'
-    return responses
 
     # return _get_transfer_history(user_id)
     # return verify_send_que()

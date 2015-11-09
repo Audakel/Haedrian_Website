@@ -22,7 +22,7 @@ class CustomMenu(Menu):
             items.MenuItem(_('Dashboard'), reverse('admin:index')),
             items.Bookmarks(),
             items.AppList(
-                _('Applications'),
+                _('applications'),
                 exclude=('django.contrib.*',)
             ),
             items.AppList(

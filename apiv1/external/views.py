@@ -41,11 +41,11 @@ class CreateUser(APIView):
 
     def post(self, request):
         if 'HTTP_X_MIFOS_PLATFORM_TENANTID' in request.META.keys():
-            app = UserData.MENTORS
+            application = UserData.MENTORS
         else:
             # TODO: lol. security by obscurity. pls fix
             return Response(status=404)
-        exists = UserData.objects.filter(application=app, app_id=request.data['clientId'])
+        exists = UserData.objects.filter(application=application, org_id=request.data['clientId'])
         if len(exists) == 1:
             # user has an account already so nothing to do?
             pass

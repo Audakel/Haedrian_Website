@@ -46,8 +46,8 @@ admin.site.register(Wallet, WalletAdmin)
 #     # list_display = ('name',)
 #     pass
 
-# admin.site.unregsiter(Organization)
-# admin.site.unregsiter(OrganizationUser)
-# admin.site.unregsiter(OrganizationOwner)
+# admin.site.unregsiter(application)
+# admin.site.unregsiter(applicationUser)
+# admin.site.unregsiter(applicationOwner)
 # admin.site.register(Account)
 # admin.site.register(AccountUser, AccountUserAdmin)

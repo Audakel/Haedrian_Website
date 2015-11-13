@@ -23,7 +23,7 @@ def verify_sender(msg):
         msg.respond(str_rsp_create_username)
         return False
     else:
-        if msg.text[0] == '@':
+        if msg.text[0] == '@' and len(msg.text) > 1:
             create_handle(msg)
         else:
             msg.respond(str_rsp_create_username)
@@ -81,8 +81,8 @@ def sms_create_user(username, msg):
         "country": "PH"
         # TODO:: Check for number in MFI Mifos account
         # TODO:: Allow signup with MFI id if not already in DB
-        # "application": kwargs.get("application", None),
-        # "app_id": kwargs.get("app_id", None)
+        # "organization": kwargs.get("application", None),
+        # "org_id": kwargs.get("org_id", None)
     }
     nu = _new_user(user_data)
 

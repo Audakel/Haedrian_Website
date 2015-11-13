@@ -81,6 +81,8 @@ class SMSapplication(AppBase):
                 sms_location(msg, parts, user)
             elif command == _(str_cmd_id):
                 sms_id(msg, parts, user)
+            elif command == _(str_cmd_info):
+                sms_info(msg, parts, user)
             else:
                 # msg.respond(_(str_error_unknown))
                 return True
@@ -237,7 +239,7 @@ def sms_done(msg, parts, user):
         # TODO:: currency exchange for SMS amt
 
         message = str_rsp_done % (format_sms_amounts(latest.amount), res['order']['status'].replace('_', ' ').title(),
-                                  user.userdata.application.title())
+                                  user.userdata.organization.title())
         msg.respond(message)
     else:
         msg.respond('There has been some type of error with marking your order "done"')
@@ -309,46 +311,53 @@ def sms_id(msg, parts, user):
         msg.respond(_(str_err_known.format(str_err_no_mfi_or_id)))
         return
 
-    send_data = SmsIdSerializer(data={'application': parts[1], 'app_id': parts[2]})
+    send_data = SmsIdSerializer(data={'organization': parts[1], 'org_id': parts[2]})
     if not send_data.is_valid():
         msg.respond(_(str_err_known.format(str_err_mfi)))
+        return
 
-    new_data = {
+    data_form = NewUserForm({
         "phone": msg.connections[0].identity,
         # Fix hard code PH
         "country": 'PH',
-        "application": send_data.data['application'],
-        "app_id": send_data.data['app_id']
-    }
-    data_form = NewUserForm(new_data)
+        "organization": send_data.data['organization'],
+        "org_id": send_data.data['org_id']
+    })
     if data_form.is_valid():
         user.first_name = data_form.first_name
         user.last_name = data_form.last_name
-        ud = UserData.objects.get(user=user)
-        ud.application = send_data.data['application']
-        ud.org_id = send_data.data['app_id']
         try:
             user.save()
-            ud.save
         except Exception as e:
-            print str(e)
+            return
+        ud = UserData.objects.get(user=user)
+        ud.organization = send_data.data['organization']
+        ud.org_id = send_data.data['org_id']
+        try:
+            ud.save()
+        except Exception as e:
             return
 
         active = 'active' if data_form.active else 'inactive'
-        print('-----')
-        print(user.first_name, type(user.first_name))
-        print(user.last_name, type(user.last_name))
-        print(active, type(active))
-        print(data_form.office_name, type(data_form.office_name))
-        print(str_rsp_acct_found, type(str_rsp_acct_found))
-        print((str_rsp_acct_found) % (user.first_name, user.last_name, active, data_form.office_name))
-        print('-----')
-
         msg.respond((str_rsp_acct_found) % (user.first_name, user.last_name, active, data_form.office_name))
-    elif data_form.errors.get('app_id', False):
-        msg.respond(_(str_err_id % (send_data.data['app_id'], send_data.data['application'].title())))
+        return
+
+    elif data_form.errors.get('org_id', False):
+        msg.respond(_(str_err_id % (send_data.data['org_id'], send_data.data['organization'].title())))
+        return
+
+    else:
+        msg.respond(_('{}. It might be {}'.format(str_err_unknown, data_form.errors['__all__'].as_text())))
+        return
 
 
+def sms_info(msg, parts, user):
+        name = '{} {}'.format(user.first_name, user.last_name) if user.first_name else 'missing'
+        mfi = user.userdata.organization if user.userdata.organization else 'missing'
+        id = user.userdata.org_id if user.userdata.org_id else 'missing'
+        username = user.username
+        msg.respond(_('Name: %s, MFI: %s, ID: %s, Username: %s') % (name, mfi, id, username))
+        return
 
 
 

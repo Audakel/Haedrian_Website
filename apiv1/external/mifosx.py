@@ -106,8 +106,8 @@ def mifosx_api(endpoint, user='', app='', method='GET', params={}, body=None, to
             }
     '''You can put in either a user or app id'''
     if user != '':
-        if UserData.objects.get(user=user).application:
-            base_url = settings.MIFOSX_SERVER_URL.format(UserData.objects.get(user=user).application)
+        if UserData.objects.get(user=user).organization:
+            base_url = settings.MIFOSX_SERVER_URL.format(UserData.objects.get(user=user).organization)
         else:
             return no_db_message
     elif app != '':

@@ -41,11 +41,11 @@ class CreateUser(APIView):
 
     def post(self, request):
         if 'HTTP_X_MIFOS_PLATFORM_TENANTID' in request.META.keys():
-            application = UserData.MENTORS
+            organization = UserData.MENTORS
         else:
             # TODO: lol. security by obscurity. pls fix
             return Response(status=404)
-        exists = UserData.objects.filter(application=application, org_id=request.data['clientId'])
+        exists = UserData.objects.filter(organization=organization, org_id=request.data['clientId'])
         if len(exists) == 1:
             # user has an account already so nothing to do?
             pass
@@ -80,8 +80,8 @@ class CreateUser(APIView):
                 'password2': password,
                 'phone': phone,
                 'country': country,
-                'application': UserData.MENTORS,
-                'app_id': request.data['clientId'],
+                'organization': UserData.MENTORS,
+                'org_id': request.data['clientId'],
             }
             ret_val = _create_account(account)
             if not ret_val['success']:

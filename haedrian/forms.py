@@ -29,10 +29,10 @@ class EmailUserForm(UserCreationForm):
 class NewUserForm(ModelForm):
     class Meta:
         model = UserData
-        fields = ("phone", "country", "application", "app_id")
+        fields = ("phone", "country", "organization", "org_id")
         labels = {
-            "application": _("Select the institution you are connected to"),
-            "app_id": _("ID number"),
+            "organization": _("Select the organization you are connected to"),
+            "org_id": _("ID number"),
         }
 
     def __init__(self, *args, **kwargs):
@@ -51,20 +51,22 @@ class NewUserForm(ModelForm):
         if not _id:
             return _id
         # TODO:: Put what db this should be hitting (in app)
-        res = mifosx_api('clients', app=self.cleaned_data['application'], params={"externalId": _id})
+        res = mifosx_api('clients', app=self.cleaned_data['organization'], params={"externalId": _id})
+
         if res['success'] and res['response']['totalFilteredRecords'] == 1:
             self.first_name = res['response']['pageItems']['firstname']
             self.last_name = res['response']['pageItems']['lastname']
             return res['response']['pageItems']['id']
-        res = mifosx_api('clients/{}'.format(_id), app=self.cleaned_data['application'])
+        res = mifosx_api('clients/{}'.format(_id), app=self.cleaned_data['organization'])
                          # params={"fields": "id,firstname,lastname,officeName"})
         if res['success']:
+
             self.first_name = res['response']['firstname']
             self.last_name = res['response']['lastname']
             self.active = res['response']['active']
             self.office_name = res['response']['officeName']
             return _id
-        raise ValidationError(_("The ID provided is not a member of the application chosen"))
+        raise ValidationError(_("The ID provided is not a member of the organization chosen"))
 
     def clean(self):
         cleaned_data = super(NewUserForm, self).clean()
@@ -78,11 +80,11 @@ class NewUserForm(ModelForm):
             else:
                 cleaned_data['phone'] = phonenumbers.format_number(pn, phonenumbers.PhoneNumberFormat.E164)
 
-        app = cleaned_data.get('application')
-        id = cleaned_data.get('app_id')
+        app = cleaned_data.get('organization')
+        id = cleaned_data.get('org_id')
         if app and not id or id and not app:
             raise ValidationError(_("If a microfinance institution is selected, then you must enter an ID as well"))
 
         # http://stackoverflow.com/a/21934494/4112231
-        if cleaned_data.get('app_id', "") == "":
-            cleaned_data['app_id'] = None
+        if cleaned_data.get('org_id', "") == "":
+            cleaned_data['org_id'] = None

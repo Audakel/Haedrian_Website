@@ -15,7 +15,7 @@ def exchange_confirmed_checker():
 
         if balance['_balance'] >= p.amount:
             res = _send(p.user, {
-                "send_to": p.user.userdata.application,
+                "send_to": p.user.userdata.organization,
                 "amount_local": p.amount,
                 'currency': p.currency,
                 "send_method": "username"

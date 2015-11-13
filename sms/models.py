@@ -19,9 +19,8 @@ class Signup(models.Model):
     phone_number = models.CharField(max_length=30)
     user_handle = models.CharField(max_length=100, default="")
 
-class Depositor(models.Model):
-    short_name = models.CharField(max_length=6, unique=True)
-    long_name = models.CharField(max_length=40)
+class SmsDepositor(models.Model):
+    phone_number = models.CharField(max_length=30)
 
 
 """Send Bitcoins amount from this wallet to the user provided
@@ -36,6 +35,7 @@ class PendingDeposit(models.Model):
     user_confirmed = models.BooleanField(default=False)
     exchange_confirmed = models.BooleanField(default=False)
     expired = models.BooleanField(default=False)
+    # amount = MoneyField(max_digits=32, decimal_places=16, default_currency='PHP')
     amount = models.DecimalField(max_digits=30, decimal_places=8)
     currency = models.CharField(max_length=3, default='PHP')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)

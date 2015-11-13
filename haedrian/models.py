@@ -30,7 +30,7 @@ class UserData(models.Model):
     ASHI = 'ashi'
     TEST = 'test'
 
-    applicationS = (
+    ORGANIZATIONS = (
         (MI_ASIA, _('Mentors Asia'),),
         (MI_AFRICA, _('Mentors Africa'),),
         (MI_LATAM, _('Mentors Latin America'),),
@@ -38,11 +38,11 @@ class UserData(models.Model):
         (TEST, _('Haedrian Test'),),
     )
 
-    application = models.CharField(choices=applicationS, blank=True, max_length=30)
+    organization = models.CharField(choices=ORGANIZATIONS, blank=True, max_length=30)
 
     class Meta:
         unique_together = (
-            ("application", "app_id"),
+            ("organization", "org_id"),
         )
 
     def __str__(self):

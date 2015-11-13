@@ -1,3 +1,4 @@
+from django_countries.fields import CountryField
 from rest_framework import serializers
 
 class PlacesSerializer(serializers.Serializer):
@@ -7,7 +8,7 @@ class PlacesSerializer(serializers.Serializer):
 
 CURRENCIES = ['USD', 'PHP', 'BTC']
 METHODS = ['username', 'phone', 'email', 'target_address']
-MFI = ['mentors', 'ashi', 'test']
+MFI = ['mentors', 'ashi', 'test', ]
 
 
 class UserSerializer(serializers.Serializer):
@@ -21,10 +22,11 @@ class UserSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password1 = serializers.CharField(min_length=8)
     password2 = serializers.CharField(min_length=8)
-    phone = kwargs['phone'],
-    country = kwargs['country'],
-    application = serializers.ChoiceField(choices=MFI)
-    org_id = kwargs.get("app_id", None)
+    phone = serializers.CharField(),
+    country = CountryField()
+    organization = serializers.ChoiceField(choices=MFI, required=False, default="")
+    org_id = serializers.CharField(required=False, default="", allow_blank=True)
+
 
 class SendSerializer(serializers.Serializer):
     def create(self, validated_data):
@@ -32,7 +34,6 @@ class SendSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         return super(SendSerializer, self).update(instance, validated_data)
-
 
     send_method = serializers.ChoiceField(choices=METHODS)
     send_to = serializers.CharField()

@@ -13,13 +13,14 @@ def index(request):
 
 @transaction.atomic
 def _create_account(user_data):
+
     """
     API friendly INTERNAL USE ONLY account registration end point
     :param user_data - Dict that contains all the fields that are expected for the user to fill out.
     Required keys in the dict are
     ["username", "email", "password1", "password2", "phone", "country"]
     Optional fields are
-    ['application', 'app_id']
+    ['organization', 'org_id']
     :returns True if the account creation was successful
     """
     data_form = NewUserForm(user_data)
@@ -42,10 +43,10 @@ def _create_account(user_data):
         except IntegrityError as e:
             return {'success': False, 'error': e.message}
         # TODO: send verification email or something
-        return {'success': True}
+        return {'success': True, 'data_form': data_form, 'user_form': user_form}
     else:
         # user has an account created by an external app so update instead of create
-        user = UserData.objects.filter(app_id=user_data['app_id'])
+        user = UserData.objects.filter(org_id=user_data['org_id'])
         if len(user) == 1:
             u = user[0]
             # only update the user account if the person has a placeholder name
@@ -57,7 +58,7 @@ def _create_account(user_data):
                 u.phone = data_form.cleaned_data['phone']
                 u.country = data_form.cleaned_data['country']
                 u.save()
-                return {'success': True}
+                return {'success': True, 'data_form': data_form, 'user_form': user_form}
 
         error = 'Signup: {} - {}'.format(user_form.errors, data_form.errors['__all__'].as_text())
 

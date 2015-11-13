@@ -1,3 +1,4 @@
+from sys import stdout
 import urlparse
 from datetime import timedelta, datetime
 from django.conf import settings
@@ -40,9 +41,9 @@ def update_coins_token():
         token = requests.post(url, data=data)
 
         # token.raise_for_status()
-        print('about to get wallet')
+        # stdout.write('about to get wallet')
         if token.status_code == 200:
-            print('Updating wallet for: {}'.format(btc_wallet.user_id))
+            # stdout.write('Updating wallet for: {}'.format(btc_wallet.user_id))
             logger.info('Updating wallet for: {}'.format(btc_wallet.user_id))
             token = token.json()
             btc_wallet.expires_at = datetime.fromtimestamp(token['expires_at'])
@@ -91,7 +92,7 @@ def verify_send_que():
                 calc_fees = calculate_fees(transaction.amount_local_currency, member.amount)
 
                 # TODO:: FIX receiver from being hardcoded
-                # TODO:: Sender is only looking at the app_id - needs to be also at application
+                # TODO:: Sender is only looking at the org_id - needs to be also at organization
                 mfi_transaction = Transaction(sender=UserData.objects.get(org_id=member.mifos_id).user,
                                               receiver=get_user_model().objects.get(username='mentors_international'),
                                               amount_btc=calc_fees['amount_btc'].amount,
@@ -144,7 +145,7 @@ def verify_send_que():
 
 @shared_task
 def fetch_mfi_client(new_user):
-    """Create a link between the External application users and our Wallet Users
+    """Create a link between the External organization users and our Wallet Users
     :param new_user: JSON containing the fields 'pk', 'app', 'id'
     :return: {'success': True|False, 'message': message}
     """
@@ -166,7 +167,7 @@ def fetch_mfi_client(new_user):
             return {
                 'success': False,
                 'message': "Error: " + res['message'],
-                # Unable to retrieve the client's information from the External application.
+                # Unable to retrieve the client's information from the External organization.
             }
     '''
     Moved repay_outstanding_loan due to circular dependency
@@ -174,7 +175,7 @@ def fetch_mfi_client(new_user):
 
 
 # def repay_outstanding_loan(json):
-# """Queries the external application to see if there is an outstanding loan for this
+# """Queries the external organization to see if there is an outstanding loan for this
 # user and applies the money from this transaction to that loan
 #
 #     :param clientId: JSON containing the internal (MIFOSX) ID to query the user by
@@ -207,7 +208,7 @@ def fetch_mfi_client(new_user):
 
 @shared_task
 def get_group_members(user):
-    """Queries the external application to see if there is a group associated with
+    """Queries the external organization to see if there is a group associated with
         the user and if so returns the group and info on the members
 
     :param clientId: JSON containing the internal (MIFOSX) ID to query the user by

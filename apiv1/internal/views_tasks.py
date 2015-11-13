@@ -82,7 +82,7 @@ def get_temp_wallet(user):
 
 @shared_task
 def repay_outstanding_loan(_json):
-    """Queries the external application to see if there is an outstanding loan for this
+    """Queries the external organization to see if there is an outstanding loan for this
     user and applies the money from this transaction to that loan
 
     :param clientId: JSON containing the internal (MIFOSX) ID to query the user by

@@ -12,7 +12,7 @@ class UserDataAdmin(admin.ModelAdmin):
     list_display = ('user', 'phone', 'credit_score', 'default_currency')
 
 class PendingDepositAdmin(admin.ModelAdmin):
-    list_display = ('user', 'amount', 'currency', 'time', 'user_confirmed', 'exchange_confirmed', 'expired')
+    list_display = ('user', 'time', 'amount', 'user_confirmed', 'exchange_confirmed', 'expired')
 
 class ExchangeRatesAdmin(admin.ModelAdmin):
     list_display = ('provider', 'code_from', 'code_to', 'buy', 'sell', 'date')

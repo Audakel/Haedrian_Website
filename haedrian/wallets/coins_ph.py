@@ -58,15 +58,15 @@ POST
 }
 
 # NEW USER - CREATE
-# Optional params - application and app_id
+# Optional params - organization and org_id
 {
         "username": "jmonkey1",
         "email": "jmonkey1@mailinator.com",
         "password1": "password123",
         "phone": "+14105521258",
         "country": "US",
-        "application": "MENTORS",
-        "app_id": 50
+        "organization": "MENTORS",
+        "org_id": 50
 }
 
 # BUY

@@ -233,13 +233,10 @@ TEMPLATES = [
 ]
 
 # Use nose to run all tests
-# TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+# TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 NOSE_ARGS = [
-    # '--exclude-dir=migrations/'
-    # '--exclude-dir-file={}'.format(os.path.join(PROJECT_ROOT, 'Haedrian_Website/nose_exclude.txt')),
-    # '--exclude-dir={}'.format(os.path.join(PROJECT_ROOT, 'sms/')),
-    '--exclude-dir={}'.format(os.path.join(PROJECT_ROOT, 'sms/migrations')),
+
 
 
     '--with-coverage',

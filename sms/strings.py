@@ -50,6 +50,7 @@ str_cmd_repay = 'repay'
 str_cmd_done = 'done'
 str_cmd_location = 'location'
 str_cmd_id = 'id'
+str_cmd_info = 'info'
 
 
 # ==============================

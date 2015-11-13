@@ -3,7 +3,8 @@ import datetime
 import copy
 import random
 import pickle
-
+import pycountry
+from django.db import transaction, IntegrityError
 from rest_framework.exceptions import ParseError
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
@@ -38,12 +39,19 @@ def _create_wallet(user, kwargs):
     data = wallet.create_wallet(user, kwargs)
     return data
 
-
+@transaction.atomic
 def _new_user(kwargs):
-    # TODO: Make a new user Serializer to validate that all the fields are here
-    # so it doesn't throw a key error when bad input comes in
+    """
+    API friendly INTERNAL USE ONLY account registration end point
+    :param user_data - Dict that contains all the fields that are expected for the user to fill out.
+    Required keys in the dict are
+    ["username", "email", "password1", "password2", "phone", "country"]
+    Optional fields are
+    ['organization', 'org_id']
+    :returns True if the account creation was successful
+    """
 
-    # Create email for user
+    # Create email for user if they don't have one
     user_email = kwargs.get('email', None) or 'aquila+{}@haedrian.io'.format(kwargs['username'])
     username = kwargs['username'].lower().strip()
 
@@ -54,17 +62,20 @@ def _new_user(kwargs):
         "password2": kwargs['password1'],
         "phone": kwargs['phone'],
         "country": kwargs['country'],
-        "application": kwargs.get("application", None),
-        "app_id": kwargs.get("app_id", None)
+        "organization": kwargs.get("organization", None),
+        "org_id": kwargs.get("org_id", None)
     }
+
     account = _create_account(new_data)
     if account['success']:
-        user = get_user_model().objects.get(username=kwargs['username'])
+        data_form = account['data_form']
+        user_form = account['user_form']
+        user = get_user_model().objects.get(username=user_form.cleaned_data['username'])
         token = Token.objects.create(user=user)
         try:
             my_wallet = _create_wallet(user, new_data)
         except Exception as e:
-            get_user_model().objects.get(username=kwargs['username']).delete()
+            user.delete()
             raise ParseError(detail=str(e))
         if my_wallet['success']:
             try:
@@ -76,12 +87,11 @@ def _new_user(kwargs):
                 "token": token.key
             }
         else:
-            get_user_model().objects.get(username=kwargs['username']).delete()
+            get_user_model().objects.get(username=user_form.cleaned_data['username']).delete()
             # The Token is deleted in cascade https://docs.djangoproject.com/en/1.8/topics/db/queries/#topics-db-queries-delete
             # Token.objects.get(user=user).delete()
             raise ParseError(detail=my_wallet['error'])
-    else:
-        raise ParseError(detail=account)
+
 
 
 def _get_exchanges(user, kwargs):
@@ -572,9 +582,20 @@ def format_sms_amounts(number):
 
 
 def _testing():
-    from apiv1.tasks import update_coins_token
-    print('in testing')
-    return update_coins_token()
+
+    from django.core.management import call_command
+
+    output_filename = 'sms/fixtures/users.json'
+    try:
+        output = open(output_filename, 'w')
+        call_command('dumpdata', 'auth.User', 'haedrian', 'apiv1', format='json', indent=3, stdout=output)
+        output.close()
+    except Exception as e:
+        return str(e)
+
+    # from apiv1.tasks import update_coins_token
+    # print('in testing')
+    # return update_coins_token()
 
     # from sms.app import sms_id
     # user = get_user_model().objects.get(username='jake')

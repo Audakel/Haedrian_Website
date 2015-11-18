@@ -179,10 +179,18 @@ def save_message(msg):
 
 
 def verify(msg):
+    """Verify that the cell number is associated with a user in our db
+    :param msg: A full telerivet message object
+    :returns: True or false
+    """
     verify_sender(msg)
 
 
 def sms_whoami(msg):
+    """ Check what the username is
+    :param msg: A full telerivet message object
+    :returns: Username associated with the phone number
+    """
     user_id = UserData.objects.get(phone=msg.connections[0].identity).user_id
     msg.respond('User: @{}'.format(get_user_model().objects.get(id=user_id).username))
 
@@ -192,6 +200,11 @@ def sms_where(msg, parts, user):
 
 
 def sms_repay(msg, parts, user):
+    """ Start the deposit process with a buy order
+    :param msg: A full telerivet message object
+    :param parts: ex. 'Repay 12' - text message to repay 12 PHP
+    :returns: Instructions on how to deposit at your chosen deposit location
+    """
     # TODO:: fix hardcoded currency amount
     data = {
         "amount_local": parts[1],
@@ -221,6 +234,11 @@ def sms_repay(msg, parts, user):
 
 
 def sms_done(msg, parts, user):
+    """ Mark your deposit as paid after you have deposited the money
+    :param msg: A full telerivet message object
+    :param parts: 'done'
+    :returns: A message letting you know the status of the deposit
+    """
     if not PendingDeposit.objects.filter(user=user, user_confirmed=False).exists():
         msg.respond("Sorry, we can't find any repayments for you : (")
         return
@@ -246,6 +264,10 @@ def sms_done(msg, parts, user):
 
 
 def get_deposit_types(user, location=''):
+    """ Returns a list of deposit locations
+    :param location: format option
+    :returns: A list of deposit locations
+    """
     data = _get_exchange_types(user)
 
     if not data['success']:
@@ -271,9 +293,17 @@ def get_deposit_types(user, location=''):
 
 
 def frmt_db_lctn(location):
+    """ Formats the database location into nicer, more readable style
+    :param location: sms deposit location
+    :returns: Formated sms deposit location
+    """
     return location.replace("_", " ").replace('-', ' ').title()
 
 def sms_location(msg, parts, user):
+    """ Allows you to see either your current deposit location, or a list of avaiable deposit locations
+    :param parts: either 'location' or 'location 2' where the number is what deposit location you want
+    :returns: Either a list of locations or a confirmation of change
+    """
     if len(parts) is 1:
         locations = get_deposit_types(user)
         # if not locations.get('success', True):
@@ -303,6 +333,11 @@ def sms_location(msg, parts, user):
 
 
 def sms_id(msg, parts, user):
+    """ Allows users to update / input their MFI and MFI ID
+    :param parts: 'id test 23' sets your MFI to 'test' and your id to '23'
+    :returns: If it found a corresponding user in Mifos it will return a
+    message with details about the name, office, loan and wallet balance status
+    """
     if len(parts) is 1:
         msg.respond(str_rsp_id)
         return
@@ -352,6 +387,10 @@ def sms_id(msg, parts, user):
 
 
 def sms_info(msg, parts, user):
+        """ Allows users to see all the basic info we have for them
+        :param parts: 'info'
+        :returns: Message with name, mfi, id, and username
+        """
         name = '{} {}'.format(user.first_name, user.last_name) if user.first_name else 'missing'
         mfi = user.userdata.organization if user.userdata.organization else 'missing'
         id = user.userdata.org_id if user.userdata.org_id else 'missing'

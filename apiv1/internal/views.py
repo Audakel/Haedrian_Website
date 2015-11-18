@@ -583,24 +583,14 @@ def format_sms_amounts(number):
 
 def _testing():
 
-    from django.core.management import call_command
-
-    output_filename = 'sms/fixtures/users.json'
-    try:
-        output = open(output_filename, 'w')
-        call_command('dumpdata', 'auth.User', 'haedrian', 'apiv1', format='json', indent=3, stdout=output)
-        output.close()
-    except Exception as e:
-        return str(e)
-
     # from apiv1.tasks import update_coins_token
     # print('in testing')
     # return update_coins_token()
 
-    # from sms.app import sms_id
-    # user = get_user_model().objects.get(username='jake')
-    # return sms_id('f', ['id', 'test', '18'], user)
-    #
+    from sms.app import sms_balance
+    user = get_user_model().objects.get(username='mankey')
+    return sms_balance('f', user)
+
 
 
     # return _get_transfer_history(user_id)

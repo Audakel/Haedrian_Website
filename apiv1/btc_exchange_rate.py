@@ -22,6 +22,7 @@ class ExchangeBackend(BackendBase):
         if currency == self._base:
             return decimal.Decimal(1)
         # TODO: should it be sell rate or buy rate?
+        print ('--- from: {}, to: {}'.format(currency, self.base))
         return decimal.Decimal(ExchangeRates.objects.filter(provider="CoinsPH API", code_from=currency, code_to=self._base).latest('date').sell)
         # return self._rates.get(currency, None)
 

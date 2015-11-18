@@ -30,10 +30,10 @@ class SMSTestCase(TestCase):
     # fixtures = ['users.json']
 
     # Change user if AssertionError: Amount has reached your daily cash-in limit and can only be up to 15.35 PHP.'
-    # test_user = 'raichu'
-    # phone = '+639420023894'
-    test_user = 'mankey'
-    phone = '+639420023895'
+    test_user = 'raichu'
+    phone = '+639420023894'
+    # test_user = 'mankey'
+    # phone = '+639420023895'
 
     def incoming_msg(self, command, phone=''):
         with open('sms/sms_msg.txt', 'r') as f:
@@ -117,7 +117,8 @@ class SMSTestCase(TestCase):
 
         # Add correct MFI id number
         self.assertEqual(self.process_msg('id'), str_rsp_id)
-        self.assertTrue('User data with this Organization and Org id already exists' in self.process_msg('id test 18'))
+        if self.test_user == 'raichu':
+            self.assertTrue('User data with this Organization and Org id already exists' in self.process_msg('id test 18'))
         self.assertTrue(self.process_msg('id test 188'), str_rsp_acct_found % ('Elsa', 'Aguilar Calix', 'active', 'Potrerillos'))
 
         # Check db

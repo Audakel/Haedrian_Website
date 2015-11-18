@@ -20,6 +20,24 @@
 {
    "fields": {
       "username": "mankey",
+      "first_name": "",
+      "last_name": "",
+      "is_active": true,
+      "is_superuser": false,
+      "is_staff": false,
+      "last_login": null,
+      "groups": [],
+      "user_permissions": [],
+      "password": "pbkdf2_sha256$20000$9nMM9aRQ8nqs$bW6ttmWBEfgvfR3W7ap2sebNC49NjK3LyTaYR7y/Ue8=",
+      "email": "aquila+roger@haedrian.io",
+      "date_joined": "2015-11-17T03:14:49.365Z"
+   },
+   "model": "auth.user",
+   "pk": 9
+},
+{
+   "fields": {
+      "username": "electabuzz",
       "first_name": "Andres",
       "last_name": "Garcia Lopez",
       "is_active": true,
@@ -28,19 +46,19 @@
       "last_login": null,
       "groups": [],
       "user_permissions": [],
-      "password": "pbkdf2_sha256$20000$eIiBfdCrTlHY$YdKOa9mhUY9vIH7n+ecbgcfer4/HZwmJrAlYVzTysC8=",
-      "email": "aquila+Mankey@haedrian.io",
-      "date_joined": "2015-11-09T21:37:20.945Z"
+      "password": "pbkdf2_sha256$20000$mu8LAAsZoCyS$99xI7T9NmqsImnt/TbFAGWkqn0/cqreu9C1f+vUNCOI=",
+      "email": "aquila+electabuzz@haedrian.io",
+      "date_joined": "2015-11-18T16:14:16.623Z"
    },
    "model": "auth.user",
-   "pk": 8
+   "pk": 10
 },
 {
    "fields": {
       "sms_deposit_location": "bdo_deposit",
       "credit_score": 0,
       "country": "PH",
-      "org_id": null,
+      "org_id": "<null>",
       "phone": "+639420023894",
       "organization": "",
       "default_currency": "PHP"
@@ -50,16 +68,29 @@
 },
 {
    "fields": {
-      "sms_deposit_location": "bdo_deposit",
+      "sms_deposit_location": "securitybank_deposit",
       "credit_score": 0,
       "country": "PH",
-      "org_id": "18",
+      "org_id": null,
       "phone": "+639420023895",
-      "organization": "test",
+      "organization": "",
       "default_currency": "PHP"
    },
    "model": "haedrian.userdata",
-   "pk": 8
+   "pk": 9
+},
+{
+   "fields": {
+      "sms_deposit_location": null,
+      "credit_score": 0,
+      "country": "US",
+      "org_id": "18",
+      "phone": "+14105521258",
+      "organization": "test",
+      "default_currency": "USD"
+   },
+   "model": "haedrian.userdata",
+   "pk": 10
 },
 {
    "fields": {
@@ -91,30 +122,418 @@
 },
 {
    "fields": {
-      "provider_wallet_id": "aba30fd2c0774bee9829876e70a37411",
-      "access_token": "lM0m8KNBFvA7tbSXrY9pUcbwbBiEEp",
-      "expires_at": "2015-12-09T22:46:23Z",
+      "provider_wallet_id": "f61283a23be3490bafb5590bd65abe67",
+      "access_token": "1LHqO608YH7ZsOYQMvLsEoNbvMD7Xf",
+      "expires_at": "2015-12-18T15:52:31Z",
       "currency": "BTC",
-      "user": 8,
+      "user": 9,
       "type": "CH",
-      "refresh_token": "8lDjpEXJ5o7Ax7p3r8G3fiqAWICXlf",
-      "blockchain_address": "3265stdGhsAczMeeY9Nfgy2ZyARx2ovdRK"
+      "refresh_token": "FQdGc0aGKdqC97bLof1mRgnzBaw47L",
+      "blockchain_address": "3Pu2UUMAXaq6HyLfaeSVzhjwnMTZTs8xhj"
    },
    "model": "haedrian.wallet",
+   "pk": 12
+},
+{
+   "fields": {
+      "provider_wallet_id": "936e686b765449b18c623e262468f720",
+      "access_token": "1LHqO608YH7ZsOYQMvLsEoNbvMD7Xf",
+      "expires_at": "2015-12-18T15:52:31Z",
+      "currency": "PHP",
+      "user": 9,
+      "type": "CH",
+      "refresh_token": "FQdGc0aGKdqC97bLof1mRgnzBaw47L",
+      "blockchain_address": "36cyq85jqpqXcbtr3iPqWdHTew4hWmSEqW"
+   },
+   "model": "haedrian.wallet",
+   "pk": 13
+},
+{
+   "fields": {
+      "provider_wallet_id": "52b35ed8f5f346e6b646f0f4a89bc268",
+      "access_token": "CFRLjKa710owtIVvHChQTUZfDmMEH7",
+      "expires_at": "2015-11-19T16:14:19Z",
+      "currency": "BTC",
+      "user": 10,
+      "type": "CH",
+      "refresh_token": "W2AUrcYyWAYK8vbNiiNuCPkEBLpZnA",
+      "blockchain_address": "37C4MA6ukRd9QMLFf4T7BDxMye1nBeMzpx"
+   },
+   "model": "haedrian.wallet",
+   "pk": 14
+},
+{
+   "fields": {
+      "provider_wallet_id": "049e7c51dfe64e48974a92f1e87f6985",
+      "access_token": "CFRLjKa710owtIVvHChQTUZfDmMEH7",
+      "expires_at": "2015-11-19T16:14:19Z",
+      "currency": "PHP",
+      "user": 10,
+      "type": "CH",
+      "refresh_token": "W2AUrcYyWAYK8vbNiiNuCPkEBLpZnA",
+      "blockchain_address": "36MrtxMWcBYDg28HHPYcdSux1exgz76FXe"
+   },
+   "model": "haedrian.wallet",
+   "pk": 15
+},
+{
+   "fields": {
+      "sell": "15757.0000000000",
+      "buy": "16072.0000000000",
+      "code_from": "PHP",
+      "code_to": "BTC",
+      "provider": "CoinsPH API",
+      "date": "2015-11-18T15:27:50.172Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 1
+},
+{
+   "fields": {
+      "sell": "0.0000622200",
+      "buy": "0.0000634639",
+      "code_from": "BTC",
+      "code_to": "PHP",
+      "provider": "CoinsPH API",
+      "date": "2015-11-18T15:27:50.302Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 2
+},
+{
+   "fields": {
+      "sell": "336.1500000000",
+      "buy": "340.4900000000",
+      "code_from": "USD",
+      "code_to": "BTC",
+      "provider": "CoinsPH API",
+      "date": "2015-11-18T15:27:50.420Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 3
+},
+{
+   "fields": {
+      "sell": "0.0029369438",
+      "buy": "0.0029748624",
+      "code_from": "BTC",
+      "code_to": "USD",
+      "provider": "CoinsPH API",
+      "date": "2015-11-18T15:27:50.537Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 4
+},
+{
+   "fields": {
+      "sell": "15757.0000000000",
+      "buy": "16072.0000000000",
+      "code_from": "PHP",
+      "code_to": "BTC",
+      "provider": "CoinsPH API",
+      "date": "2015-11-18T15:27:50.198Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 5
+},
+{
+   "fields": {
+      "sell": "0.0000622200",
+      "buy": "0.0000634639",
+      "code_from": "BTC",
+      "code_to": "PHP",
+      "provider": "CoinsPH API",
+      "date": "2015-11-18T15:27:50.864Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 6
+},
+{
+   "fields": {
+      "sell": "336.1500000000",
+      "buy": "340.4900000000",
+      "code_from": "USD",
+      "code_to": "BTC",
+      "provider": "CoinsPH API",
+      "date": "2015-11-18T15:27:50.999Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 7
+},
+{
+   "fields": {
+      "sell": "0.0029369438",
+      "buy": "0.0029748624",
+      "code_from": "BTC",
+      "code_to": "USD",
+      "provider": "CoinsPH API",
+      "date": "2015-11-18T15:27:51.140Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 8
+},
+{
+   "fields": {
+      "sell": "0.0212000000",
+      "buy": "0.0212000000",
+      "code_from": "PHP",
+      "code_to": "USD",
+      "provider": "Yahoo (YML)",
+      "date": "2015-11-18T15:27:50.949Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 9
+},
+{
+   "fields": {
+      "sell": "0.0001000000",
+      "buy": "0.0001000000",
+      "code_from": "PHP",
+      "code_to": "BTC",
+      "provider": "Yahoo (YML)",
+      "date": "2015-11-18T15:27:51.400Z"
+   },
+   "model": "haedrian.exchangerates",
    "pk": 10
 },
 {
    "fields": {
-      "provider_wallet_id": "dfb7c07e125d49388ea3ddaa62a04f3a",
-      "access_token": "lM0m8KNBFvA7tbSXrY9pUcbwbBiEEp",
-      "expires_at": "2015-12-09T22:46:23Z",
-      "currency": "PHP",
-      "user": 8,
-      "type": "CH",
-      "refresh_token": "8lDjpEXJ5o7Ax7p3r8G3fiqAWICXlf",
-      "blockchain_address": "3HZraEyhvcP2jduAG1gvxhQWAmx8Y4XtKi"
+      "sell": "47.1805000000",
+      "buy": "47.2560000000",
+      "code_from": "USD",
+      "code_to": "PHP",
+      "provider": "Yahoo (YML)",
+      "date": "2015-11-18T15:27:51.526Z"
    },
-   "model": "haedrian.wallet",
+   "model": "haedrian.exchangerates",
    "pk": 11
+},
+{
+   "fields": {
+      "sell": "0.0212000000",
+      "buy": "0.0212000000",
+      "code_from": "PHP",
+      "code_to": "USD",
+      "provider": "Yahoo (YML)",
+      "date": "2015-11-18T15:27:51.564Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 12
+},
+{
+   "fields": {
+      "sell": "0.0001000000",
+      "buy": "0.0001000000",
+      "code_from": "PHP",
+      "code_to": "BTC",
+      "provider": "Yahoo (YML)",
+      "date": "2015-11-18T15:27:51.760Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 13
+},
+{
+   "fields": {
+      "sell": "47.1805000000",
+      "buy": "47.2560000000",
+      "code_from": "USD",
+      "code_to": "PHP",
+      "provider": "Yahoo (YML)",
+      "date": "2015-11-18T15:27:51.877Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 14
+},
+{
+   "fields": {
+      "sell": "0.0030000000",
+      "buy": "0.0030000000",
+      "code_from": "USD",
+      "code_to": "BTC",
+      "provider": "Yahoo (YML)",
+      "date": "2015-11-18T15:27:51.995Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 15
+},
+{
+   "fields": {
+      "sell": "15784.7109000000",
+      "buy": "15767.9258000000",
+      "code_from": "BTC",
+      "code_to": "PHP",
+      "provider": "Yahoo (YML)",
+      "date": "2015-11-18T15:27:52.129Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 16
+},
+{
+   "fields": {
+      "sell": "0.0030000000",
+      "buy": "0.0030000000",
+      "code_from": "USD",
+      "code_to": "BTC",
+      "provider": "Yahoo (YML)",
+      "date": "2015-11-18T15:27:51.643Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 17
+},
+{
+   "fields": {
+      "sell": "15784.7109000000",
+      "buy": "15767.9258000000",
+      "code_from": "BTC",
+      "code_to": "PHP",
+      "provider": "Yahoo (YML)",
+      "date": "2015-11-18T15:27:52.414Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 18
+},
+{
+   "fields": {
+      "sell": "0E-10",
+      "buy": "0E-10",
+      "code_from": "BTC",
+      "code_to": "USD",
+      "provider": "Yahoo (YML)",
+      "date": "2015-11-18T15:27:52.540Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 19
+},
+{
+   "fields": {
+      "sell": "0E-10",
+      "buy": "0E-10",
+      "code_from": "BTC",
+      "code_to": "USD",
+      "provider": "Yahoo (YML)",
+      "date": "2015-11-18T15:27:52.272Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 20
+},
+{
+   "fields": {
+      "sell": "15758.0000000000",
+      "buy": "16073.0000000000",
+      "code_from": "PHP",
+      "code_to": "BTC",
+      "provider": "CoinsPH API",
+      "date": "2015-11-18T15:28:29.333Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 21
+},
+{
+   "fields": {
+      "sell": "0.0000622161",
+      "buy": "0.0000634598",
+      "code_from": "BTC",
+      "code_to": "PHP",
+      "provider": "CoinsPH API",
+      "date": "2015-11-18T15:28:29.448Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 22
+},
+{
+   "fields": {
+      "sell": "336.1600000000",
+      "buy": "340.5000000000",
+      "code_from": "USD",
+      "code_to": "BTC",
+      "provider": "CoinsPH API",
+      "date": "2015-11-18T15:28:29.565Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 23
+},
+{
+   "fields": {
+      "sell": "0.0029368576",
+      "buy": "0.0029747739",
+      "code_from": "BTC",
+      "code_to": "USD",
+      "provider": "CoinsPH API",
+      "date": "2015-11-18T15:28:29.707Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 24
+},
+{
+   "fields": {
+      "sell": "0.0212000000",
+      "buy": "0.0212000000",
+      "code_from": "PHP",
+      "code_to": "USD",
+      "provider": "Yahoo (YML)",
+      "date": "2015-11-18T15:28:30.933Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 25
+},
+{
+   "fields": {
+      "sell": "0.0001000000",
+      "buy": "0.0001000000",
+      "code_from": "PHP",
+      "code_to": "BTC",
+      "provider": "Yahoo (YML)",
+      "date": "2015-11-18T15:28:31.068Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 26
+},
+{
+   "fields": {
+      "sell": "47.1805000000",
+      "buy": "47.2560000000",
+      "code_from": "USD",
+      "code_to": "PHP",
+      "provider": "Yahoo (YML)",
+      "date": "2015-11-18T15:28:31.185Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 27
+},
+{
+   "fields": {
+      "sell": "0.0030000000",
+      "buy": "0.0030000000",
+      "code_from": "USD",
+      "code_to": "BTC",
+      "provider": "Yahoo (YML)",
+      "date": "2015-11-18T15:28:31.302Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 28
+},
+{
+   "fields": {
+      "sell": "15784.7109000000",
+      "buy": "15766.5049000000",
+      "code_from": "BTC",
+      "code_to": "PHP",
+      "provider": "Yahoo (YML)",
+      "date": "2015-11-18T15:28:31.419Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 29
+},
+{
+   "fields": {
+      "sell": "0E-10",
+      "buy": "0E-10",
+      "code_from": "BTC",
+      "code_to": "USD",
+      "provider": "Yahoo (YML)",
+      "date": "2015-11-18T15:28:31.537Z"
+   },
+   "model": "haedrian.exchangerates",
+   "pk": 30
 }
 ]

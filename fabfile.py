@@ -7,3 +7,4 @@ def prepare_deployment(branch_name):
     local('python manage.py test sms.tests')
     local('git add -p && git commit')
     local('git checkout master && git pull && git merge ' + branch_name)
+    local("git push")

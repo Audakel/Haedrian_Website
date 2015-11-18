@@ -79,7 +79,7 @@ WSGI_application = 'Haedrian_Website.wsgi.application'
 
 INSTALLED_APPS = (
     # Admin tools dashboard
-    # 'admin_tools',
+    'admin_tools',
     'admin_tools.theming',
     'admin_tools.menu',
     'admin_tools.dashboard',

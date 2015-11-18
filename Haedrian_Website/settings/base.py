@@ -79,7 +79,7 @@ WSGI_application = 'Haedrian_Website.wsgi.application'
 
 INSTALLED_APPS = (
     # Admin tools dashboard
-    'admin_tools',
+    # 'admin_tools',
     'admin_tools.theming',
     'admin_tools.menu',
     'admin_tools.dashboard',
@@ -166,34 +166,6 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.locale.LocaleMiddleware',
 ]
 
-# Templates
-# TEMPLATE_LOADERS = (
-#     'django.template.loaders.filesystem.Loader',
-#     'django.template.loaders.app_directories.Loader',
-# )
-#
-# TEMPLATE_CONTEXT_PROCESSORS = (
-#     'django.contrib.auth.context_processors.auth',
-#     'django.core.context_processors.debug',
-#     'django.core.context_processors.i18n',
-#     'django.core.context_processors.media',
-#     'django.core.context_processors.request',
-#     'django.core.context_processors.static',
-#     'django.core.context_processors.tz',
-#     'django.contrib.messages.context_processors.messages',
-# )
-
-# TEMPLATE_DIRS = (
-#     os.path.join(PROJECT_ROOT, 'templates'),
-#     os.path.join(PROJECT_ROOT, 'haedrian', 'templates'),
-#     os.path.join(PROJECT_ROOT, 'dashboard', 'templates'),
-# )
-
-# Static files (CSS, JavaScript, Images)
-
-
-
-
 
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static'),
@@ -227,10 +199,11 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.request',
             ],
-
         },
     },
 ]
+
+
 
 # Use nose to run all tests
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'

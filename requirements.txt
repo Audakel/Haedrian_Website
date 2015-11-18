@@ -62,3 +62,4 @@ nose-progressive
 pyopenssl
 ndg-httpsclient
 pyasn1
+fabric

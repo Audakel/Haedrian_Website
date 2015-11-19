@@ -41,5 +41,8 @@ def deploy():
         sudo('cd Haedrian_Website && ' + postgres_connection + ' python manage.py migrate')
 
     sudo('service nginx restart')
+    sudo('banner Wonderful')
+    sudo('cowsay It appears like everything has gone according to plan.')
+
 
 

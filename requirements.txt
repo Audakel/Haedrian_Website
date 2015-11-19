@@ -63,5 +63,3 @@ pyopenssl
 ndg-httpsclient
 pyasn1
 fabric
-sysvbanner
-cowsay

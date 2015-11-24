@@ -297,7 +297,8 @@ def frmt_db_lctn(location):
     :param location: sms deposit location
     :returns: Formated sms deposit location
     """
-    return location.replace("_", " ").replace('-', ' ').title()
+    if location:
+        return location.replace("_", " ").replace('-', ' ').title()
 
 def sms_location(msg, parts, user):
     """ Allows you to see either your current deposit location, or a list of avaiable deposit locations

@@ -84,16 +84,16 @@ WSGI_application = 'Haedrian_Website.wsgi.application'
 
 INSTALLED_APPS = (
     # Admin tools dashboard
-    'admin_tools',
-    'admin_tools.theming',
-    'admin_tools.menu',
-    'admin_tools.dashboard',
-    'django.contrib.sites',
-    # Admin graph stats dashboard
-    'admin_tools_stats',
-    'admin_user_stats',
-    'django_nvd3',
-    'chart_tools',
+    # 'admin_tools',
+    # 'admin_tools.theming',
+    # 'admin_tools.menu',
+    # 'admin_tools.dashboard',
+    # 'django.contrib.sites',
+    # # Admin graph stats dashboard
+    # 'admin_tools_stats',
+    # 'admin_user_stats',
+    # 'django_nvd3',
+    # 'chart_tools',
     # django builtin
     'django.contrib.admin',
     'django.contrib.auth',

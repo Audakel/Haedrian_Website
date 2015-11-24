@@ -68,7 +68,7 @@ def get_exchange_fees(request):
 @api_view(http_method_names=['GET'])
 @authentication_classes(auth_classes)
 def get_exchange_types(request):
-    data = internal._get_exchange_types(request.user, request.query_params)
+    data = internal._get_exchange_types(request.user)
     return Response(data)
 
 @api_view(http_method_names=['GET'])
@@ -81,7 +81,7 @@ def get_address(request):
 @api_view(http_method_names=['GET'])
 @authentication_classes(auth_classes)
 def get_wallet_info(request):
-    data = internal._get_wallet_info(request.user, request.data)
+    data = internal._get_wallet_info(request.user)
     return Response(data=data)
 
 

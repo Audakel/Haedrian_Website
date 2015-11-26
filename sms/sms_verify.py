@@ -8,16 +8,23 @@ from models import Signup
 from haedrian.views import _create_account
 from strings import *
 
-def verify_sender(msg):
+def verify_sender(msg, parts):
+    # Check for spam messages
     if msg.text == str_rsp_create_username:
         return False
-    
+
+    '''Start verifying a valid message'''
     if check_number_exist(msg):
         return True
     elif not currently_signing_up(msg):
         # add them to the signup database
         if msg.text is str_rsp_create_username:
             return False
+
+        signupCommands = ['hi', 'hello', 'hey']
+        if parts[0] not in signupCommands:
+            return False
+
         signup = Signup(phone_number=msg.connections[0].identity)
         signup.save()
         msg.respond(str_rsp_create_username)

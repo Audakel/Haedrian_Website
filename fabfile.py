@@ -12,7 +12,7 @@ from fabric.api import *
 DJANGO_SECRET_KEY = "rn27xL6xFqH7U6ypy2x9Vb3D3tCFWs5ECv8VCe46WhCZFAmFXC"
 DJANGO_POSTGRES_PASSWORD="PostgresSaTeCoCeMuBu1"
 DJANGO_EMAIL_PASSWORD = "GmailSaTeCoCeMuBu1"
-
+# 7073de6a6fc691a46f0558cd826a58d188a8b80a github key
 def prep_deploy():
     branch_name = fabric.operations.prompt("Please confirm the branch your are preparing to deploy: ")
     local('python manage.py makemigrations')

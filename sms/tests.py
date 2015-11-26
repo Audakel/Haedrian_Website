@@ -48,7 +48,8 @@ class SMSTestCase(TestCase):
         msg = self.incoming_msg(command, phone)
         sms = SMSapplication(msg)
         sms.handle(msg)
-        return msg.responses[0]['text']
+        print('response: {}'.format(msg.responses))
+        return msg.responses[0]['text'] if msg.responses else ''
 
 
 
@@ -174,10 +175,5 @@ class SMSTestCase(TestCase):
 
 
 
-"Welcome @test_ph_84303!\nUsage Commands Examples :)\nRepay PHP150: 'repay 150'\nCheck balance: 'balance'\nChange deposit locations: 'location'\nHow to input your MFI id: 'id'\nTo get help: 'help'"
-"Welcome @@test_ph_84303!\nUsage Commands Examples :)\nRepay PHP150: 'repay 150'\nCheck balance: 'balance'\nChange deposit locations: 'location'\nHow to input your MFI id: 'id'\nTo get help: 'help'"
 
-
-
-
-# str_cmd_repay = 'repay'
+# TODO:: str_cmd_repay = 'repay'

@@ -57,13 +57,13 @@ class SMSapplication(AppBase):
         except AttributeError as f:
             print("Translation for the country {} not found".format(country))
 
-        msg.text = bleach.clean(msg.text)
+        parts = msg.text.lower().strip().split(" ") if msg.text else ['']
 
-        if verify_sender(msg):
-            parts = msg.text.lower().strip().split(" ")
+        if verify_sender(msg, parts):
             command = parts[0]
             _user_id = UserData.objects.get(phone=msg.connections[0].identity).user_id
             user = get_user_model().objects.get(id=_user_id)
+
 
             if command == _(str_cmd_balance):
                 sms_balance(msg, user)

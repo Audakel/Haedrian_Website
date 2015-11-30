@@ -30,7 +30,7 @@ str_rsp_repay = "Please deposit the exact cash amount (%s PHP) at any %s locatio
                    "\nIMPORTANT! Once you have deposited the money, reply with 'done' to mark you deposit as complete. Thanks!"
 str_rsp_done = "Congrats! Your PHP %s deposit is '%s'. We will notify you when your repayment has been received by %s."
 str_rsp_balance = "You have %s %s available in your wallet %s %s %s %s Sent with <3 from the Curo team."
-str_rsp_id = "Help us know who you are {}. Please reply with 'id' followed by your MFI and then your borrower number. Thanks! " \
+str_rsp_id = "Please help us know who you are {}. Please reply with 'id' followed by your MFI and then your borrower number. Thanks! " \
              "Example: 'id mentors 24356'".format(rando('smiley'))
 str_rsp_acct_found = "Hi %s %s! We found an %s account in the %s office that matches. Text 'balance' to check your " \
                      "loan status. If this is not you, would you mind texting back the correct id? Example - 'id mentors 6184543"
@@ -56,8 +56,8 @@ str_cmd_info = 'info'
 # ==============================
 # Test Strings
 # ==============================
-str_test_union_bank = str_rsp_repay % (40, 'UnionBank of the Philippines', 'BETUR INC.', '000910028667', 'CHECKING', '')
-str_test_securitybank_deposit = str_rsp_repay % (40, 'Security Bank', 'BETUR INC.', '0000', 'CURRENT', '')
-str_test_bpi_deposit = str_rsp_repay % (40, 'BPI ', 'BETUR INC.', '8371', 'CURRENT', '')
-str_test_bdo_deposit = str_rsp_repay % (40, 'BDO', 'BETUR INC.', '8170015060', 'SAVINGS', 'Your reference number is: 887946165552')
+str_test_union_bank = str_rsp_repay % ('40.40', 'UnionBank of the Philippines', 'BETUR INC.', '000910028667', 'CHECKING', '')
+str_test_securitybank_deposit = str_rsp_repay % ('40.40', 'Security Bank', 'BETUR INC.', '0000', 'CURRENT', '')
+str_test_bpi_deposit = str_rsp_repay % ('40.40', 'BPI ', 'BETUR INC.', '8371', 'CURRENT', '')
+str_test_bdo_deposit = str_rsp_repay % ('40.40', 'BDO', 'BETUR INC.', '8170015060', 'SAVINGS', 'Your reference number is: 887946165552')
 

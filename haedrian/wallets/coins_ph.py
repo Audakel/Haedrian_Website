@@ -208,9 +208,14 @@ class CoinsPhWallet(BaseWallet):
             account_type = match.group('type') if match else 'error'
 
             # -- amount --
-            pattern = re.compile("(?P<amount>\d*)\s?PHP\)(?=</strong>)")
+            pattern = re.compile("(?P<amount>[\d.]*)\s?PHP\)(?=</strong>)")
             match = pattern.search(instructions)
             amount = match.group('amount') if match else 'error'
+            if amount != "error":
+                # Format for number
+                amount = '{}'.format(Decimal(amount).quantize(Decimal('0.01')))
+
+
 
             # -- Reference Number --
             pattern = re.compile("Reference Number:\s?(?P<ref>\d*)")

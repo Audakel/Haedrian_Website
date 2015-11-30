@@ -55,6 +55,24 @@
 },
 {
    "fields": {
+      "username": "pikachu",
+      "first_name": "Bladimir",
+      "last_name": "Hernandez Rodriguez",
+      "is_active": true,
+      "is_superuser": false,
+      "is_staff": false,
+      "last_login": null,
+      "groups": [],
+      "user_permissions": [],
+      "password": "pbkdf2_sha256$20000$Zl49WLXdKPTI$wt2Cokf2sQY92ddDNGmvlFl/VWEXudKQzN8Tec03UzY=",
+      "email": "aquila+pikachu@haedrian.io",
+      "date_joined": "2015-11-26T00:54:22.385Z"
+   },
+   "model": "auth.user",
+   "pk": 11
+},
+{
+   "fields": {
       "sms_deposit_location": "bdo_deposit",
       "credit_score": 0,
       "country": "PH",
@@ -91,6 +109,19 @@
    },
    "model": "haedrian.userdata",
    "pk": 10
+},
+{
+   "fields": {
+      "sms_deposit_location": "securitybank_deposit",
+      "credit_score": 0,
+      "country": "PH",
+      "org_id": "19",
+      "phone": "+14803591947",
+      "organization": "test",
+      "default_currency": "PHP"
+   },
+   "model": "haedrian.userdata",
+   "pk": 11
 },
 {
    "fields": {
@@ -175,6 +206,34 @@
    },
    "model": "haedrian.wallet",
    "pk": 15
+},
+{
+   "fields": {
+      "provider_wallet_id": "0822949e570744aba44ea15b046a458f",
+      "access_token": "feOSFLnOuAOxs8fo9P5svZSWEjUopp",
+      "expires_at": "2015-12-27T23:50:16Z",
+      "currency": "BTC",
+      "user": 11,
+      "type": "CH",
+      "refresh_token": "auwfFXh0oo0rqNUuPHStSYxo36xvkl",
+      "blockchain_address": "35hy9ebHJaS2EkRbkXdi9Fw9KDyL4G5jur"
+   },
+   "model": "haedrian.wallet",
+   "pk": 16
+},
+{
+   "fields": {
+      "provider_wallet_id": "2a37b19e45d24f7fa1b7319143d8bdc8",
+      "access_token": "feOSFLnOuAOxs8fo9P5svZSWEjUopp",
+      "expires_at": "2015-12-27T23:50:16Z",
+      "currency": "PHP",
+      "user": 11,
+      "type": "CH",
+      "refresh_token": "auwfFXh0oo0rqNUuPHStSYxo36xvkl",
+      "blockchain_address": "3NuEFiQhbXnCmXFzMYT3cstTjdFjMfKfDB"
+   },
+   "model": "haedrian.wallet",
+   "pk": 17
 },
 {
    "fields": {

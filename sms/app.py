@@ -163,7 +163,6 @@ def sms_balance(msg, user):
         next_pay = 'Next payment of {} is due on {}.'.format(format_sms_amounts(next_payment_amount), next_payment_date)
     else:
         next_pay = ''
-    print('     about to call msg.repond in sms_balance')
     msg.respond(str_rsp_balance % (currency, format_sms_amounts(wallet_balance), funny_response, pending, loan_total, next_pay))
     return
 
@@ -315,7 +314,6 @@ def sms_location(msg, parts, user):
         for location in locations:
             formated_locations += '({}-{}) '.format(location[0], location[1])
         my_location = frmt_db_lctn(user.userdata.sms_deposit_location)
-        print("-----about to call msg.resp in location")
         msg.respond(str_rsp_location_list.format(formated_locations, my_location))
         return
 

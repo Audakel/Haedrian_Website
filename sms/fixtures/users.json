@@ -126,12 +126,12 @@
 {
    "fields": {
       "provider_wallet_id": "8eafd7e998ab4d2a8660bc65008caed4",
-      "access_token": "p29QpKdAtZILrGUy0fiJlLKO8GM1n9",
-      "expires_at": "2015-12-09T22:46:21Z",
+      "access_token": "jKaXLi0y15mb9qeYk1nzk4rUqpunqP",
+      "expires_at": "2015-12-13T15:18:04Z",
       "currency": "BTC",
       "user": 7,
       "type": "CH",
-      "refresh_token": "sU370jcUbuwIsTvcz8SzcVHYzg8dg4",
+      "refresh_token": "eBUsgt86WvzQCPaFi52tR5a41LrRQN",
       "blockchain_address": "3AUDNdrAzVMoYcoago3i3i5NvazqDPYS33"
    },
    "model": "haedrian.wallet",
@@ -140,12 +140,12 @@
 {
    "fields": {
       "provider_wallet_id": "b8ab213a1c024925b1fb245bd492a589",
-      "access_token": "p29QpKdAtZILrGUy0fiJlLKO8GM1n9",
-      "expires_at": "2015-12-09T22:46:21Z",
+      "access_token": "jKaXLi0y15mb9qeYk1nzk4rUqpunqP",
+      "expires_at": "2015-12-13T15:18:04Z",
       "currency": "PHP",
       "user": 7,
       "type": "CH",
-      "refresh_token": "sU370jcUbuwIsTvcz8SzcVHYzg8dg4",
+      "refresh_token": "eBUsgt86WvzQCPaFi52tR5a41LrRQN",
       "blockchain_address": "39X8qXqkCucSBwYoK51mgRwagGqZdUMmv8"
    },
    "model": "haedrian.wallet",

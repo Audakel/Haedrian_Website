@@ -58,7 +58,7 @@ INSTALLED_BACKENDS = {
         "ENGINE": "rapidsms_telerivet.outgoing.TelerivetBackend",
         "project_id": "PJa61703ce18b3a11e",
         "phone_id": "PN50774ea8fb7cf4ca",
-        "secret": "AUH4PZMMLHN3XPHHHDW6MM3HURZ923XD",
+        "secret": "NQECMMP6W64LQNN7GKPZMUHQNL7PPP7E",
         "api_key": "SMLXzvuupVOtIP9SIOU5hdXRlSkRwvaM",
     },
 }

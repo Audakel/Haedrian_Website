@@ -83,6 +83,9 @@ class SMSapplication(AppBase):
                 sms_id(msg, parts, user)
             elif command == _(str_cmd_info):
                 sms_info(msg, parts, user)
+            elif command == _(str_cmd_get):
+                sms_get(msg, parts, user)
+
             else:
                 # msg.respond(_(str_error_unknown))
                 return True
@@ -387,18 +390,27 @@ def sms_id(msg, parts, user):
 
 
 def sms_info(msg, parts, user):
-        """ Allows users to see all the basic info we have for them
-        :param parts: 'info'
-        :returns: Message with name, mfi, id, and username
-        """
-        name = '{} {}'.format(user.first_name, user.last_name) if user.first_name else 'missing'
-        mfi = user.userdata.organization if user.userdata.organization else 'missing'
-        id = user.userdata.org_id if user.userdata.org_id else 'missing'
-        username = user.username
-        msg.respond(_('Name: %s, MFI: %s, ID: %s, Username: %s') % (name, mfi, id, username))
-        return
+    """ Allows users to see all the basic info we have for them
+    :param parts: 'info'
+    :returns: Message with name, mfi, id, and username
+    """
+    name = '{} {}'.format(user.first_name, user.last_name) if user.first_name else 'missing'
+    mfi = user.userdata.organization if user.userdata.organization else 'missing'
+    id = user.userdata.org_id if user.userdata.org_id else 'missing'
+    username = user.username
+    msg.respond(_('Name: %s, MFI: %s, ID: %s, Username: %s') % (name, mfi, id, username))
+    return
 
-
+def sms_get(msg, parts, user):
+    """ Allows users to get money out of their account
+    :param parts: 'get'
+    :returns: Message with instructions to get all their money out, or part of their money out if they pass a number
+    """
+    name = '{}'.format(user.first_name) if user.first_name else user.username
+    mfi = user.userdata.organization if user.userdata.organization else 'Haedrian Labs'
+    msg.respond(_('Hey %s, %s. The service will be back up next week, however if you need immediate'
+                  ' access to your funds please see your assigned staff from %s') % (name, str_err_solar, mfi))
+    return
 
 
 

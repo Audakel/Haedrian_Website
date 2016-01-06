@@ -4,7 +4,7 @@ __author__ = 'audakel'
 
 def rando(type):
     if type is 'smiley':
-        options = [':)', ':}', ':/', ';)', ':P', ':]']
+        options = [':)', ':}', ':/', ';)', ':P', ':)']
     elif type is 'monkey':
         options = ['spider', 'squirrel', 'howler', 'woolly', 'hacker', 'capuchins']
     return random.choice(options)
@@ -19,6 +19,8 @@ str_err_known = "Error... Sorry! We are not that clever :(. We think it might be
 str_err_id = 'Yikes! Sorry about that, but your ID (%s) was not found in %s\'s client list :(. Did you type it in correctly?'
 str_err_no_mfi_or_id = 'that you forgot the MFI or your ID'
 str_err_mfi = 'your MFI\'s name was typed in wrong'
+str_err_solar = 'we are sorry to say that an unprecedented solar flare\'s incoming cosmic rays have struck our' \
+                ' servers drive platter and have flipped a bit rendering this service temporarily unavailable'
 
 # ==============================
 # Response Messages
@@ -34,8 +36,14 @@ str_rsp_id = "Please help us know who you are {}. Please reply with 'id' followe
              "Example: 'id mentors 24356'".format(rando('smiley'))
 str_rsp_acct_found = "Hi %s %s! We found an %s account in the %s office that matches. Text 'balance' to check your " \
                      "loan status. If this is not you, would you mind texting back the correct id? Example - 'id mentors 6184543"
-str_rsp_usage_commands = "Usage Commands Examples {}\nRepay PHP150: 'repay 150'\nCheck balance: 'balance'" \
-                     "\nChange deposit locations: 'location'\nHow to input your MFI id: 'id'\nTo get help: 'help'".format(rando('smiley'))
+str_rsp_usage_commands = "Usage Commands Examples {}" \
+                         "\nRepay PHP150 of your loan: 'repay 150'" \
+                         "\nGet all your money out: 'get'" \
+                         "\nGet PHP500 out: 'get 500'" \
+                         "\nCheck balance: 'balance'" \
+                         "\nChange deposit locations: 'location'" \
+                         "\nHow to input your MFI id: 'id'" \
+                         "\nTo get help: 'help'".format(rando('smiley'))
 str_rsp_create_username = "Hello! Please create a username.\nType '@' followed by your desired username. Example: @monkey"
 
 
@@ -51,6 +59,7 @@ str_cmd_done = 'done'
 str_cmd_location = 'location'
 str_cmd_id = 'id'
 str_cmd_info = 'info'
+str_cmd_get = 'get'
 
 
 # ==============================

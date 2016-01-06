@@ -41,7 +41,8 @@ def deploy():
         sudo('cd Haedrian_Website && ' + postgres_connection + ' python manage.py migrate')
 
     # sudo('service nginx restart')
-    sudo('supervisorctl status gunicorn | sed "s/.*[pid ]\([0-9]\+\)\,.*/\1/" | xargs kill -HUP')
+    # sudo('supervisorctl status gunicorn | sed "s/.*[pid ]\([0-9]\+\)\,.*/\1/" | xargs kill -HUP')
+    sudo('supervisorctl restart gunicorn')
 
     sudo('cowsay It appears like everything has gone according to plan.')
 

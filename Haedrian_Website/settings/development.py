@@ -81,4 +81,4 @@ CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 MIFOSX_USER = "mifos"
 MIFOSX_PASSWORD = "password"
 MIFOSX_TENANT = "default"
-MIFOSX_SERVER_URL = "https://{}.haedrian.io/mifosng-provider/api/v1/"
+MIFOSX_SERVER_URL = "https://{}.haedrian.io/fineract-provider/api/v1/"

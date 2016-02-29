@@ -66,7 +66,7 @@ class NewUserForm(ModelForm):
             self.active = res['response']['active']
             self.office_name = res['response']['officeName']
             return _id
-        raise ValidationError(_("The ID provided is not a member of the organization chosen"))
+        raise ValidationError(_("--The ID provided is not a member of the organization chosen"))
 
     def clean(self):
         cleaned_data = super(NewUserForm, self).clean()

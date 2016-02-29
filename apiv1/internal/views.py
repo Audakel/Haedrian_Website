@@ -23,11 +23,11 @@ from apiv1.serializers import SendSerializer, ExchangeWorkerSerializer
 from haedrian.forms import NewUserForm, EmailUserForm
 from haedrian.models import UserData, Transaction, Wallet
 from apiv1.models import VerifyGroup, VerifyPerson
+from haedrian.tasks import fetch_exchange_rates
 from haedrian.views import _create_account
 from haedrian.wallets.coins_ph import CoinsPhWallet
 from apiv1.tasks import get_group_members, verify_send_que
 from apiv1.external.mifosx import mifosx_loan
-
 
 __author__ = 'audakel'
 
@@ -582,6 +582,20 @@ def format_sms_amounts(number):
 
 
 def _testing():
+    # from sms.tasks import exchange_confirmed_checker
+    # exchange_confirmed_checker()
+    # verify_send_que()
+    # from rapidsms.router import send
+
+    fetch_exchange_rates()
+    from rapidsms.router import send, lookup_connections
+
+    user = get_user_model().objects.get(username='testmateo')
+    connections = lookup_connections(backend="telerivet", identities=[user.userdata.phone])
+    send("Congrats! Your {} deposit has been repaid to {}!".format(270, 'test'), connections=connections)
+
+
+    return
 
     # from apiv1.tasks import update_coins_token
     # print('in testing')

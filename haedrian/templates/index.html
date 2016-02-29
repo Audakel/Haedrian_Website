@@ -21,8 +21,10 @@
                     <!-- right -->
                     <div class="col-sm-push-6 col-sm-6 haedrian-home-head-right">
                         <h1 class="haedrian-h1">A <b>better</b> mobile wallet</h1>
-                        <p>Curo is the next generation of banking for Microfinance Institutions in developing nations, already trusted by 40,000 people. Now even easier to use with lots more features.</p>
-                        <div class="haedrian-home-head-btn"><a id="haedrian-get-btn-slide-1" class="btn btn-white-haedrian" href="https://play.google.com/store/apps/details?id=com.haedrian.curo&hl=en" geny-tracking="Get Genymotion Clicked (Button)" geny-tracking-props="{&quot;Button location&quot;:&quot;Homepage&quot;}">Get Curo</a>
+                        <p>Curo is the next generation of banking for Microfinance Institutions in developing nations, already trusted by 20,000 people. Now even easier to use with lots more features.</p>
+                        <div class="haedrian-home-head-btn">
+                            <a id="haedrian-get-btn-slide-1" class="btn btn-white-haedrian" href="https://play.google.com/store/apps/details?id=com.haedrian.curo&hl=en" geny-tracking="Get Genymotion Clicked (Button)" geny-tracking-props="{&quot;Button location&quot;:&quot;Homepage&quot;}">
+                                Learn More</a>
                         </div>
                     </div>
                     <!-- left -->
@@ -49,8 +51,8 @@
         <div class="container haedrian-content-news">
             <div class="row">
                 <div class="col-sm-12 text-center">
-                    <p class="haedrian-subtitle">Curo is a secure, fast and easy-to-use mobile wallet for everyone</p>
-                    <p>Perfect to send, store, and receive in your local currency anywhere in the world</p>
+                    <p class="haedrian-subtitle">Curo is a secure, fast and easy-to-use mobile wallet</p>
+                    <p>Perfect to send, store, and repay loans in your local currency with a text only or android phone</p>
                 </div>
             </div>
         </div>
@@ -59,17 +61,17 @@
             <div class="row haedrian-laptop-show">
                 <div class="col-xs-12 col-sm-6 right-side">
                     <ul class="haedrian-circle-list">
-                        <li ng-mouseover="currentFocus = 'fast'" class="haedrian-circle-item haedrian-circle-item-hover" ng-class="{'haedrian-circle-item-hover': currentFocus === 'fast'}">
+                        <li ng-mouseover="currentFocus = 'fast'" class="haedrian-circle-item" ng-class="{'haedrian-circle-item-hover': currentFocus === 'fast'}">
                             <h3 class="haedrian-h3">Secure</h3>
                             <p>Multi-signature, multi-factor authentication, and real-time monitoring of wallets. You'll have the most secure app around without needing to know a thing about the latest security features.</p>
                         </li>
                         <li ng-mouseover="currentFocus = 'simple'" class="haedrian-circle-item" ng-class="{'haedrian-circle-item-hover': currentFocus == 'simple'}">
                             <h3 class="haedrian-h3">Simple</h3>
-                            <p>Easy to load your wallet balance, easy to send. Using our network of exchange points to deposit and withdraw cash means no bank account is ever required.</p>
+                            <p>Easy to load wallet balance, easy to send. Using our network of exchange points to deposit and withdraw cash means no bank account is ever required.</p>
                         </li>
                         <li ng-mouseover="currentFocus = 'powerful'" class="haedrian-circle-item" ng-class="{'haedrian-circle-item-hover': currentFocus == 'powerful'}">
-                            <h3 class="haedrian-h3">Global</h3>
-                            <p>Send money to friends and family anywhere in the world for a fraction of current money transfer fees.</p>
+                            <h3 class="haedrian-h3">Sync</h3>
+                            <p>Open API allows it to interface with your loan management software and automatically update loan repayments / disbursements in realtime.</p>
                         </li>
                     </ul>
                 </div>
@@ -96,8 +98,9 @@
                     <img class="img-responsive img-section hidden-sm hidden-md hidden-lg" src="{% static "images/site_wallet.png" %}" alt="resizable windows">
                 </div>
                 <div class="col-sm-4 col-sm-offset-1 right-side">
-                    <h2 class="haedrian-h2 hidden-xs">Global wallet</h2>
-                    <div class="text">Curo lets you manage your money when you want and where you want. All it takes is the click of a button, the sending of an email or a simple text.</div>
+                    <h2 class="haedrian-h2 hidden-xs">Smart wallet</h2>
+                    <div class="text">Curo lets you automatically remind borrowers when a payment is due, and gives borrowers access to
+                    see all of their loan info from their phone.</div>
                 </div>
             </div>
         </div>
@@ -114,19 +117,29 @@
             <div class="row section-b">
                 <div class="col-sm-4 left-side">
                     <h2 class="haedrian-h2">Credit Score</h2>
-                    <div class="text hidden-xs">By combining community-based lending techniques with social network data, we use a trustworthiness
+                    <div class="text hidden-xs">
+                         We work with industry leading providers to give you access to credit scores on your borrowers.
+                        By combining community-based lending information with social network data, we give you a trustworthiness
                         scoring platform optimized to service emerging markets; specifically, markets where traditional credit scores and collateral
-                        frameworks may not exist.</div>
+                        frameworks do not exist.
+                    </div>
                 </div>
                 <div class="col-sm-7 col-sm-offset-1 right-side">
                     <img class="img-responsive img-seamless" src="{% static "images/site_deposits.png" %}" alt="Credit Score">
-                    <div class="text hidden-sm hidden-md hidden-lg">By combining community-based lending techniques with social network data, we use a trustworthiness
+                    <div class="text hidden-sm hidden-md hidden-lg">
+                        We work with industry leading providers to give you access to credit scores on your borrowers.
+                        By combining community-based lending information with social network data, we use a trustworthiness
                         scoring platform optimized to service emerging markets; specifically, markets where traditional credit scores and collateral
                         frameworks may not exist.</div>
                 </div>
             </div>
         </div>
         <!-- section content Credit Score -->
+               <div class="container">
+            <div class="row hidden-xs haedrian-background">
+                <div class="col-sm-12 haedrian-separator"></div>
+            </div>
+        </div>
         <!--  section content Seamless deposits & withdraws -->
         <div class="container">
             <div class="row section-a">
@@ -137,8 +150,9 @@
                 </div>
                 <div class="col-sm-4 col-sm-offset-1 right-side">
                     <h2 class="haedrian-h2 hidden-xs">Seamless deposits & withdraws</h2>
-                    <div class="text">You can withdraw or deposit money into the app via either a linked bank account
-                        or by utilizing our network of exchange points. Human ATM machines.</div>
+                    <div class="text">Borrowers can withdraw loans or deposit repayments into their mobile wallet
+                        by utilizing our network of exchange points. Both physical (pawnshops, gas stations etc.) and
+                        human (exchange person, like a human ATM).</div>
                 </div>
             </div>
         </div>
@@ -155,20 +169,25 @@
             <div class="row section-b">
                 <div class="col-sm-4 left-side">
                     <h2 class="haedrian-h2">Exchange point</h2>
-                    <div class="text hidden-xs">Start your own startup and set your own fees. Help other Curo users load
+                    <div class="text hidden-xs">Start your own startup and set your own fees. Help other borrowers load
                         money on and off their phones. It's a lot like prepaid airtime sales except it's real money.</div>
                 </div>
                 <div class="col-sm-offset-1 col-sm-7 right-side">
                     <img class="img-responsive img-seamless" src="{% static "images/site_wallet.png" %}" alt="Exchange point">
-                    <div class="text hidden-sm hidden-md hidden-lg">Start your own startup and set your own fees. Help other Curo users load
+                    <div class="text hidden-sm hidden-md hidden-lg">Start your own startup and set your own fees. Help other borrowers load
                         money on and off their phones. It's a lot like prepaid airtime sales except it's real money.</div>
                 </div>
             </div>
         </div>
         <!-- section content Exchange point -->
         <!-- more features -->
-        <div class="container">
-            <div class="home-more-feature"><a id="haedrian-lnk-guide" class="haedrian-navlink arrow-slim" href="#!/product">See more features</a>
+{#        <div class="container">#}
+{#            <div class="home-more-feature"><a id="haedrian-lnk-guide" class="haedrian-navlink arrow-slim" href="#!/product">See more features</a>#}
+{#            </div>#}
+{#        </div>#}
+       <div class="container">
+            <div class="row hidden-xs haedrian-background">
+                <div class="col-sm-12 haedrian-separator"></div>
             </div>
         </div>
         <!-- end of features -->
@@ -177,8 +196,8 @@
             <div class="row home-info-services">
                 <div class="col-sm-push-6 col-sm-6 col-xs-12 professional-services-text">
                     <h5 class="haedrian-h2">Institutional services</h5>
-                    <div class="service-description">Using our comprehensive expertise, Haedrian Labs offers professional
-                        services to help large companies connect with their clients and users around the globe.
+                    <div class="service-description">We offers professional
+                        services to help Microfinance Institutions connect with their clients and users around the globe.
                         If you have specific needs around the Haedrian Labs wallet technology, we will be
                         happy to discuss them with you.</div>
                     <div class="contact-us-link"><a id="haedrian-contact-us" class="haedrian-link arrow" href="#!/support?type=sales#contact">Contact us</a>

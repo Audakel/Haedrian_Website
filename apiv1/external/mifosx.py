@@ -81,7 +81,7 @@ def mifosx_loan(user):
 
 def mifosx_auth(base_url, username=settings.MIFOSX_USER, password=settings.MIFOSX_PASSWORD, tenant="default"):
     headers ={
-        "X-Mifos-Platform-TenantId": tenant,
+        "Fineract-Platform-TenantId": tenant,
     }
     ssl_cert_check = not settings.DEBUG
     response = requests.post(
@@ -122,7 +122,8 @@ def mifosx_api(endpoint, user='', app='', method='GET', params={}, body=None, to
     if token:
         headers = {
             "Authorization": "Basic {}".format(token),
-            "X-Mifos-Platform-TenantId": tenant,
+            # "X-Mifos-Platform-TenantId": tenant,
+            "Fineract-Platform-TenantId": tenant,
         }
         # if not 'tenantIdentifier' in params.keys():
         #     params['tenantIdentifier'] = 'default'

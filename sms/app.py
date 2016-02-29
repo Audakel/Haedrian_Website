@@ -3,6 +3,7 @@
 
 from decimal import Decimal
 import bleach
+import time
 from django.utils import translation
 from django.utils.translation import ugettext as _
 from django.contrib.auth import get_user_model
@@ -24,6 +25,7 @@ from sms.serializers import SmsIdSerializer
 from sms_verify import verify_sender
 
 from rapidsms.apps.base import AppBase
+from rapidsms.router import send, lookup_connections
 
 from strings import *
 
@@ -62,6 +64,7 @@ class SMSapplication(AppBase):
         if verify_sender(msg, parts):
             command = parts[0]
             _user_id = UserData.objects.get(phone=msg.connections[0].identity).user_id
+            print(msg.connections[0])
             user = get_user_model().objects.get(id=_user_id)
 
 
@@ -261,8 +264,20 @@ def sms_done(msg, parts, user):
         message = str_rsp_done % (format_sms_amounts(latest.amount), res['order']['status'].replace('_', ' ').title(),
                                   user.userdata.organization.title())
         msg.respond(message)
+
     else:
         msg.respond('There has been some type of error with marking your order "done"')
+
+
+def sms_confirm_payment(user):
+    """ Mark your deposit as paid after you have deposited the money
+    :param msg: A full telerivet message object
+    :param parts: 'done'
+    :returns: A message letting you know the status of the deposit
+    """
+
+    connections = lookup_connections(backend="telerivet", identities=[user.userdata.phone])
+    send("Congrats! Your {} deposit has been repaid to {}!".format(270, 'test'), connections=connections)
 
 
 def get_deposit_types(user, location=''):
@@ -341,7 +356,7 @@ def sms_id(msg, parts, user):
     :returns: If it found a corresponding user in Mifos it will return a
     message with details about the name, office, loan and wallet balance status
     """
-    if len(parts) is 1:
+    if len(parts) == 1:
         msg.respond(str_rsp_id)
         return
 
@@ -353,7 +368,6 @@ def sms_id(msg, parts, user):
     if not send_data.is_valid():
         msg.respond(_(str_err_known.format(str_err_mfi)))
         return
-
     data_form = NewUserForm({
         "phone": msg.connections[0].identity,
         # Fix hard code PH

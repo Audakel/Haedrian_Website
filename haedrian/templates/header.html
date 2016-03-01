@@ -14,7 +14,7 @@
                             </button>
                         </div>
                         <div class="col-xs-offset-1 col-xs-6">
-                            <a id="haedrian-link-brand-home-page" href="#!/">
+                            <a id="haedrian-link-brand-home-page" href="/">
                                 <img class="brand visible-xs" src="{% static "images/logo.jpg" %}" alt="Haedrian Labs">
                             </a>
                         </div>
@@ -24,18 +24,8 @@
             <nav class="collapse navbar-collapse haedrian-nav" role="navigation">
                 <ul class="nav navbar-nav">
                     <li class="navbar-nav-left header-logo navbar-nav-left-first">
-                        {% comment %}<span class="logo-image"><a href="http://www.haedrian.io"><img src="{% static "images/imagebird.png" %}"></a></span>{% endcomment %}
-{% comment %}      TODO                  <span class="logo-brand"><a href="http://www.haedrian.io"> By Haedrian Labs</a></span>{% endcomment %}
-
-                        <span class="logo-brand"><a href="http://www.haedrian.io"></a></span>
-                    </li>
-
-                    <li class="hidden-xs header-logo-center">
-                        <a id="haedrian-link-home-page" href="#!/" class="nav-home" ng-switch="window.scrollY">
-                            <!-- ngSwitchWhen: 0 -->
-                            {#TODO where is this changing#}
-                            <!-- ngSwitchDefault:  -->
-                            <img ng-switch-default="" class="img-responsive logo-alt ng-scope" src="{% static "images/logo.jpg" %}" alt="Home">
+                        <a id="haedrian-link-home-page" href="/" class="nav-home" ng-switch="window.scrollY">
+                            <img class="img-responsive logo" src="{% static "images/logo.jpg" %}" alt="Home">
                         </a>
                     </li>
 

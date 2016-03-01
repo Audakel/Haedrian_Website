@@ -1,63 +1,229 @@
-
 {% load i18n %}
 {% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <style type="text/css">@charset "UTF-8";
+    [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak, .ng-hide {
+        display: none !important;
+    }
 
+    ng\:form {
+        display: block;
+    }
 
-<head>
-    <style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{display:none !important;}ng\:form{display:block;}
-    .ng-animate-block-transitions{transition:0s all!important;-webkit-transition:0s all!important;}.ng-hide-add-active,.ng-hide-remove{display:block!important;}
+    .ng-animate-block-transitions {
+        transition: 0s all !important;
+        -webkit-transition: 0s all !important;
+    }
+
+    .ng-hide-add-active, .ng-hide-remove {
+        display: block !important;
+    }
     </style>
     <meta charset="utf-8">
     <title ng-bind="seo.title" class="ng-binding">Curo by Haedrian Labs</title>
 
-{% comment %}    <meta name="keywords" content="Wallet, bitcoin, bank, OpenGL, X86, app, test, app presentation, demo, SDK, Eclipse integration,
-    ARM, Genymotion, http://www.genymotion.com, website, Curo is the next generation of banking for developing nations, Genymobile,
-    http://www.haedrian.io, faster Android emulator, get genymotion" ng-attr-content="{{ seo.keywords }}">{% endcomment %}
-
-    <meta name="description" content="Curo is the next generation of banking for developing nations" ng-attr-content="{{ seo.description }}">
-    <meta property="og:description" content="Curo is the next generation of banking for developing nations" ng-attr-content="{{ seo.description }}">
+    <meta name="description" content="Curo is the next generation of banking for developing nations"
+          ng-attr-content="{{ seo.description }}">
+    <meta property="og:description" content="Curo is the next generation of banking for developing nations"
+          ng-attr-content="{{ seo.description }}">
 
     <meta property="og:title" content="Haedrian Labs" ng-attr-content="{{ seo.title }}">
-    <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="fragment" content="!"><!-- Lato webfont: Same family as the actual site, to adjust if needed -->
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="fragment" content="!"><!-- Lato webfont: Same family as the actual site, to adjust if needed -->
 
-    <link href="//fonts.googleapis.com/css?family=Lato:400,300,300italic" rel="stylesheet" type="text/css"><!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link href="//fonts.googleapis.com/css?family=Lato:400,300,300italic" rel="stylesheet" type="text/css">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <link rel="shortcut icon" type="image/png" href="/favicon.png">
     <link rel="stylesheet" href="{% static "css/gen_c66.css" %}">
     <link rel="stylesheet" href="{% static "css/gen_803.css" %}">
     <style type="text/css"></style>
     <style type="text/css"></style>
-    <style>@-webkit-keyframes popjcyhyphpvimupafhkjztorjxftljaqpxr {50% {-webkit-transform:scale(1.2);}100% {-webkit-transform:scale(1);}}@keyframes popjcyhyphpvimupafhkjztorjxftljaqpxr {50% {-webkit-transform:scale(1.2);transform:scale(1.2);}100% {-webkit-transform:scale(1);transform:scale(1);}}#jcyhyphpvimupafhkjztorjxftljaqpxr{padding:0;margin:0;font:13px Arial,Helvetica;text-transform:none;font-size: 100%;vertical-align:baseline;line-height:normal;color:#fff;position:static;border:solid 2px #fff !important;box-sizing:content-box !important;color:#fff !important;display:block !important;height:auto !important;margin:0 !important;opacity:0.9 !important;padding:7px 10px !important;position:fixed !important;visibility:visible !important;width:auto !important;z-index:2147483647 !important;-webkit-border-radius:5px !important;-webkit-box-shadow:0px 0px 20px #000 !important;-webkit-box-sizing:content-box !important;}.jcyhyphpvimupafhkjztorjxftljaqpxr-blocked{padding:0;margin:0;font:13px Arial,Helvetica;text-transform:none;font-size: 100%;vertical-align:baseline;line-height:normal;color:#fff;position:static;color:#AAA !important;display:inline !important;text-decoration:line-through !important;}#jcyhyphpvimupafhkjztorjxftljaqpxr br{display:block !important;padding:0;margin:0;font:13px Arial,Helvetica;text-transform:none;font-size: 100%;vertical-align:baseline;line-height:normal;color:#fff;position:static;}#jcyhyphpvimupafhkjztorjxftljaqpxr span{background:transparent !important;padding:0;margin:0;font:13px Arial,Helvetica;text-transform:none;font-size: 100%;vertical-align:baseline;line-height:normal;color:#fff;position:static;}#jcyhyphpvimupafhkjztorjxftljaqpxr div{padding:0;margin:0;font:13px Arial,Helvetica;text-transform:none;font-size: 100%;vertical-align:baseline;line-height:normal;color:#fff;position:static;border:0 !important;margin:0 !important;padding:0 !important;width:auto !important;letter-spacing:normal !important;font:13px Arial,Helvetica !important;text-align:left !important;text-shadow:none !important;text-transform:none !important;word-spacing:normal !important;}#jcyhyphpvimupafhkjztorjxftljaqpxr a{padding:0;margin:0;font:13px Arial,Helvetica;text-transform:none;font-size: 100%;vertical-align:baseline;line-height:normal;color:#fff;position:static;font-weight:normal !important;background:none !important;text-decoration:underline !important;color:#fff !important;}a#jcyhyphpvimupafhkjztorjxftljaqpxr-gear{padding:0;margin:0;font:13px Arial,Helvetica;text-transform:none;font-size: 100%;vertical-align:baseline;line-height:normal;color:#fff;position:static;text-decoration:none !important;position:absolute !important;display:none !important;font-size:20px !important;width:20px !important;height:20px !important;line-height:20px !important;text-align:center !important;background-color:rgba(255,255,255,.8) !important;background-image:url(chrome-extension://mlomiejdfkolichcflejclcbmpeaniij/data/images/gear.svg) !important;background-size:16px 16px !important;background-position:center center !important;background-repeat:no-repeat !important;text-decoration:none !important;}a#jcyhyphpvimupafhkjztorjxftljaqpxr-gear:hover{-webkit-animation-name:popjcyhyphpvimupafhkjztorjxftljaqpxr !important;animation-name:popjcyhyphpvimupafhkjztorjxftljaqpxr !important;-webkit-animation-duration:0.3s !important;animation-duration:0.3s !important;}#jcyhyphpvimupafhkjztorjxftljaqpxr:hover #jcyhyphpvimupafhkjztorjxftljaqpxr-gear{text-decoration:none !important;display:inline-block !important;}@media print{#jcyhyphpvimupafhkjztorjxftljaqpxr{display:none !important;}}</style></head>
+    <style>@-webkit-keyframes popjcyhyphpvimupafhkjztorjxftljaqpxr {
+               50% {
+                   -webkit-transform: scale(1.2);
+               }
+               100% {
+                   -webkit-transform: scale(1);
+               }
+           }
 
+    @keyframes popjcyhyphpvimupafhkjztorjxftljaqpxr {
+        50% {
+            -webkit-transform: scale(1.2);
+            transform: scale(1.2);
+        }
+        100% {
+            -webkit-transform: scale(1);
+            transform: scale(1);
+        }
+    }
+
+    #jcyhyphpvimupafhkjztorjxftljaqpxr {
+        padding: 0;
+        margin: 0;
+        font: 13px Arial, Helvetica;
+        text-transform: none;
+        font-size: 100%;
+        vertical-align: baseline;
+        line-height: normal;
+        color: #fff;
+        position: static;
+        border: solid 2px #fff !important;
+        box-sizing: content-box !important;
+        color: #fff !important;
+        display: block !important;
+        height: auto !important;
+        margin: 0 !important;
+        opacity: 0.9 !important;
+        padding: 7px 10px !important;
+        position: fixed !important;
+        visibility: visible !important;
+        width: auto !important;
+        z-index: 2147483647 !important;
+        -webkit-border-radius: 5px !important;
+        -webkit-box-shadow: 0px 0px 20px #000 !important;
+        -webkit-box-sizing: content-box !important;
+    }
+
+    .jcyhyphpvimupafhkjztorjxftljaqpxr-blocked {
+        padding: 0;
+        margin: 0;
+        font: 13px Arial, Helvetica;
+        text-transform: none;
+        font-size: 100%;
+        vertical-align: baseline;
+        line-height: normal;
+        color: #fff;
+        position: static;
+        color: #AAA !important;
+        display: inline !important;
+        text-decoration: line-through !important;
+    }
+
+    #jcyhyphpvimupafhkjztorjxftljaqpxr br {
+        display: block !important;
+        padding: 0;
+        margin: 0;
+        font: 13px Arial, Helvetica;
+        text-transform: none;
+        font-size: 100%;
+        vertical-align: baseline;
+        line-height: normal;
+        color: #fff;
+        position: static;
+    }
+
+    #jcyhyphpvimupafhkjztorjxftljaqpxr span {
+        background: transparent !important;
+        padding: 0;
+        margin: 0;
+        font: 13px Arial, Helvetica;
+        text-transform: none;
+        font-size: 100%;
+        vertical-align: baseline;
+        line-height: normal;
+        color: #fff;
+        position: static;
+    }
+
+    #jcyhyphpvimupafhkjztorjxftljaqpxr div {
+        padding: 0;
+        margin: 0;
+        font: 13px Arial, Helvetica;
+        text-transform: none;
+        font-size: 100%;
+        vertical-align: baseline;
+        line-height: normal;
+        color: #fff;
+        position: static;
+        border: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: auto !important;
+        letter-spacing: normal !important;
+        font: 13px Arial, Helvetica !important;
+        text-align: left !important;
+        text-shadow: none !important;
+        text-transform: none !important;
+        word-spacing: normal !important;
+    }
+
+    #jcyhyphpvimupafhkjztorjxftljaqpxr a {
+        padding: 0;
+        margin: 0;
+        font: 13px Arial, Helvetica;
+        text-transform: none;
+        font-size: 100%;
+        vertical-align: baseline;
+        line-height: normal;
+        color: #fff;
+        position: static;
+        font-weight: normal !important;
+        background: none !important;
+        text-decoration: underline !important;
+        color: #fff !important;
+    }
+
+    a#jcyhyphpvimupafhkjztorjxftljaqpxr-gear {
+        padding: 0;
+        margin: 0;
+        font: 13px Arial, Helvetica;
+        text-transform: none;
+        font-size: 100%;
+        vertical-align: baseline;
+        line-height: normal;
+        color: #fff;
+        position: static;
+        text-decoration: none !important;
+        position: absolute !important;
+        display: none !important;
+        font-size: 20px !important;
+        width: 20px !important;
+        height: 20px !important;
+        line-height: 20px !important;
+        text-align: center !important;
+        background-color: rgba(255, 255, 255, .8) !important;
+        background-image: url(chrome-extension://mlomiejdfkolichcflejclcbmpeaniij/data/images/gear.svg) !important;
+        background-size: 16px 16px !important;
+        background-position: center center !important;
+        background-repeat: no-repeat !important;
+        text-decoration: none !important;
+    }
+
+    a#jcyhyphpvimupafhkjztorjxftljaqpxr-gear:hover {
+        -webkit-animation-name: popjcyhyphpvimupafhkjztorjxftljaqpxr !important;
+        animation-name: popjcyhyphpvimupafhkjztorjxftljaqpxr !important;
+        -webkit-animation-duration: 0.3s !important;
+        animation-duration: 0.3s !important;
+    }
+
+    #jcyhyphpvimupafhkjztorjxftljaqpxr:hover #jcyhyphpvimupafhkjztorjxftljaqpxr-gear {
+        text-decoration: none !important;
+        display: inline-block !important;
+    }
+
+    @media print{ #jcyhyphpvimupafhkjztorjxftljaqpxr {
+        display: none !important;
+    }
+    }
+    </style>
+</head>
 
 </head>
 <!-- NAVBAR
 ================================================== -->
 <body>
-    <div class="haedrian-main ng-scope" ng-include="'views/index-layout.html'">
-        {% include "header.html" %}
+<div class="haedrian-main ng-scope" ng-include="'views/index-layout.html'">
+    {% include "header.html" %}
 
-        {% block content %}
-        {% endblock content %}
+    {% block content %}
+    {% endblock content %}
 
-        {% include "footer.html" %}
-    </div>
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script>
-    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-      '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-      })(window,document,'script','dataLayer','GTM-KR6G53');
-</script>
-
-<script src="{% static "js/gen_3d.js"  %}"></script>
-<script src="{% static "js/gen_d0.js"  %}"></script>
+    {% include "footer.html" %}
+</div>
 
 </body>
 </html>
